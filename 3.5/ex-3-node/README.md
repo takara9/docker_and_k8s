@@ -21,6 +21,16 @@ curl http://localhost:9300/ping;echo
 docker exec -it ex3 bash
 
 
+## イメージをレジストリへ登録
+
+export CR_PAT=YOUR_TOKEN
+export USERNAME=YOUR USERID 
+echo $CR_PAT | docker login ghcr.io -u $USERNAME --password-stdin
+docker tag ex3:1.0 ghcr.io/takara9/ex3:1.0
+docker push ghcr.io/takara9/ex3:1.0
+
+
+
 ## クリーンナップ
 
 docker stop ex3

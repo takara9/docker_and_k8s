@@ -26,6 +26,15 @@ docker exec -it ex4 bash
 注意、マルチステージで作られたイメージのコンテナにはログインできません。
 
 
+## イメージをレジストリへ登録
+
+export CR_PAT=YOUR_TOKEN
+export USERNAME=YOUR USERID 
+echo $CR_PAT | docker login ghcr.io -u $USERNAME --password-stdin
+docker tag ex4:1.0 ghcr.io/takara9/ex4:1.0
+docker push ghcr.io/takara9/ex4:1.0
+
+
 ## クリーンナップ
 
 docker stop ex4

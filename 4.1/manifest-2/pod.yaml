@@ -1,0 +1,15 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: my-pod2
+  labels:
+    run: my-pod-2
+    app: my-app-1
+spec:
+  containers:
+   - name: my-pod
+     image: ghcr.io/takara9/ex1:1.1
+     ports:
+      - name: web-svc
+        containerPort: 9100
+  

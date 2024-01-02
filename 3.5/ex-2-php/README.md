@@ -21,6 +21,16 @@ curl http://localhost:9200/
 docker exec -it nginx sh 
 docker exec -it php-fpm sh
 
+## イメージをレジストリへ登録
+
+export CR_PAT=YOUR_TOKEN
+export USERNAME=YOUR USERID 
+echo $CR_PAT | docker login ghcr.io -u $USERNAME --password-stdin
+docker tag ex2-php:1.0 ghcr.io/takara9/ex2-php:1.0
+docker push ghcr.io/takara9/ex2-php:1.0
+docker tag ex2-nginx:1.0 ghcr.io/takara9/ex2-nginx:1.0
+docker push ghcr.io/takara9/ex2-nginx:1.0
+
 
 ## clean up
 docker stop php-fpm
