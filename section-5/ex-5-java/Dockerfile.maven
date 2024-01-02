@@ -1,0 +1,22 @@
+## ビルドステージ
+#FROM maven:3.6.2-jdk-13 as builder
+FROM maven:3.8-eclipse-temurin-17-focal as build
+
+# アプリケーションのインストール
+COPY . /usr/src
+WORKDIR /usr/src
+RUN mvn -B package
+
+##　実行ステージ
+FROM eclipse-temurin:17-jre-alpine
+
+## コンテナの設定
+COPY --from=build --chown=65534:65534 /usr/src/target/rest-service-0.0.1.jar /app/app.jar
+WORKDIR /app
+
+ENV CLASSPATH /app/app.jar
+ENTRYPOINT [ "" ]
+
+USER 65534:65534
+EXPOSE 8080
+CMD ["java","-jar","/app/app.jar"]
