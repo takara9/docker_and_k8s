@@ -9,7 +9,6 @@ docker run -d --name my-mariadb --network my-net --mount source=my-mariadb,targe
 docker logs my-mariadb
 
 docker run --name my-drupal --network my-net --mount source=my-drupal-web,target=/opt/drupal/web -p 8100:80 -d drupal
-docker logs my-drupal
 
 
 ## Drupalへのアクセス
@@ -26,6 +25,10 @@ docker stop my-drupal
 docker rm my-drupal
 docker stop my-mariadb
 docker rm my-mariadb
+
+docker rmi mariadb:10.3.39-focal
+docker rmi drupal:latest
+
 
 ### 永続ボリュームの削除
 docker volume rm my-mariadb
