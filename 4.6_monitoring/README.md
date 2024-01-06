@@ -53,6 +53,7 @@ helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 
 
+helm inspect values grafana/loki > values2.yml
 helm install --namespace monitoring --values values.yaml loki grafana/loki-stack
 
 http://loki.monitoring.svc.cluster.local:3100
@@ -66,3 +67,4 @@ https://grafana.com/docs/loki/latest/send-data/promtail/installation/
 
 helm upgrade --install promtail -n monitoring grafana/promtail 
 
+docker pull grafana/loki:2.8.0-amd64
