@@ -20,10 +20,11 @@ jobs:
         docker images        
     - name: Deploy to minikube
       run:
-        kubectl apply -f deploy-to-minikube.yaml
+        kubectl apply -f ./3.5_app_development/ex-5-java/deployment.yaml
     - name: Test service URLs
       run: |
         minikube service list
         minikube service example --url
         echo "------------------opening the service------------------"
         curl $(minikube service example --url)  
+  
