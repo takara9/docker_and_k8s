@@ -23,6 +23,7 @@ jobs:
         kubectl apply -f ./3.5_app_development/ex-5-java/deployment.yaml
         kubectl get svc -n exercise
         kubectl get deployment -n exercise
+        sleep 60
         kubectl get pod -n exercise
     - name: Test service URLs
       run: |        
