@@ -19,10 +19,13 @@ jobs:
         echo -n "verifying images:"
         docker images        
     - name: Deploy to minikube
-      run:
-        kubectl apply -f ./3.5_app_development/ex-5-java/deployment.yaml
-    - name: Test service URLs
       run: |
+        kubectl apply -f ./3.5_app_development/ex-5-java/deployment.yaml
+        kubectl get svc -n exercise
+        kubectl get deployment -n exercise
+        kubectl get pod -n exercise
+    - name: Test service URLs
+      run: |        
         minikube service -n exercise list
         minikube service -n exercise --url ex-5
         echo "------------------opening the service------------------"
