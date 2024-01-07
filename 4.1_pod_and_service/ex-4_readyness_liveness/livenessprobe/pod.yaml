@@ -14,8 +14,6 @@ spec:
     - touch /tmp/healthy; sleep 30; rm -f /tmp/healthy; tail -f /dev/null
     livenessProbe:
       exec:
-        command:
-        - cat
-        - /tmp/healthy
+        command: ["cat", "/tmp/healthy"]
       initialDelaySeconds: 5
       periodSeconds: 5

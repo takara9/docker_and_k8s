@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: my-ns
+  name: myns
   labels:
     pod-security.kubernetes.io/enforce: restricted
     pod-security.kubernetes.io/warn:    restricted

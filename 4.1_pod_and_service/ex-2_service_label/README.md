@@ -1,0 +1,1 @@
+kubectl patch service my-service --patch-file patch.yaml

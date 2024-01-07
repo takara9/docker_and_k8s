@@ -5,7 +5,7 @@
 
 # DNS
 
-mini:~ takara$ kubectl run -it mypod --image=ghcr.io/takara9/my-ubuntu:0.2 -- bash
+$ kubectl run -it mypod --image=ghcr.io/takara9/my-ubuntu:0.2 -- bash
 If you don't see a command prompt, try pressing enter.
 root@mypod:/# 
 
