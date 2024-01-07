@@ -24,7 +24,7 @@ jobs:
     - name: Test service URLs
       run: |
         minikube service -n exercise list
-        minikube service -n exercise --url
+        minikube service -n exercise --url ex-5
         echo "------------------opening the service------------------"
-        curl $(minikube service example --url)  
+        curl $(minikube service -n exercise ex-5 --url)  
   

@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: java-app
-        image: ghcr.io/takara9/ex5:1.1
+        image: ghcr.io/takara9/ex5:1.0
         ports:
         - containerPort: 8080
 ---
