@@ -23,8 +23,8 @@ jobs:
         kubectl apply -f ./3.5_app_development/ex-5-java/deployment.yaml
     - name: Test service URLs
       run: |
-        minikube service list
-        minikube service example --url
+        minikube service -n exercise list
+        minikube service -n exercise --url
         echo "------------------opening the service------------------"
         curl $(minikube service example --url)  
   

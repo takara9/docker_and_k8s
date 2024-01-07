@@ -1,9 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: exercise
+  labels:
+    name: exercise
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: exercise
   name: ex-5
   labels:
-    app: ex-5
+    name: ex-5
 spec:
   replicas: 3
   selector:
@@ -24,6 +32,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ex-5
+  namespace: exercise
 spec:
   type: NodePort
   selector:
