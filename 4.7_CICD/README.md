@@ -1,3 +1,7 @@
+## CICD
+
+GitHub Actionsで、minikube を実行して、
+コードを修正したら、ビルドとテストを自動実施する。
 
 
 https://minikube.sigs.k8s.io/docs/tutorials/setup_minikube_in_github_actions/
@@ -9,3 +13,5 @@ GitHub Actions 上で　
 Dockerfileで、ARM と ADMDを区別しなくても良いようにする。
 
 docker pull maven:3.9.6-eclipse-temurin-21-jammy
+
+オブザーバビリティ

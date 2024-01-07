@@ -1,10 +1,11 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: nginx2
+  name: nginx-std
+  namespace: myns
 spec:
   containers:
-    - image: ghcr.io/takara9/sec-nginx:1.0
+    - image: nginx
       name: nginx
       ports:
         - containerPort: 80
@@ -16,5 +17,5 @@ spec:
             - ALL
         seccompProfile: 
           type: RuntimeDefault
-        runAsUser: 101
-        runAsGroup: 101
+        runAsUser: 1000
+        runAsGroup: 3000

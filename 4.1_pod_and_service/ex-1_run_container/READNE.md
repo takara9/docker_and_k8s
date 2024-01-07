@@ -48,3 +48,97 @@ root@3e9080f20c4d:/# curl http://192.168.49.4:32343/ping;echo
 
 
 マルチコンテナポッドも知って欲しい。
+
+
+
+
+$ kubectl apply -f pod.yaml 
+pod/my-pod created
+
+$ kubectl get pods
+NAME     READY   STATUS    RESTARTS   AGE
+my-pod   1/1     Running   0          5s
+
+
+
+$ kubectl describe pods my-pod
+Name:             my-pod
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             minikube/192.168.49.2
+Start Time:       Sun, 07 Jan 2024 15:57:21 +0900
+Labels:           app=my-app-1
+                  run=my-pod
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.13
+IPs:
+  IP:  10.244.0.13
+Containers:
+  my-pod:
+    Container ID:   docker://489e10f9cfcf9f4fdee26619cef0ef5086bca9d577e0a84ba76606a9ae530b0f
+    Image:          ghcr.io/takara9/ex1:1.0
+    Image ID:       docker-pullable://ghcr.io/takara9/ex1@sha256:cb6cd2557aa67456f72663d3d612f5741de72a0b4635fdd2a10c9c1ac3238344
+    Port:           9100/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Sun, 07 Jan 2024 15:57:21 +0900
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-n4ftc (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  kube-api-access-n4ftc:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age    From              Message
+  ----    ------     ----   ----              -------
+  Normal  Scheduled  4m23s  default-scheduler Successfully assigned default/my-pod to minikube
+  Normal  Pulled     4m23s  kubelet           Container image "ghcr.io/takara9/ex1:1.0" already present on machine
+  Normal  Created    4m23s  kubelet           Created container my-pod
+  Normal  Started    4m23s  kubelet           Started container my-pod
+
+
+
+サービスのデプロイ
+
+$ kubectl apply -f service.yaml 
+service/my-service configured
+
+
+サービスの存在確認
+
+$ kubectl get service
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP    9h
+my-service   ClusterIP   10.100.232.199   <none>        9100/TCP   6h58m
+
+
+サービスをPCターミナルへフォワード
+
+$ kubectl port-forward service/my-service 9100:9100
+Forwarding from 127.0.0.1:9100 -> 9100
+Forwarding from [::1]:9100 -> 9100
+
+
+別ターミナルでcurlコマンドでアクセスして確認
+
+$ curl http://localhost:9100/ping;echo
+<p>pong</p>
+

@@ -14,8 +14,6 @@ spec:
     - sleep 30; touch /tmp/healthy; tail -f /dev/null
     readinessProbe:
       exec:
-        command:
-        - cat
-        - /tmp/healthy
+        command: ["cat","/tmp/healthy"]
       initialDelaySeconds: 5
       periodSeconds: 5
