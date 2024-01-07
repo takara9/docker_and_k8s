@@ -29,5 +29,5 @@ jobs:
         minikube service -n exercise list
         minikube service -n exercise --url ex-5
         echo "------------------opening the service------------------"
-        curl $(minikube service -n exercise ex-5 --url)  
+        curl $(minikube service -n exercise ex-5 --url)/ping
   
