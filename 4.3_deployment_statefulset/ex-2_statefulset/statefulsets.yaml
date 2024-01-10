@@ -5,21 +5,21 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: nginx # has to match .spec.template.metadata.labels
+      app: nginx # コントローラーとポッドが連携するためのラベル　一致しなければならない
   serviceName: "nginx"
-  replicas: 3 # by default is 1
-  minReadySeconds: 10 # by default is 0
+  replicas: 3 # 可用性や性能向上のために並列度３　デフォルト＝１
+  minReadySeconds: 10 # デフォルト＝０、待機する時間
   template:
     metadata:
       labels:
-        app: nginx # has to match .spec.selector.matchLabels
+        app: nginx # コントローラーとポッドが連携するためのラベル　一致しなければならない
     spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: nginx
-        image: ghcr.io/takara9/sec-nginx:1.0
+        image: nginx
         ports:
-        - containerPort: 9200
+        - containerPort: 80
           name: web
         volumeMounts:
         - name: www
@@ -29,7 +29,7 @@ spec:
       name: www
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "csi-hostpath-sc"
+      storageClassName: "csi-hostpath-sc" # ボリュームを確保する
       resources:
         requests:
           storage: 1Gi

@@ -7,6 +7,7 @@ mini:4.5_network takara$ kubectl get svc
 NAME              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
 hello-minikube1   NodePort    10.110.56.212   <none>        8080:31867/TCP   11s
 kubernetes        ClusterIP   10.96.0.1       <none>        443/TCP          72s
+
 mini:4.5_network takara$ minikube service hello-minikube1 --url
 http://127.0.0.1:52616
 ❗  Docker ドライバーを darwin 上で使用しているため、実行するにはターミナルを開く必要があります。
