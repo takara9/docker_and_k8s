@@ -22,8 +22,8 @@ docker rm mu
 docker rmi ghcr.io/takara9/my-ubuntu:0.2
 
 
-
-maho-2:~ maho$ podman run hello-world
+~~~
+$ podman run hello-world
 Resolved "hello-world" as an alias (/etc/containers/registries.conf.d/000-shortnames.conf)
 Trying to pull quay.io/podman/hello:latest...
 Getting image source signatures
@@ -46,15 +46,19 @@ Project:   https://github.com/containers/podman
 Website:   https://podman.io
 Documents: https://docs.podman.io
 Twitter:   @Podman_io
+~~~
 
-
-maho-2:~ maho$ podman ps -a
+~~~
+$ podman ps -a
 CONTAINER ID  IMAGE                          COMMAND               CREATED        STATUS                    PORTS       NAMES
 c172732f5aeb  ghcr.io/takara9/my-ubuntu:0.1  bash                  4 weeks ago    Exited (0) 4 weeks ago                upbeat_zhukovsky
 55407179f5fd  quay.io/podman/hello:latest    /usr/local/bin/po...  3 minutes ago  Exited (0) 3 minutes ago              romantic_booth
+~~~
 
 
-maho-2:~ maho$ podman run index.docker.io/hello-world
+
+~~~
+$ podman run index.docker.io/hello-world
 
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
@@ -76,4 +80,7 @@ Share images, automate workflows, and more with a free Docker ID:
 
 For more examples and ideas, visit:
  https://docs.docker.com/get-started/
+~~~
+
+
 
