@@ -18,5 +18,6 @@ items:
     sourceRepos:
     - '*'
     sourceNamespaces:
-    - app-team-one
-    - app-team-two
+    - '*'
+    #- app-team-one
+    #- app-team-two
