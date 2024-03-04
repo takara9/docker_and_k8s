@@ -20,7 +20,7 @@ docker pull maven:3.9.6-eclipse-temurin-21-jammy
 以下を追加する
 
 CI GitHub Actions
-CD ArgoCD　shield secret ?
+CD ArgoCD　shield secret 
 
 
 
@@ -201,14 +201,14 @@ xoxb-29787719972-6463030610839-R2bb91e1S00BPL2ApbZGeMfA
 
 # ArgoCD Notification
 
-
+~~~
 $ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-notifications/release-1.0/manifests/install.yaml
 $ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-notifications/release-1.0/catalog/install.yaml
 
 
 KUBE_EDITOR=vim kubectl edit cm nginx-config
 $ KUBE_EDITOR=vim kubectl edit cm -n argocd argocd-notifications-cm
-
+~~~
 
 The AppProject referenced by the .spec.project field of the Application must have the namespace listed in its .spec.sourceNamespaces field. 
 
@@ -217,7 +217,7 @@ The AppProject referenced by the .spec.project field of the Application must hav
 
 ## ArgoCD 2.8.6 + ArogCD Notifications
 
-
+~~~
 curl -OL https://raw.githubusercontent.com/argoproj/argo-cd/v2.8.6/manifests/install.yaml
 curl -OL https://raw.githubusercontent.com/argoproj/argo-cd/v2.8.6/notifications_catalog/install.yaml
 
@@ -236,8 +236,11 @@ $ kubectl -n argocd get secret/argocd-initial-admin-secret -o jsonpath="{.data.p
 $ kubectl create ns guestbook
 $ kubectl create ns app-team-one
 $ kubectl create ns app-team-two
+~~~
 
 
+
+## ArgoCD 2.10 のテスト
 
 
 mini:argo-cd-test takara$ kubectl get no
@@ -251,18 +254,21 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/notifications_catalog/install.yaml
 
 
+
+
 argo-cd-2-10-test/
 
 
-
-
 kubectl -n argocd get secret/argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
-g1W4jmY-7M6Eb7hO
+XPKjNIiBqN0WOfXN
 
 
 kubectl apply -n argocd -f ../secret-for-argocd-notification.yaml
 KUBE_EDITOR=vim kubectl edit cm -n argocd argocd-notifications-cm
 
+
+
+# ここから始め
 
 
 $ kubectl create ns guestbook
@@ -275,6 +281,8 @@ $ kubectl apply -n argocd -f argo-cd-2-10-test/install-1.yaml
 $ kubectl apply -n app-team-one -f argo-cd-2-10-test/install-2.yaml
 $ kubectl apply -n app-team-one -f secret-for-argocd-notification.yaml
 $ kubectl apply -n argocd -f argo-cd-2-10-test/appproject.yaml
+
+$ kubectl apply -k argo-cd-2-10-test
 
 
 $ kubectl -n argocd get secret/argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo

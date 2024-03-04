@@ -1,0 +1,19 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: my-pod-c2
+  labels:
+    app: my-pod
+spec:
+  containers:
+   - name: my-container-1
+     image: ghcr.io/takara9/ex1:1.0
+     ports:
+      - name: ex1-port
+        containerPort: 9100
+   - name: my-container-2
+     image: ghcr.io/takara9/ex3:1.0
+     ports:
+      - name: ex3-port
+        containerPort: 3000
+

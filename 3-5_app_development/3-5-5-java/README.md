@@ -52,19 +52,57 @@ docker run -d --name ex5 -p 9500:8080 ex5:1.0
 
 ## 3 コンテナ上でjarをビルドしてコンテナで実行
 
-docker build -t ex5:1.0 -f Dockerfile.maven .
-docker run -d --name ex5 -p 9500:8080 ex5:1.0
+docker build -t ex5:1.1 -f Dockerfile.maven .
+docker run -d --name ex5-maven -p 9510:8080 ex5:1.1
 
 
 
 ## アクセス
 
 curl http://localhost:9500/ping;echo
+curl http://localhost:9510/ping;echo
 
 
 ## コンテナへ入る
 
 docker exec -it ex5 bash
+
+
+## サイズの比較と脆弱性
+
+~~~
+3-5-5-java$ docker images
+REPOSITORY                        TAG       IMAGE ID       CREATED              SIZE
+ex5                               1.1       b79788ea23da   18 seconds ago       450MB
+ex5                               1.0       24f504d912b2   About a minute ago   450MB
+
+:3-5-5-java$ docker scout quickview ex5:1.0
+    i New version 1.4.1 available (installed version is 1.2.0) at https://github.com/docker/scout-cli
+    ✓ Image stored for indexing
+    ✓ Indexed 215 packages
+
+  Target     │  ex5:1.0             │    0C     2H     5M    21L   
+    digest   │  24f504d912b2        │                              
+  Base image │  eclipse-temurin:21  │    0C     0H     5M    21L   
+
+What's Next?
+  View vulnerabilities → docker scout cves ex5:1.0
+  Include policy results in your quickview by supplying an organization → docker scout quickview ex5:1.0 --org <organization>
+
+3-5-5-java$ docker scout quickview ex5:1.1
+    i New version 1.4.1 available (installed version is 1.2.0) at https://github.com/docker/scout-cli
+    ✓ Image stored for indexing
+    ✓ Indexed 216 packages
+
+  Target     │  ex5:1.1             │    0C     2H     5M    21L   
+    digest   │  b79788ea23da        │                              
+  Base image │  eclipse-temurin:21  │    0C     0H     5M    21L   
+
+What's Next?
+  View vulnerabilities → docker scout cves ex5:1.1
+  Include policy results in your quickview by supplying an organization → docker scout quickview ex5:1.1 --org <organization>
+~~~
+
 
 
 ## イメージをレジストリへ登録

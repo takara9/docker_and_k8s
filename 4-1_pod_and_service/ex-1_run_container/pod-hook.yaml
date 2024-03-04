@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod-hook
+spec:
+  restartPolicy: Never
+  containers:
+  - name: container-1
+    image: ubuntu:22.04
+    command: ["/bin/sh", "-c", "/usr/bin/sleep 30"]
+    lifecycle:
+      postStart:
+        exec:
+          command: ["/bin/sh", "-c", "echo postStart >/var/log/msg.log; /usr/bin/sleep 15"]
+      preStop:
+        exec:
+          command: ["/bin/sh", "-c", "echo preStop >>/var/log/msg.log"]

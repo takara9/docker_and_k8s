@@ -13,16 +13,19 @@ Dockerfile.singlestage  go.mod                  main.go
   docker build -t ex4:1.0 .
 
   * シングルステージビルド
-  docker build -t ex4:1.0 -f Dockerfile.singlestage .
+  docker build -t ex4:dev -f Dockerfile.singlestage .
 
 ### イメージの実行
 docker run --name ex4 -d -p 9400:8086 ex4:1.0
+
+docker run --name ex4-dev -d -p 9410:8086 ex4:dev
 
 
 ## アクセス
 
 curl http://localhost:9400/ping;echo
 
+curl http://localhost:9410/ping;echo
 
 ## コンテナへ入る
 

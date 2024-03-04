@@ -142,3 +142,203 @@ Forwarding from [::1]:9100 -> 9100
 $ curl http://localhost:9100/ping;echo
 <p>pong</p>
 
+
+
+$ kubectl apply -f pod-multi-container.yaml 
+pod/my-pod created
+
+$ kubectl get pod my-pod -o wide
+NAME     READY   STATUS    RESTARTS   AGE   IP           NODE
+my-pod   2/2     Running   0          28m   10.244.0.8   minikube
+
+$ kubectl get pod -o jsonpath='{.items[].spec.containers}' |jq -r '.[]| [.name, .image]'
+[
+  "my-pod1",
+  "ghcr.io/takara9/ex1:1.0"
+]
+[
+  "my-pod2",
+  "ghcr.io/takara9/ex3:1.0"
+]
+
+
+
+
+
+
+## ポッド内でのボリュームの共有
+$ kubectl apply -f pod-vol-share.yaml 
+pod/my-pod-vol-share created
+
+$ kubectl get pod my-pod-vol-share
+NAME               READY   STATUS    RESTARTS   AGE
+my-pod-vol-share   2/2     Running   0          5m49s
+
+
+$ kubectl describe po  my-pod-vol-share
+Name:             my-pod-vol-share
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             minikube/192.168.49.2
+Start Time:       Tue, 20 Feb 2024 06:29:16 +0900
+Labels:           app=my-pod
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.14
+IPs:
+  IP:  10.244.0.14
+Containers:
+  my-container-1:
+    Container ID:   docker://0282f14c82ba303c3d2021722a5a6562bd420ac205dfa468a9c57ddc50540163
+    Image:          ghcr.io/takara9/ex1:1.0
+    Image ID:       docker-pullable://ghcr.io/takara9/ex1@sha256:cb6cd2557aa67456f72663d3d612f5741de72a0b4635fdd2a10c9c1ac3238344
+    Port:           9100/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Tue, 20 Feb 2024 06:29:16 +0900
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /cache from cache-volume (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-xzrgb (ro)
+  my-container-2:
+    Container ID:   docker://cf0f352de8f346b5cf01f35d5e9c96537d28f1bf6d3838905a245651cd1672c8
+    Image:          ghcr.io/takara9/ex3:1.0
+    Image ID:       docker-pullable://ghcr.io/takara9/ex3@sha256:34b3d3970b6523095b75f5151b58ce601933ef46a4cd60aeaeba9f4959a2ac85
+    Port:           3000/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Tue, 20 Feb 2024 06:29:16 +0900
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /cache from cache-volume (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-xzrgb (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  cache-volume:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  500Mi
+  kube-api-access-xzrgb:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  20s   default-scheduler  Successfully assigned default/my-pod-vol-share to minikube
+  Normal  Pulled     20s   kubelet            Container image "ghcr.io/takara9/ex1:1.0" already present on machine
+  Normal  Created    20s   kubelet            Created container my-container-1
+  Normal  Started    20s   kubelet            Started container my-container-1
+  Normal  Pulled     20s   kubelet            Container image "ghcr.io/takara9/ex3:1.0" already present on machine
+  Normal  Created    20s   kubelet            Created container my-container-2
+  Normal  Started    20s   kubelet            Started container my-container-2
+
+
+
+$ kubectl exec -it my-pod-vol-share -c my-container-1 -- bash
+nobody@my-pod-vol-share:/app$ ps -ax > /cache/test.dat
+nobody@my-pod-vol-share:/app$ cat /cache/test.dat 
+    PID TTY      STAT   TIME COMMAND
+      1 ?        Ss     0:00 /usr/bin/python3 /usr/local/bin/flask run --host 0.0.0.0 --port 9100
+      7 pts/0    Ss     0:00 bash
+     15 pts/0    R+     0:00 ps -ax
+nobody@my-pod-vol-share:/app$ exit 
+exit
+
+$ kubectl exec -it my-pod-vol-share -c my-container-2 -- bash
+node@my-pod-vol-share:/app$ cat /cache/test.dat 
+    PID TTY      STAT   TIME COMMAND
+      1 ?        Ss     0:00 /usr/bin/python3 /usr/local/bin/flask run --host 0.0.0.0 --port 9100
+      7 pts/0    Ss     0:00 bash
+     15 pts/0    R+     0:00 ps -ax
+node@my-pod-vol-share:/app$ ps -ax
+bash: ps: command not found
+
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod-hook
+spec:
+  restartPolicy: Never
+  containers:
+  - name: container-1
+    image: ubuntu:22.04
+    command: ["/bin/sh", "-c", "/usr/bin/sleep 30"]
+    lifecycle:
+      postStart:
+        exec:
+          command: ["/bin/sh","-c", "echo postStart >/var/log/msg.log; /usr/bin/sleep 15"]
+      preStop:
+        exec:
+          command: ["/bin/sh","-c","echo preStop >>/var/log/msg.log"]
+```
+
+$ kubectl apply -f pod-hook.yaml 
+pod/my-pod-hook created
+
+$ kubectl get pod
+NAME          READY   STATUS              RESTARTS   AGE
+my-pod-hook   0/1     ContainerCreating   0          4s
+$ kubectl get pod my-pod-hook -o jsonpath='{.status.containerStatuses[].state}'| jq -r .
+{
+  "waiting": {
+    "reason": "ContainerCreating"
+  }
+}
+
+$ kubectl get pod
+NAME          READY   STATUS    RESTARTS   AGE
+my-pod-hook   1/1     Running   0          19s
+$ kubectl get pod my-pod-hook -o jsonpath='{.status.containerStatuses[].state}'| jq -r .
+{
+  "running": {
+    "startedAt": "2024-02-26T21:34:12Z"
+  }
+}
+
+$ kubectl get pod
+NAME          READY   STATUS      RESTARTS   AGE
+my-pod-hook   0/1     Completed   0          32s
+$ kubectl get pod my-pod-hook -o jsonpath='{.status.containerStatuses[].state}'| jq -r .
+{
+  "terminated": {
+    "containerID": "docker://8c7d90221a9a74c2a315fa69a1298f73c4236443a723d73154368e10ec4eadba",
+    "exitCode": 0,
+    "finishedAt": "2024-02-26T21:34:42Z",
+    "reason": "Completed",
+    "startedAt": "2024-02-26T21:34:12Z"
+  }
+}
+
+
+$ kubectl exec -it my-pod-hook -- bash
+root@my-pod-hook:/# tail -f /var/log/msg.log 
+postStart
+preStop
+command terminated with exit code 137
+
+
+$ kubectl get pod
+NAME          READY   STATUS    RESTARTS   AGE
+my-pod-hook   1/1     Running   0          23s
+
+$ kubectl delete pod my-pod-hook
+pod "my-pod-hook" deleted
