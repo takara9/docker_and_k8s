@@ -1,0 +1,22 @@
+
+apiVersion: v1 
+kind: ConfigMap     # コンフィグマップ
+metadata:
+  name: my-config   # コンフィグマップ名
+data:
+  special.how: very # キーと値
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod-cm
+spec:
+  containers:
+    - name: m-container
+      image: ghcr.io/takara9/ex1:1.0
+      env: # 環境変数設定API
+        - name: SPECIAL_LEVEL_KEY # 環境変数名
+          valueFrom:
+            configMapKeyRef:      # コンフィグマップから取得
+              name: my-config     # コンフィグマップ名
+              key: special.how    # 値を取り出すためのキー

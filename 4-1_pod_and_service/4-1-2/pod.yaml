@@ -1,0 +1,8 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: my-pod # 注意 同じネームスペースで同じポッド名は許されない
+spec:
+  containers:
+   - name: container-1
+     image: ghcr.io/takara9/ex3:1.0 # コンテナのイメージを指定する

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: probes
+spec:
+  containers:
+  - name: probes
+    ports:
+    - name: probe-port
+      containerPort: 9100
+      hostPort: 9100
+    image: ghcr.io/takara9/probe:1.0
+    livenessProbe:   # ライブネスプローブ、/healthzをHTTPでGETして、STATUS=200であれば生存
+      httpGet:
+        path: /healthz
+        port: probe-port
+      periodSeconds: 5
+    readinessProbe:  # レディネスプローブ、/readinessをHTTPでGETして、STATUS=200であれば準備完了
+      httpGet:
+        path: /readiness
+        port: probe-port
+      periodSeconds: 5

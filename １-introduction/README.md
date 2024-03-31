@@ -1,3 +1,56 @@
+
+
+## 簡単にメリットを訴える方法
+Webアプリケーションをデプロイできること解説する。
+
+$ minikube start
+$ kubectl get no
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   25s   v1.28.3
+
+$ kubectl create deploy nginx --image=nginx
+deployment.apps/nginx created
+
+$ kubectl expose deploy nginx --port=80 --target-port=80
+service/nginx exposed
+
+$ kubectl get po
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-7854ff8877-2v8ml   1/1     Running   0          18s
+
+$ kubectl get deploy
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   1/1     1            1           22s
+
+$ kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP   83s
+nginx        ClusterIP   10.111.47.255   <none>        80/TCP    38s
+
+$ kubectl get ep
+NAME         ENDPOINTS           AGE
+kubernetes   192.168.49.2:8443   91s
+nginx        10.244.0.3:80       46s
+
+$ kubectl get po -o wide
+NAME                     READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
+nginx-7854ff8877-2v8ml   1/1     Running   0          70s   10.244.0.3   minikube   
+
+<none>           <none>
+
+$ kubectl scale deploy nginx --replicas=2
+deployment.apps/nginx scaled
+
+$ kubectl get ep nginx
+NAME    ENDPOINTS                     AGE
+nginx   10.244.0.3:80,10.244.0.4:80   3m45s
+
+
+
+
+
+##　以下はいきなり難しいね。
+
 https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/
 
 

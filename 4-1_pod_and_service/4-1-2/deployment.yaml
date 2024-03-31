@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment   # コントローラーの種類
+metadata:
+  name: ex1-deploy
+spec:
+  replicas: 3      # ポッドの起動数
+  selector:        # コントローラーの管理対象のポッドのラベルを指定
+    matchLabels:
+      app: ex1     # このラベルをもつポッドが管理対象となる
+
+  template:        # 以下コントローラーが起動するポッドの雛形
+    metadata:
+      labels:      # ポッドのラベル
+        app: ex1   # コントローラーが対象ポッドを識別できる様にラベルを付与
+    spec:
+      containers:
+      - name: container-1
+        image: ghcr.io/takara9/ex1:1.0 # コンテナのイメージを指定
+
+

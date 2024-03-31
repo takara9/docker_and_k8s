@@ -1,0 +1,14 @@
+## サービスのマニフェスト例
+apiVersion: v1
+kind: Service
+metadata:
+  name: ex1-np   # サービス名 
+spec:
+  type: NodePort # ワーカーノードのポート利用する宣言
+  ports:
+  - port: 80
+    targetPort: 9100
+    nodePort: 32100  # ポート番号は指定可能、ノード上で重複注意
+  selector:          # ClusterIPの設定と同じ
+    apg: my-grp1  
+    app: my-pod

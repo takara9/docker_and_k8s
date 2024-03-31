@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod-hook
+spec:
+  containers:
+  - name: container-1
+    image: ghcr.io/takara9/ex1:1.4
+    lifecycle:
+      postStart:  # ポッドのコンテナ開始時に実行
+        exec:
+          command: ["/bin/sh","-c", "echo postStart >> /app/app.log"]
+      preStop:    # ポッドの終了要求で実行
+        exec:
+          command: ["/bin/sh","-c", "echo preStop >> /app/app.log; sleep 10"]
