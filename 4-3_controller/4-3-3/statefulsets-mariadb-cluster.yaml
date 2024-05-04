@@ -1,0 +1,148 @@
+# MariaDBの設定ファイル
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mariadb-configmap
+data:
+  primary.cnf: |
+    [mariadb]
+    log-bin
+    log-basename=my-mariadb
+  replica.cnf: |
+    [mariadb]
+    log-basename=my-mariadb
+  primary.sql: |
+    CREATE USER 'repluser'@'%' IDENTIFIED BY 'replsecret';
+    GRANT REPLICATION REPLICA ON *.* TO 'repluser'@'%';
+    CREATE DATABASE XXXXXX-DB;
+    CREATE USER 'XXXXXX-ID'@'%' IDENTIFIED BY 'XXXXXX-PW';
+    GRANT ALL PRIVILEGES ON XXXXXX-DB.* TO 'XXXXXX-ID'@'%';
+  secondary.sql: |
+    CHANGE MASTER TO 
+    MASTER_HOST='db-0.db.default.svc.cluster.local',
+    MASTER_USER='repluser',
+    MASTER_PASSWORD='replsecret',
+    MASTER_CONNECT_RETRY=10;
+---
+# MariaDBのパスワード
+apiVersion: v1
+kind: Secret
+metadata:
+    name: mariadb-secret
+type: Opaque
+stringData:
+  mariadb-root-password: secret-passwd0
+  mariadb-user-password: secret-passwd1
+---
+# MariaDBのサービス
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  ports:
+  - port: 3306
+    name: webservice
+  clusterIP: None
+  selector:
+    app: web-db
+---
+# MariaDBのステートフルセット
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+spec:
+  serviceName: "db"
+  replicas: 3  # レプリカ数 db-0がマスター db-1,db-2がレプリカ
+  selector:
+    matchLabels:
+      app: web-db
+  template:
+    metadata:
+      labels:
+        app: web-db
+    spec:
+      securityContext: # 実行時のユーザーIDを指定
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+      restartPolicy: Always
+      initContainers:  # 初期化専用コンテナ
+      - name: init-db
+        image: mariadb:11.3.2-jammy
+        env:           # データベースの初期設定のための環境変数
+        - name: MARIADB_DATABASE
+          value: mydb
+        - name: MARIADB_USER
+          value: user1
+        - name: MARIADB_USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: mariadb-user-password
+        imagePullPolicy: Always
+        command:       # コンフィグマップから初期化ファイルのディレクトリ（emptyDir)へコピー、sedで環境変数の値に書き換え
+        - bash
+        - "-c"
+        - |
+          set -ex
+          ls /mnt/config-map
+          [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
+          ordinal=${BASH_REMATCH[1]}
+          if [[ $ordinal -eq 0 ]]; then
+            cp /mnt/config-map/primary.cnf /etc/mysql/conf.d/server-id.cnf
+            cp /mnt/config-map/primary.sql /docker-entrypoint-initdb.d
+            sed -i -e "s/XXXXXX-ID/${MARIADB_USER}/" -e "s/XXXXXX-PW/${MARIADB_USER_PASSWORD}/" -e "s/XXXXXX-DB/${MARIADB_DATABASE}/" /docker-entrypoint-initdb.d/primary.sql
+          else
+            cp /mnt/config-map/replica.cnf /etc/mysql/conf.d/server-id.cnf
+            cp /mnt/config-map/secondary.sql /docker-entrypoint-initdb.d
+          fi
+          echo server-id=$((3000 + $ordinal)) >> etc/mysql/conf.d/server-id.cnf
+          ls /etc/mysql/conf.d/
+          cat /etc/mysql/conf.d/server-id.cnf
+        volumeMounts:
+          - name: mariadb-config-map   # 設定ファイルの元が入ったディレクトリ
+            mountPath: /mnt/config-map
+          - name: mariadb-config       # MariaDBのコンフィグのディレクトリ
+            mountPath: /etc/mysql/conf.d/
+          - name: initdb               # 初期化のSQLを置くディレクトリ
+            mountPath: /docker-entrypoint-initdb.d
+      containers:      # 運用時のコンテナ
+      - name: db
+        image: mariadb:11.3.2-jammy
+        ports:
+        - containerPort: 3306
+          name: db-port
+        env:           # データベースの初期設定のための環境変数
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: mariadb-root-password
+        - name: MYSQL_INITDB_SKIP_TZINFO
+          value: "1"
+        volumeMounts:   # 永続ボリュームのマウントポイント
+        - name: data-vol   # MariaDBのデータを保存する永続ボリューム
+          mountPath: /var/lib/mysql
+        - name: mariadb-config
+          mountPath: /etc/mysql/conf.d/
+        - name: initdb
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: mariadb-config-map
+        configMap:
+          name: mariadb-configmap
+      - name: mariadb-config
+        emptyDir: {}
+      - name: initdb
+        emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: data-vol
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "csi-hostpath-sc" # ボリュームを確保するストレージクラス
+      resources:
+        requests:
+          storage: 200Mi

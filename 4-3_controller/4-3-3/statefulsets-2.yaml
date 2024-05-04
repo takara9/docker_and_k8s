@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dbn
+spec:
+  selector:
+    matchLabels:
+      app: dbn  # ポッドが連携するためのラベル
+  serviceName: dbx #必須ではない、どういこと？
+  replicas: 3   # レプリカ数
+  minReadySeconds: 10 # デフォルト＝０、待機する時間
+  template: # テンプレート
+    metadata:
+      labels:
+        app: dbn # 連携ためのラベル
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: db
+        image: ghcr.io/takara9/ex1:1.6
+        ports:
+        - containerPort: 9100
+          name: db
+        #volumeMounts:
+        #- name: datavol
+        #  mountPath: /data
+  #volumeClaimTemplates:
+  #- metadata:
+  #    name: datavol
+  #  spec:
+  #    accessModes: [ "ReadWriteOnce" ]
+  #    storageClassName: "csi-hostpath-sc" # ボリュームを確保する
+  #    resources:
+  #      requests:
+  #        storage: 1Gi

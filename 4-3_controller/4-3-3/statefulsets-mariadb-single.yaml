@@ -1,0 +1,74 @@
+# MariaDBのパスワード
+apiVersion: v1
+kind: Secret
+metadata:
+    name: mariadb-secret
+type: Opaque
+stringData:
+  mariadb-root-password: secret-passwd0
+  mariadb-user-password: secret-passwd1
+---
+# MariaDBのサービス
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  ports:
+  - port: 3306
+    name: webservice
+  clusterIP: None
+  selector:
+    app: web-db
+---
+# MariaDBのステートフルセット
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+spec:
+  selector:
+    matchLabels:
+      app: web-db      # ポッドが連携するためのラベル
+  template:            # ポッドテンプレート
+    metadata:
+      labels:
+        app: web-db    # コントローラーがポッドと連携するためのラベル
+    spec:
+      securityContext: # 実行時のユーザーIDを指定する
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+      containers:
+      - name: db
+        image: mariadb:11.3.2-jammy
+        env:           # データベースの初期設定のための環境変数
+        - name: MARIADB_DATABASE
+          value: mydb
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: mariadb-root-password
+        - name: MARIADB_USER
+          value: user1
+        - name: MARIADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: mariadb-user-password
+        ports:
+        - containerPort: 3306
+          name: db-port
+        volumeMounts:  # 永続ボリュームのマウントポイント
+        - name: data-vol
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: data-vol
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "csi-hostpath-sc" # 永続ボリュームのストレージクラス
+      resources:
+        requests:
+          storage: 200Mi

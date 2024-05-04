@@ -13,6 +13,6 @@ spec:
     livenessProbe:
       exec:
         command: ["cat", "/tmp/healthy"]
-      failureThreshold: 1  # 1回の失敗で再起動する
-      terminationGracePeriodSeconds: 1 # SIGTERMを送ってからの猶予時間(秒)
-      periodSeconds: 5 # 5秒間隔で診断する
+      failureThreshold: 1               # 1回の失敗で再起動する
+      terminationGracePeriodSeconds: 1  # SIGTERMを送ってからの猶予時間(秒)
+      periodSeconds: 5                  # 5秒間隔で診断する

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim # (1)永続ボリューム
+metadata:
+  name: my-vol      # (2)永続ボリュームクレーム名
+spec:
+  storageClassName: csi-hostpath-sc # (3)ストレージクラス
+  accessModes:      # (4)アクセスモードを選択
+  - ReadWriteOnce   #     読み書きは一つのポッドに限定
+  resources:
+    requests:
+      storage: 1Gi  # (5)確保する容量

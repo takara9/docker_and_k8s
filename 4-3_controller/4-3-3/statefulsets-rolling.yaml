@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+spec:
+  selector:
+    matchLabels:
+      app: db  # ポッドが連携するためのラベル
+  #serviceName: db
+  replicas: 5   # レプリカ数
+  #minReadySeconds: 10 # デフォルト＝０、待機する時間
+  updateStrategy: # (8)Podを更新方法を決める
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 2
+  template: # テンプレート
+    metadata:
+      labels:
+        app: db # 連携ためのラベル
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: db
+        image: ghcr.io/takara9/ex1:1.5
+        ports:
+        - containerPort: 9100
+          name: db
+        volumeMounts:
+        - name: datavol
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: datavol
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "csi-hostpath-sc" # ボリュームを確保する
+      resources:
+        requests:
+          storage: 1Gi
