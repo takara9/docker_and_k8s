@@ -41,13 +41,20 @@ $ kubectl run -it client --rm --image=mariadb -- mariadb --host db --port 3306 -
 ##
 
 $ kubectl exec -it db-0 -c db -- bash
-$ mariadb --user user1 --password=secret-passwd1 mydb
+$ mariadb --user user1 --password=secret1 mydb
 
-CREATE TABLE Persons (PersonID int, LastName varchar(50),FirstName varchar(50));
+
+CREATE TABLE Persons (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `first_name` VARCHAR(50) NOT NULL,
+  `last_name` VARCHAR(50),
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
 INSERT INTO Persons VALUES (1, "sazae","fuguta");
 INSERT INTO Persons VALUES (2, "masuo","fuguta");
 INSERT INTO Persons VALUES (3, "namihei","isono");
-
+select * from Persons;
 
 kubectl exec -it db-1 -c db -- bash
 
@@ -407,3 +414,5 @@ MariaDB [mydb]> SELECT * FROM Persons;
 +----------+----------+-----------+
 2 rows in set (0.000 sec)
 ~~~
+
+

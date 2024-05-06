@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: minio-secret
+type: Opaque
+stringData:
+  aws_access_key_id: AalekpnhnGnm3rxpvRf1
+  aws_secret_access_key: LOx7yRAYKHQ8Lnd30NUzWzfqY99kHuOJPfnRJCYv
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: backup-mariadb
+spec:
+  template:
+    spec:
+      containers:
+      - name: mariadb-client
+        image: ghcr.io/takara9/mariadb-client:1.0
+        imagePullPolicy: Always
+        env:
+        - name: MARIADB_DATABASE
+          value: mydb
+        - name: MARIADB_USER
+          value: user1
+        - name: MARIADB_HOST
+          value: db-0.db.prod.svc.cluster.local
+        - name: MARIADB_PORT
+          value: '3306'
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: mariadb-root-password
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: aws_access_key_id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: aws_secret_access_key
+        - name: OBJECT_STORAGE_URL
+          value: http://minio.default.svc.cluster.local:9000/
+        volumeMounts:          # ボリュームマウント
+          - mountPath: /backup # ファイルシステムのツリーの位置を指定してマウントする
+            name: tmp-volume   # ボリュームセクションで宣言したボリューム名
+        command:
+        - bash
+        - "-c"
+        - |
+          set -ex
+          FILENAME=`date +"%Y%m%d-%H%M%S"`
+          mysqldump --host $MARIADB_HOST --port $MARIADB_PORT --user root --password=$MARIADB_ROOT_PASSWORD --all-databases > /backup/$FILENAME.sql
+          aws --endpoint-url $OBJECT_STORAGE_URL s3 cp /backup/$FILENAME.sql s3://backup/
+          sleep 300
+      volumes:               # ボリュームセクション
+      - name: tmp-volume     # ボリューム名、複数設定でき、マウント時に名前の指定が必要
+        emptyDir:            # このキーでemptyDirの使用が決まる。以下はAPIに実装されたパラメータ
+          sizeLimit: 500Mi 
+      restartPolicy: Never
+  backoffLimit: 4

@@ -2,8 +2,15 @@
 FROM ubuntu:22.04
 
 # 依存するモジュールをインストール
-RUN apt-get update && apt-get install -y python3 python3-pip
-RUN pip3 install flask mysql-connector-python
+RUN apt-get update && apt-get install -y python3 python3-pip libmysqlclient-dev python3-dev default-libmysqlclient-dev build-essential
+RUN pip3 install flask SQLAlchemy Flask-SQLAlchemy marshmallow marshmallow-sqlalchemy flask-marshmallow PyMySql
+
+#mysqlclient
+
+
+#, SQLAlchemy
+#, Flask-SQLAlchemy 
+#, marshmallow, marshmallow-sqlalchemy, flask-marshmallow, pymysql
 
 # アプリケーションのインストール
 RUN mkdir /app

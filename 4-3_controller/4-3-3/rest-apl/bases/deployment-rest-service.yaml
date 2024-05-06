@@ -1,0 +1,71 @@
+# MariaDBのサービス
+apiVersion: v1
+kind: Service
+metadata:
+  name: rest-service
+spec:
+  ports:
+  - port: 9100
+    name: webservice
+  selector:
+    app: rest-pod
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rest
+spec:          # (1)コントローラーのスペック
+  replicas: 3  # (2)ポッドの要求数 
+  selector:    # (3)対象ポッドを選択するためのセレクター (必須)
+    matchLabels:
+      app: rest-pod
+  template:      # (4)ポッドのテンプレート 
+    metadata:     
+      labels:    # (5)コントローラが識別するためのラベル（必須)
+        app: rest-pod
+    spec:              # (6)ポッドのスペック
+      securityContext: # (7)実行時のユーザーとグループ（任意)
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+      containers:
+      - name: ex1-rest
+        image: ghcr.io/takara9/ex1:1.7
+        imagePullPolicy: Always
+        env:
+        - name: MARIADB_DATABASE
+          value: mydb
+        - name: MARIADB_HOST
+          value: db-0.db.prod.svc.cluster.local
+        - name: MARIADB_READONLY_HOST
+          value: db.prod.svc.cluster.local
+        - name: MARIADB_PORT
+          value: '3306'
+        - name: MARIADB_USER
+          value: user1
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef: 
+              name: mariadb-secret
+              key: mariadb-root-password
+        - name: MARIADB_PASSWORD
+          valueFrom:
+            secretKeyRef: 
+              name: mariadb-secret
+              key: mariadb-user-password
+        ports:
+        - name: service-port
+          containerPort: 9100
+        livenessProbe:   # /healthzをHTTPでGETして、STATUS=200であれば生存
+          httpGet:
+            path: /healthz
+            port: service-port
+          periodSeconds: 5
+        readinessProbe:  # /readinessをHTTPでGETして、STATUS=200であれば準備完了
+          httpGet:
+            path: /readiness
+            port: service-port
+          periodSeconds: 5
+     
+
+
