@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-pods
+spec:          # (1)コントローラーのスペック
+  replicas: 3  # (2)ポッドの要求数 
+  selector:    # (3)対象ポッドを選択するためのセレクター (必須)
+    matchLabels:
+      app: my-pod
+  template:      # (4)ポッドのテンプレート 
+    metadata:     
+      labels:    # (5)コントローラが識別するためのラベル（必須)
+        app: my-pod
+    spec:
+      nodeSelector:
+        disktype: ssd
+
+      securityContext:        # (3)コンテナの実行プロセスのID
+        runAsUser: 65534      #    ユーザーID   ポッド実行時UID
+        runAsGroup: 65534     #    グループID   ポッド実行時GID
+        fsGroup: 65534        #    補足グループ  ファイル作成時のグループを指定
+      containers:
+        - name: ubuntu
+          image: ghcr.io/takara9/ex1:1.0   # コンテナイメージ
+          command: ["tail", "-f", "/dev/null"] 
+          volumeMounts:
+          - name: work-vol     # (5)ボリュームを選択
+            mountPath: /mnt    #    マウントポイント
+      volumes: # ボリュームセクション
+      - name: work-vol         # ボリューム名、複数設定でき、マウント時に名前の指定が必要
+        emptyDir:              # このキーでemptyDirの使用が決まる。以下はAPIに実装されたパラメータ
+          sizeLimit: 50Mi 
+  

@@ -1,0 +1,12 @@
+# MariaDBのサービス
+apiVersion: v1
+kind: Service
+metadata:
+  name: rest-service-np
+spec:
+  type: NodePort
+  ports:
+  - port: 9100
+    name: webservice
+  selector:
+    app: rest-pod

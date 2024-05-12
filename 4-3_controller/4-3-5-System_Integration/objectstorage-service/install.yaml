@@ -1,0 +1,56 @@
+---
+# MariaDBのサービス
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+spec:
+  ports:
+  - name: server
+    port: 9000
+  - name: console
+    port: 9001
+  clusterIP: None
+  selector:
+    app: minio
+---
+# MariaDBのステートフルセット
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: minio
+spec:
+  serviceName: "minio"
+  selector:
+    matchLabels:
+      app: minio       # ポッドが連携するためのラベル
+  template:            # ポッドテンプレート
+    metadata:
+      labels:
+        app: minio     # コントローラーがポッドと連携するためのラベル
+    spec:
+      #securityContext: # 実行時のユーザーIDを指定する
+      #  runAsUser: 999
+      #  runAsGroup: 999
+      #  fsGroup: 999
+      containers:
+      - name: minio
+        image: quay.io/minio/minio
+        ports:
+        - name: server
+          containerPort: 9000
+        - name: console
+          containerPort: 9001
+        volumeMounts:  # 永続ボリュームのマウントポイント
+        - name: data
+          mountPath: /data
+        command: [ "minio", "server", "/data", "--console-address", ":9001"]
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "csi-hostpath-sc" # 永続ボリュームのストレージクラス
+      resources:
+        requests:
+          storage: 100Mi
