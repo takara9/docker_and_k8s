@@ -9,4 +9,4 @@ spec:
   - port: 9100
     name: webservice
   selector:
-    app: rest-pod
+    app: my-pod

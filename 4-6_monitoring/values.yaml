@@ -1,9 +1,0 @@
-loki:
-  image:
-    tag: 2.8.0-amd64
-  commonConfig:
-    replication_factor: 1
-  storage:
-    type: 'filesystem'
-singleBinary:
-  replicas: 1

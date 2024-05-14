@@ -4,9 +4,9 @@ kind: Service
 metadata:
   name: rest-service-lb
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
   - port: 9100
     name: webservice
   selector:
-    app: rest-pod
+    app: my-pod

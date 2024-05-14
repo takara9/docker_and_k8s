@@ -1,26 +1,45 @@
-minikube start -n 3
-mini:4.5_network takara$ kubectl create deployment hello-minikube1 --image=kicbase/echo-server:1.0
-deployment.apps/hello-minikube1 created
-mini:4.5_network takara$ kubectl expose deployment hello-minikube1 --type=NodePort --port=8080
-service/hello-minikube1 exposed
-mini:4.5_network takara$ kubectl get svc
-NAME              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-hello-minikube1   NodePort    10.110.56.212   <none>        8080:31867/TCP   11s
-kubernetes        ClusterIP   10.96.0.1       <none>        443/TCP          72s
 
-mini:4.5_network takara$ minikube service hello-minikube1 --url
-http://127.0.0.1:52616
+$ minikube start
+
+$ kubectl create deployment hello-minikube1 --image=kicbase/echo-server:1.0
+$ kubectl expose deployment hello-minikube1 --type=NodePort --port=8080
+service/hello-minikube1 exposed
+
+$ kubectl get svc
+NAME              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+hello-minikube1   NodePort    10.109.248.79   <none>        8080:31240/TCP   20s
+kubernetes        ClusterIP   10.96.0.1       <none>        443/TCP          5m19s
+
+$ minikube service hello-minikube1 --url
+http://127.0.0.1:59455
 ❗  Docker ドライバーを darwin 上で使用しているため、実行するにはターミナルを開く必要があります。
 
 
-mini:~ takara$ curl http://127.0.0.1:52616
-Request served by hello-minikube1-5f7945679-nk589
+mini:4-5-1_nodeport takara$ kubectl apply -f deployment.yaml 
+deployment.apps/my-pods created
+mini:4-5-1_nodeport takara$ kubectl apply -f sevice-np.yaml 
+service/rest-service-np created
+mini:4-5-1_nodeport takara$ kubectl get svc
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+kubernetes        ClusterIP   10.96.0.1        <none>        443/TCP          61s
+rest-service-np   NodePort    10.109.193.255   <none>        9100:31256/TCP   15s
 
-HTTP/1.1 GET /
+mini:4-5-1_nodeport takara$ minikube service rest-service-np --url
+http://127.0.0.1:59566
+❗  Docker ドライバーを darwin 上で使用しているため、実行するにはターミナルを開く必要があります。
 
-Host: 127.0.0.1:52616
-Accept: */*
-User-Agent: curl/8.4.0
-mini:~ takara$ 
+
+
+http://127.0.0.1:59566/info
+Host Name: my-pods-7dc8dfd5c9-9g45b Host IP: 10.244.0.4 Client IP : 10.244.0.1
+
+mini:docker_and_k8s takara$ kubectl get pod
+NAME                       READY   STATUS    RESTARTS   AGE
+my-pods-7dc8dfd5c9-9g45b   1/1     Running   0          2m23s
+my-pods-7dc8dfd5c9-9pvk2   1/1     Running   0          2m23s
+my-pods-7dc8dfd5c9-z4qqv   1/1     Running   0          2m23s
+
+際読み込みで、複数のポッドが出てくるので、分散されている事がわかる。
+
 
 

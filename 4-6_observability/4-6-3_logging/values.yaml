@@ -1,0 +1,9 @@
+loki:
+  image:
+    tag: 2.8.4-arm64
+  commonConfig:
+    replication_factor: 1
+  storage:
+    type: 'filesystem'
+singleBinary:
+  replicas: 1
