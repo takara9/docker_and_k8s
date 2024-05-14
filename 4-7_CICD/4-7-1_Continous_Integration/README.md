@@ -1,1 +1,3 @@
-GitHubでCIを実施する
+GitHub Actionsで　CIを実施
+
+

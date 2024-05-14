@@ -20,7 +20,7 @@ jobs:
         docker images        
     - name: Deploy to minikube
       run: |
-        kubectl apply -f ./4.7_CICD/deployment-ex5.yaml
+        kubectl apply -f ./4-7_CICD/deployment-ex5.yaml
         echo "------------------waiting to complete------------------"
         sleep 60
         kubectl get svc -n exercise
