@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-var
+data:
+  database_name: mydb
+  mariadb-host: db-0.db.stage.svc.cluster.local
+  mariadb-readonly-host: db.stage.svc.cluster.local
+  mariadb-port: '3306'
