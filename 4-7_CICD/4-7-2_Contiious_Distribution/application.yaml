@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sample-apl
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    name: sample-apl
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/takara9/docker_and_k8s.git
+    targetRevision: HEAD
+    path: tree/main/4-7_CICD/4-7-2_Contiious_Distribution/webservice-system/overlays/stage
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: stage
+    
+  # Extra information to show in the Argo CD Application details tab
+  info:
+    - name: 'Example:'
+      value: 'https://example.com'
+      
+  # Sync policy
+  syncPolicy:
+    automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
