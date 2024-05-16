@@ -15,17 +15,18 @@ jobs:
       run: |
         export SHELL=/bin/bash
         eval $(minikube -p minikube docker-env)
-        docker build -f ./3.5_app_development/ex-5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev 3.5_app_development/ex-5-java
+        docker build -f ./3-5_app_development/3-5-5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev 3-5_app_development/3-5-5-java
         echo -n "verifying images:"
         docker images        
     - name: Deploy to minikube
       run: |
-        kubectl apply -f ./4.7_CICD/deployment-ex5.yaml
+        kubectl apply -f ./4-7_CICD/4-7-1_Continous_Integration/deployment-ex5.yaml
         echo "------------------waiting to complete------------------"
         sleep 60
         kubectl get svc -n exercise
         kubectl get deployment -n exercise
         kubectl get pod -n exercise
+        kubectl describe pod -n exercise
     - name: Test service URLs
       run: |        
         minikube service -n exercise list
