@@ -2,6 +2,12 @@
 
 ダッシュボードの起動方法
 
+
+minikube addons enable dashboard
+minikube addons enable metrics-server
+minikube dashboard --url
+
+
 mini:docker_and_k8s takara$ minikube addons enable dashboard
 💡  dashboard is an addon maintained by Kubernetes. For any concerns contact minikube on GitHub.
 You can view the list of minikube maintainers at: https://github.com/kubernetes/minikube/blob/master/OWNERS

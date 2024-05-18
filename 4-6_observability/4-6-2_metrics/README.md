@@ -1,11 +1,12 @@
 ## Minikubeのセットアップ
 
-minikube start
+minikube start --memory='7g' --cpus='4'
 minikube addons disable storage-provisioner
 minikube addons disable default-storageclass
 minikube addons list
 minikube addons enable ingress
 minikube addons enable csi-hostpath-driver
+
 # minikube addons enable volumesnapshots
 kubectl patch storageclass csi-hostpath-sc -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 kubectl get sc

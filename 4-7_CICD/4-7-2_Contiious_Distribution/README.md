@@ -28,9 +28,10 @@ $ kubeseal --format=yaml -n prod --cert=cert.pem < ./../../4-3_controller/4-3-5-
 
 
 ```
-
 $ minikube addons enable csi-hostpath-driver
 $ cd webservice-system/
 $ kubectl apply -k overlays/stage/
 $ kubectl apply -k overlays/prod/
 ```
+
+##
