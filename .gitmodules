@@ -4,3 +4,6 @@
 [submodule "3-5_app_development/3-5-4-golang"]
 	path = 3-5_app_development/3-5-4-golang
 	url = https://github.com/takara9/ex4
+[submodule "3-5_app_development/3-5-3-node"]
+	path = 3-5_app_development/3-5-3-node
+	url = https://github.com/takara9/ex3
