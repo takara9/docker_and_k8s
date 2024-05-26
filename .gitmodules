@@ -10,3 +10,6 @@
 [submodule "3-5_app_development/3-5-2-php"]
 	path = 3-5_app_development/3-5-2-php
 	url = https://github.com/takara9/ex2
+[submodule "3-5_app_development/3-5-1-python"]
+	path = 3-5_app_development/3-5-1-python
+	url = https://github.com/takara9/ex1
