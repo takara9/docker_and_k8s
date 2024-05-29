@@ -1,4 +1,6 @@
-```
+# ポッドアフィニティ
+
+```console
 $ minikube start -n 3
 $ minikube addons enable csi-hostpath-driver
 $ kubectl get no
