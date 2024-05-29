@@ -8,7 +8,7 @@ $ kubectl get po -o wide
 
 クラスタを起動した後、コントロールプレーンにスケジュールされない様にテイントを設定します。
 
-```console
+```console:実行例
 $ kubectl get no
 NAME           STATUS   ROLES           AGE   VERSION
 minikube       Ready    control-plane   79s   v1.28.3
@@ -20,7 +20,7 @@ node/minikube tainted
 ```
 
 
-```deployment-pa.yaml
+```yaml:deployment-pa.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -47,8 +47,8 @@ spec:
 この 'affinity.podAffinity' により、ラベル 'database: exist' のポッドが存在するホストホスト名（ノード）へポッドが配置される。
 
 
-実行例
-```
+
+```console:実行例
 $ kubectl apply -f statefulsets-mariadb-single.yaml 
 $ kubectl apply -f deployment-pa.yaml 
 $ kubectl get po -o wide
