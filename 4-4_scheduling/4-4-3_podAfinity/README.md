@@ -1,14 +1,15 @@
+```
 $ minikube start -n 3
 $ minikube addons enable csi-hostpath-driver
 $ kubectl get no
 $ kubectl taint nodes minikube controller:NoSchedule
 $ kubectl apply -f statefulsets-mariadb-single.yaml 
 $ kubectl get po -o wide
-
+```
 
 クラスタを起動した後、コントロールプレーンにスケジュールされない様にテイントを設定します。
 
-```console:実行例
+```console
 $ kubectl get no
 NAME           STATUS   ROLES           AGE   VERSION
 minikube       Ready    control-plane   79s   v1.28.3
@@ -20,7 +21,7 @@ node/minikube tainted
 ```
 
 
-```yaml:deployment-pa.yaml
+```file:deployment-pa.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -48,7 +49,7 @@ spec:
 
 
 
-```console:実行例
+```console
 $ kubectl apply -f statefulsets-mariadb-single.yaml 
 $ kubectl apply -f deployment-pa.yaml 
 $ kubectl get po -o wide
