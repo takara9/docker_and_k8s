@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-pods
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-pod
+  template:
+    metadata:     
+      labels:
+        app: my-pod
+    spec:
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+      containers:
+      - name: ex1-pod
+        image: ghcr.io/takara9/ex1:1.0
+        ports:
+        - containerPort: 9100
+      affinity:
+        podAffinity:  # ポッドアフィニティ
+          requiredDuringSchedulingIgnoredDuringExecution: # スケジュール時
+          - labelSelector: # ラベルセレクター
+              matchExpressions: # 選択条件
+              - key: database   # ラベルのキー
+                operator: In    # 含む
+                values:
+                - exist         # ラベルの値
+            topologyKey: "kubernetes.io/hostname" # 同じホストに配置
