@@ -381,3 +381,50 @@ $ kubectl apply -f ns_baseline.yaml
 namespace/baseline created
 $ kubectl apply -n baseline -f sysctl-130-baseline-pass.yaml 
 pod/sysctls1 created
+
+
+
+kubernetes/staging/src/k8s.io/pod-security-admission/test/testdata/baseline/v1.27/pass
+/sysctls1.yaml
+
+
+
+$ minikube start --kubernetes-version=v1.30.0 --extra-config=apiserver.audit-policy-file=/etc/ssl/certs/audit-policy.yaml --extra-config=apiserver.audit-log-path=-
+$ kubectl get no
+$ kubectl apply -f ns_baseline.yaml
+$ kubectl apply -n baseline -f apparmor-sc-130-pass1.yaml
+$ kubectl apply -n baseline -f apparmor-sc-130-pass2.yaml
+
+$ kubectl get no
+NAME       STATUS   ROLES           AGE     VERSION
+minikube   Ready    control-plane   2m51s   v1.27.4
+$ kubectl apply -f ns_baseline.yaml
+namespace/baseline created
+$ kubectl apply -n baseline -f apparmor-sc-130-pass1.yaml
+Error from server (BadRequest): error when creating "apparmor-sc-130-pass1.yaml": Pod in version "v1" cannot be handled as a Pod: strict decoding error: unknown field "spec.securityContext.appArmorProfile"
+
+
+$ kubectl get no
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   9s    v1.28.3
+$ kubectl apply -f ns_baseline.yaml
+namespace/baseline created
+$ kubectl apply -n baseline -f apparmor-sc-130-pass1.yaml
+Error from server (BadRequest): error when creating "apparmor-sc-130-pass1.yaml": Pod in version "v1" cannot be handled as a Pod: strict decoding error: unknown field "spec.securityContext.appArmorProfile"
+
+$ kubectl get no
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   14s   v1.29.3
+$ kubectl apply -f ns_baseline.yaml
+namespace/baseline created
+$ kubectl apply -n baseline -f apparmor-sc-130-pass1.yaml
+Error from server (BadRequest): error when creating "apparmor-sc-130-pass1.yaml": Pod in version "v1" cannot be handled as a Pod: strict decoding error: unknown field "spec.securityContext.appArmorProfile"
+
+
+$ kubectl get no
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   18s   v1.30.0
+$ kubectl apply -f ns_baseline.yaml
+namespace/baseline created
+$ kubectl apply -n baseline -f apparmor-sc-130-pass1.yaml
+pod/apparmorprofile1 created
