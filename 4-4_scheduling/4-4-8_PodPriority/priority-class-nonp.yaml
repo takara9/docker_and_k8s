@@ -3,6 +3,6 @@ kind: PriorityClass
 metadata:
   name: high-priority
 value: 1000000
-preemptionPolicy: Never
+preemptionPolicy: Never  # 他のポッドを押し除けない
 globalDefault: false
 description: "This priority class will not cause other pods to be preempted."

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-pods-high-priority
+  name: my-pods-normal
 spec:
   replicas: 3
   selector:
@@ -12,7 +12,6 @@ spec:
       labels:
         app: my-pod
     spec:
-      priorityClassName: high-priority  # プライオリティクラスの設定
       #securityContext:
       #  runAsNonRoot: true
       containers:
@@ -26,3 +25,4 @@ spec:
             limits:
               memory: "320M"
               cpu: 2
+  

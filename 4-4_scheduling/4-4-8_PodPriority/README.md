@@ -1,137 +1,127 @@
-PriorityClass
+# プライオリティ・クラス
+
+限られたリソース環境で、通常優先度のポッドを退避させて、優先度の高いポッドを実行する。
+ただし、悪意のあるユーザーが可能な限り最高の優先度でポッドを作成し、他のポッドが排除されたりスケジュールされなかったりする可能性があります。
+管理者は ResourceQuota を使用して、ユーザーが高優先度でポッドを作成できないようにすることができます。
 
 
-$ minikube start --nodes=2
+
+環境のセットアップ
+```
+$ minikube start -n 2
+$ minikube addons enable metrics-server
 $ kubectl get no
 $ kubectl taint nodes minikube workload:NoSchedule
+```
 
+### プライオリティクラスの設定
+```
 $ kubectl apply -f priority-class.yaml 
-priorityclass.scheduling.k8s.io/high-priority created
 
-$ kubectl get PriorityClass 
-NAME                      VALUE        GLOBAL-DEFAULT   AGE
-high-priority             1000000      false            29s
-system-cluster-critical   2000000000   false            95s
-system-node-critical      2000001000   false            95s
+$ kubectl get PriorityClass high-priority
+NAME            VALUE     GLOBAL-DEFAULT   AGE
+high-priority   1000000   false            14s
 
+$ kubectl describe PriorityClass high-priority
+Name:              high-priority
+Value:             1000000
+GlobalDefault:     false
+PreemptionPolicy:  PreemptLowerPriority
+Description:       This priority class should be used for XYZ service pods only.
+Annotations:       kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"scheduling.k8s.io/v1","description":"This priority class should be used for XYZ service pods only.","globalDefault":false,"kind":"PriorityClass","metadata":{"annotations":{},"name":"high-priority"},"value":1000000}
 
-mini:4-4-8_PodPriority takara$ kubectl get pod -o wide
-NAME                             READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
-my-pods-normal-bbdd897d8-bdqc9   0/1     Pending   0          24s   <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-bfvtk   1/1     Running   0          24s   10.244.1.2   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-bsl6v   1/1     Running   0          24s   10.244.1.5   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-chfgq   1/1     Running   0          24s   10.244.1.3   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-gzm2x   1/1     Running   0          24s   10.244.1.8   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-mtfwj   0/1     Pending   0          24s   <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-npvcc   1/1     Running   0          24s   10.244.1.4   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-nt6gl   0/1     Pending   0          24s   <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-nvvxj   1/1     Running   0          24s   10.244.1.7   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-r7jpn   1/1     Running   0          24s   10.244.1.6   minikube-m02   <none>           <none>
+Events:  <none>
+```
 
+### プライオリティクラスなしのデプロイメントの適用
+minikubeのリソース一杯のCPU要求数でデプロイする。これ以上レプリカ数を増やしても、リソースが確保されず Pending となる。
+```
+$ kubectl apply -f deployment-normal.yaml
+$ kubectl get po -o wide
+NAME                              READY   STATUS    RESTARTS   AGE   IP           NODE
+my-pods-normal-7f696b6b96-8kr4p   1/1     Running   0          19s   10.244.1.2   minikube-m02
+my-pods-normal-7f696b6b96-cp4bj   1/1     Running   0          19s   10.244.1.4   minikube-m02
+my-pods-normal-7f696b6b96-qrncv   1/1     Running   0          19s   10.244.1.3   minikube-m02
+```
 
-mini:4-4-8_PodPriority takara$ kubectl apply -f deployment-hp.yaml 
-deployment.apps/my-pods-high created
-mini:4-4-8_PodPriority takara$ kubectl get pod -o wide
-NAME                             READY   STATUS        RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
-my-pods-high-85bcbc9ff7-5p9jk    0/1     Pending       0          4s    <none>       <none>         minikube-m02     <none>
-my-pods-high-85bcbc9ff7-7pnvb    0/1     Pending       0          4s    <none>       <none>         minikube-m02     <none>
-my-pods-high-85bcbc9ff7-85nzn    0/1     Pending       0          4s    <none>       <none>         minikube-m02     <none>
-my-pods-high-85bcbc9ff7-9gjsr    0/1     Pending       0          4s    <none>       <none>         minikube-m02     <none>
-my-pods-high-85bcbc9ff7-9s8lq    0/1     Pending       0          4s    <none>       <none>         <none>           <none>
-my-pods-high-85bcbc9ff7-hlwlx    0/1     Pending       0          4s    <none>       <none>         minikube-m02     <none>
-my-pods-high-85bcbc9ff7-jnmp9    0/1     Pending       0          4s    <none>       <none>         <none>           <none>
-my-pods-high-85bcbc9ff7-n6x7h    0/1     Pending       0          4s    <none>       <none>         minikube-m02     <none>
-my-pods-high-85bcbc9ff7-npsms    0/1     Pending       0          4s    <none>       <none>         minikube-m02     <none>
-my-pods-high-85bcbc9ff7-tf4wf    0/1     Pending       0          4s    <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-2fd2p   0/1     Pending       0          4s    <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-88df5   0/1     Pending       0          4s    <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-bbm8q   0/1     Pending       0          3s    <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-bdqc9   0/1     Pending       0          62s   <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-bfvtk   1/1     Terminating   0          62s   10.244.1.2   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-bnt2b   0/1     Pending       0          4s    <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-bsl6v   1/1     Terminating   0          62s   10.244.1.5   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-chfgq   1/1     Terminating   0          62s   10.244.1.3   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-gzm2x   1/1     Terminating   0          62s   10.244.1.8   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-kkfsz   0/1     Pending       0          4s    <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-mtfwj   0/1     Pending       0          62s   <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-npvcc   1/1     Terminating   0          62s   10.244.1.4   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-nt6gl   0/1     Pending       0          62s   <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-nvvxj   1/1     Terminating   0          62s   10.244.1.7   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-r7jpn   1/1     Terminating   0          62s   10.244.1.6   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-sw88h   0/1     Pending       0          3s    <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-w4t85   0/1     Pending       0          3s    <none>       <none>         <none>           <none>
-
-
-プライオリィの高いポッドによって、置き換わった。
-
-$ kubectl get pod -o wide
-NAME                             READY   STATUS    RESTARTS   AGE    IP            NODE           NOMINATED NODE   READINESS GATES
-my-pods-high-85bcbc9ff7-5p9jk    1/1     Running   0          44s    10.244.1.9    minikube-m02   <none>           <none>
-my-pods-high-85bcbc9ff7-7pnvb    1/1     Running   0          44s    10.244.1.15   minikube-m02   <none>           <none>
-my-pods-high-85bcbc9ff7-85nzn    1/1     Running   0          44s    10.244.1.11   minikube-m02   <none>           <none>
-my-pods-high-85bcbc9ff7-9gjsr    1/1     Running   0          44s    10.244.1.12   minikube-m02   <none>           <none>
-my-pods-high-85bcbc9ff7-9s8lq    0/1     Pending   0          44s    <none>        <none>         <none>           <none>
-my-pods-high-85bcbc9ff7-hlwlx    1/1     Running   0          44s    10.244.1.13   minikube-m02   <none>           <none>
-my-pods-high-85bcbc9ff7-jnmp9    0/1     Pending   0          44s    <none>        <none>         <none>           <none>
-my-pods-high-85bcbc9ff7-n6x7h    1/1     Running   0          44s    10.244.1.14   minikube-m02   <none>           <none>
-my-pods-high-85bcbc9ff7-npsms    1/1     Running   0          44s    10.244.1.10   minikube-m02   <none>           <none>
-my-pods-high-85bcbc9ff7-tf4wf    0/1     Pending   0          44s    <none>        <none>         <none>           <none>
-my-pods-normal-bbdd897d8-2fd2p   0/1     Pending   0          44s    <none>        <none>         <none>           <none>
-my-pods-normal-bbdd897d8-88df5   0/1     Pending   0          44s    <none>        <none>         <none>           <none>
-my-pods-normal-bbdd897d8-bbm8q   0/1     Pending   0          43s    <none>        <none>         <none>           <none>
-my-pods-normal-bbdd897d8-bdqc9   0/1     Pending   0          102s   <none>        <none>         <none>           <none>
-my-pods-normal-bbdd897d8-bnt2b   0/1     Pending   0          44s    <none>        <none>         <none>           <none>
-my-pods-normal-bbdd897d8-kkfsz   0/1     Pending   0          44s    <none>        <none>         <none>           <none>
-my-pods-normal-bbdd897d8-mtfwj   0/1     Pending   0          102s   <none>        <none>         <none>           <none>
-my-pods-normal-bbdd897d8-nt6gl   0/1     Pending   0          102s   <none>        <none>         <none>           <none>
-my-pods-normal-bbdd897d8-sw88h   0/1     Pending   0          43s    <none>        <none>         <none>           <none>
-my-pods-normal-bbdd897d8-w4t85   0/1     Pending   0          43s    <none>        <none>         <none>           <none>
-
-
-
-
-既存で動作しているポッドを退かさない様にするには
-
-
-$ minikube start --nodes=2
-$ kubectl get nodes
-$ kubectl taint nodes minikube workload:NoSchedule
-$ kubectl apply -f priority-class-nonp.yaml 
-$ kubectl apply -f deployment.yaml 
-$ kubectl get pod -o wide
-NAME                             READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
-my-pods-normal-bbdd897d8-42tsp   1/1     Running   0          25s   10.244.1.8   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-7f79l   1/1     Running   0          25s   10.244.1.4   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-h6rjh   0/1     Pending   0          25s   <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-k9p79   0/1     Pending   0          25s   <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-pqnvf   1/1     Running   0          25s   10.244.1.2   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-pzs7p   1/1     Running   0          25s   10.244.1.7   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-qxflv   1/1     Running   0          25s   10.244.1.6   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-r6nqh   1/1     Running   0          25s   10.244.1.5   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-slj5x   0/1     Pending   0          25s   <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-vmwpq   1/1     Running   0          25s   10.244.1.3   minikube-m02   <none>           <none>
-
+ ### 高優先度のデプロイメントの適用
+ プライオリィクラス high-priority を設定してデプロイする。
+ その結果、優先度を指定しない低優先度のポッドは押しのけられ、Pending状態になり、高優先度のポッドに置き換わる。
+```
 $ kubectl apply -f deployment-hp.yaml 
+$ kubectl get po -o wide
+NAME                                     READY   STATUS    RESTARTS   AGE   IP           NODE
+my-pods-high-priority-5cd9c8ccb9-5s6kn   1/1     Running   0          35s   10.244.1.5   minikube-m02
+my-pods-high-priority-5cd9c8ccb9-fb4mv   1/1     Running   0          35s   10.244.1.6   minikube-m02
+my-pods-high-priority-5cd9c8ccb9-xb7kb   1/1     Running   0          35s   10.244.1.7   minikube-m02
+my-pods-normal-7f696b6b96-86zjs          0/1     Pending   0          35s   <none>       <none>
+my-pods-normal-7f696b6b96-gs8p6          0/1     Pending   0          35s   <none>       <none>
+my-pods-normal-7f696b6b96-w6rlk          0/1     Pending   0          35s   <none>       <none>
+```
+
+
+
+### 既存で動作しているポッドを退かさない様にするには
+
+```
+$ kubectl delete deploy my-pods-high-priority
+```
+
+`preemptionPolicy: Never` を追加したプライオリティ・クラスへ変更します。
+
+priority-class-nonp.yaml(抜粋)
+```
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: high-priority
+value: 1000000
+preemptionPolicy: Never  # 他のポッドを押し除けない
+```
+
+
+```
+$ kubectl delete -f priority-class-nonp.yaml
+$ kubectl apply -f priority-class-nonp.yaml 
+$ kubectl get PriorityClass high-priority
+NAME            VALUE     GLOBAL-DEFAULT   AGE
+high-priority   1000000   false            42s
+
+$ kubectl describe PriorityClass high-priority
+Name:              high-priority
+Value:             1000000
+GlobalDefault:     false
+PreemptionPolicy:  Never
+Description:       This priority class will not cause other pods to be preempted.
+Annotations:       kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"scheduling.k8s.io/v1","description":"This priority class will not cause other pods to be preempted.","globalDefault":false,"kind":"PriorityClass","metadata":{"annotations":{},"name":"high-priority"},"preemptionPolicy":"Never","value":1000000}
+<以下省略>
+```
+
+今度は、低優伝度のポッドが止められるのを抑止できました。
+```
+$ kubectl apply -f deployment-hp.yaml 
+$ kubectl get pod -o wide
+NAME                                     READY   STATUS    RESTARTS   AGE     IP            NODE
+my-pods-high-priority-5cd9c8ccb9-gwpfl   0/1     Pending   0          10s     <none>        <none>
+my-pods-high-priority-5cd9c8ccb9-qkfj5   0/1     Pending   0          10s     <none>        <none>
+my-pods-high-priority-5cd9c8ccb9-w5z99   0/1     Pending   0          10s     <none>        <none>
+my-pods-normal-7f696b6b96-86zjs          1/1     Running   0          9m32s   10.244.1.8    minikube-m02
+my-pods-normal-7f696b6b96-gs8p6          1/1     Running   0          9m32s   10.244.1.9    minikube-m02
+my-pods-normal-7f696b6b96-w6rlk          1/1     Running   0          9m32s   10.244.1.10   minikube-m02
+```
+
+低優先度のポッドを削除すると、高優先度のポッドが起動しました。
+```
+$ kubectl delete deploy my-pods-normal
+deployment.apps "my-pods-normal" deleted
 
 $ kubectl get pod -o wide
-NAME                             READY   STATUS    RESTARTS   AGE     IP           NODE           NOMINATED NODE   READINESS GATES
-my-pods-high-85bcbc9ff7-57r89    0/1     Pending   0          7m30s   <none>       <none>         <none>           <none>
-my-pods-high-85bcbc9ff7-62rvg    0/1     Pending   0          7m30s   <none>       <none>         <none>           <none>
-my-pods-high-85bcbc9ff7-7jn94    0/1     Pending   0          7m30s   <none>       <none>         <none>           <none>
-my-pods-high-85bcbc9ff7-cnfph    0/1     Pending   0          7m30s   <none>       <none>         <none>           <none>
-my-pods-high-85bcbc9ff7-dhzh2    0/1     Pending   0          7m30s   <none>       <none>         <none>           <none>
-my-pods-high-85bcbc9ff7-jbvxh    0/1     Pending   0          7m30s   <none>       <none>         <none>           <none>
-my-pods-high-85bcbc9ff7-m6pkb    0/1     Pending   0          7m30s   <none>       <none>         <none>           <none>
-my-pods-high-85bcbc9ff7-rlhs2    0/1     Pending   0          7m30s   <none>       <none>         <none>           <none>
-my-pods-high-85bcbc9ff7-s5vgd    0/1     Pending   0          7m30s   <none>       <none>         <none>           <none>
-my-pods-high-85bcbc9ff7-wcmnf    0/1     Pending   0          7m30s   <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-42tsp   1/1     Running   0          8m27s   10.244.1.8   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-7f79l   1/1     Running   0          8m27s   10.244.1.4   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-h6rjh   0/1     Pending   0          8m27s   <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-k9p79   0/1     Pending   0          8m27s   <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-pqnvf   1/1     Running   0          8m27s   10.244.1.2   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-pzs7p   1/1     Running   0          8m27s   10.244.1.7   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-qxflv   1/1     Running   0          8m27s   10.244.1.6   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-r6nqh   1/1     Running   0          8m27s   10.244.1.5   minikube-m02   <none>           <none>
-my-pods-normal-bbdd897d8-slj5x   0/1     Pending   0          8m27s   <none>       <none>         <none>           <none>
-my-pods-normal-bbdd897d8-vmwpq   1/1     Running   0          8m27s   10.244.1.3   minikube-m02   <none>           <none>
+NAME                                     READY   STATUS    RESTARTS   AGE   IP            NODE
+my-pods-high-priority-5cd9c8ccb9-gwpfl   1/1     Running   0          3m    10.244.1.13   minikube-m02
+my-pods-high-priority-5cd9c8ccb9-qkfj5   1/1     Running   0          3m    10.244.1.12   minikube-m02
+my-pods-high-priority-5cd9c8ccb9-w5z99   1/1     Running   0          3m    10.244.1.11   minikube-m02
+```
+
+## 参照資料
+- https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
+- https://kubernetes.io/docs/reference/kubectl/generated/kubectl_create/kubectl_create_priorityclass/
