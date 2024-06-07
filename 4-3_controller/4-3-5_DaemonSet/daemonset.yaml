@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: my-daemonset
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: my-daemonset
+  template:
+    metadata:
+      labels:
+        name: my-daemonset
+    spec:
+      containers:
+      - name: my-container1
+        image: ghcr.io/takara9/ex1:1.2

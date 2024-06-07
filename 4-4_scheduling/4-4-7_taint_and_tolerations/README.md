@@ -1,125 +1,107 @@
-https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+# テイント & トーラレーション
+テイントは、特定ノードへポッドを配置禁止にする。
+トーラレーションは、許可されたポッドだけが、ノードへ配置される。
 
+##　　準備
+```
+$ minikube start -n 3
+$ kubectl get no
+```
 
-## スケジュールしない
-
-$ minikube start -n 2
-s takara$ kubectl get no
-NAME           STATUS   ROLES           AGE   VERSION
-minikube       Ready    control-plane   31s   v1.28.3
-minikube-m02   Ready    <none>          11s   v1.28.3
-
-
+## テイント
+コントロールプレーンにポッドが配置されない様にテイントを付与する。
+デプロイメントを適用して、結果を確認する。
+```
 $ kubectl taint nodes minikube controller:NoSchedule
-$ kubectl apply -f deployment.yaml
+$ kubectl apply -f deployment-none-toler.yaml
 $ kubectl get po -o wide
-NAME                       READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
-my-pods-66974f9784-4mzlz   1/1     Running   0          37s   10.244.1.5   minikube-m02   <none>           <none>
-my-pods-66974f9784-8vtzt   1/1     Running   0          37s   10.244.1.4   minikube-m02   <none>           <none>
-my-pods-66974f9784-9mzd8   1/1     Running   0          37s   10.244.1.3   minikube-m02   <none>           <none>
-my-pods-66974f9784-hwqp5   1/1     Running   0          37s   10.244.1.6   minikube-m02   <none>           <none>
-my-pods-66974f9784-xkwx8   1/1     Running   0          37s   10.244.1.2   minikube-m02   <none>           <none>
+NAME                       READY   STATUS    RESTARTS   AGE   IP           NODE
+my-pods-76668bb48c-cqtdn   1/1     Running   0          27s   10.244.1.2   minikube-m02
+my-pods-76668bb48c-k7nj6   1/1     Running   0          27s   10.244.2.3   minikube-m03
+my-pods-76668bb48c-rlpph   1/1     Running   0          27s   10.244.2.2   minikube-m03
+my-pods-76668bb48c-vm7kj   1/1     Running   0          27s   10.244.1.3   minikube-m02
+my-pods-76668bb48c-wkcb6   1/1     Running   0          27s   10.244.2.4   minikube-m03
+```
 
-$ kubectl delete -f deployment.yaml
+### トーラレーション
+テイントが付与されたノードへ、ポッドを配置する
+deployment-toler.yaml の抜粋
+```
+      tolerations:
+        - key: "controller"
+          operator: "Exists"
+          effect: "NoSchedule"
+```
 
+前のデプロイメントを削除して、トーラレーション付きのデプロイメントを適用する。
+コントロールプレーンとしてテイントを付与されたノードにもポッドが配置された。
+```
+$ kubectl delete deploy my-pods
 $ kubectl apply -f deployment-toler.yaml
 $ kubectl get po -o wide
-NAME                       READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
-my-pods-7d457d6fb9-8gjn6   1/1     Running   0          20s   10.244.0.4   minikube       <none>           <none>
-my-pods-7d457d6fb9-h6dd4   1/1     Running   0          20s   10.244.0.3   minikube       <none>           <none>
-my-pods-7d457d6fb9-nnrmd   1/1     Running   0          20s   10.244.1.8   minikube-m02   <none>           <none>
-my-pods-7d457d6fb9-rcq7j   1/1     Running   0          20s   10.244.1.9   minikube-m02   <none>           <none>
-my-pods-7d457d6fb9-wgpnf   1/1     Running   0          20s   10.244.1.7   minikube-m02   <none>           <none>
+NAME                       READY   STATUS    RESTARTS   AGE   IP           NODE
+my-pods-5986fbd876-5xccc   1/1     Running   0          18s   10.244.0.4   minikube
+my-pods-5986fbd876-6rlxg   1/1     Running   0          18s   10.244.1.5   minikube-m02
+my-pods-5986fbd876-8vzv2   1/1     Running   0          18s   10.244.1.4   minikube-m02
+my-pods-5986fbd876-rmtwz   1/1     Running   0          18s   10.244.2.5   minikube-m03
+my-pods-5986fbd876-szpg7   1/1     Running   0          18s   10.244.2.6   minikube-m03
+```
 
 
-## 実行を禁止する
 
+｀｀｀｀｀｀｀｀｀｀　トーラレーションの無いポッドだけを追い出すとするのが、ドレインとの区別ができて良い
 
-$ kubectl get no
-NAME           STATUS   ROLES           AGE   VERSION
-minikube       Ready    control-plane   43s   v1.28.3
-minikube-m02   Ready    <none>          22s   v1.28.3
-minikube-m03   Ready    <none>          8s    v1.28.3
+## テイント
+特定ノードから実行中ポッドを退避させる
 
-$ kubectl taint nodes minikube controller:NoSchedule
-node/minikube tainted
-
-$ kubectl apply -f deployment.yaml
-
+```
+$ kubectl apply -f deployment-none-toler.yaml
 $ kubectl get pods -o wide
-NAME                       READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
-my-pods-66974f9784-8sl7j   1/1     Running   0          19s   10.244.1.2   minikube-m02   <none>           <none>
-my-pods-66974f9784-b2t4l   1/1     Running   0          19s   10.244.2.3   minikube-m03   <none>           <none>
-my-pods-66974f9784-ljzj7   1/1     Running   0          19s   10.244.1.3   minikube-m02   <none>           <none>
-my-pods-66974f9784-q8f8d   1/1     Running   0          19s   10.244.2.2   minikube-m03   <none>           <none>
-my-pods-66974f9784-vr4sq   1/1     Running   0          19s   10.244.1.4   minikube-m02   <none>           <none>
+NAME                       READY   STATUS    RESTARTS   AGE   IP           NODE
+my-pods-66974f9784-8sl7j   1/1     Running   0          19s   10.244.1.2   minikube-m02
+my-pods-66974f9784-b2t4l   1/1     Running   0          19s   10.244.2.3   minikube-m03
+my-pods-66974f9784-ljzj7   1/1     Running   0          19s   10.244.1.3   minikube-m02
+my-pods-66974f9784-q8f8d   1/1     Running   0          19s   10.244.2.2   minikube-m03
+my-pods-66974f9784-vr4sq   1/1     Running   0          19s   10.244.1.4   minikube-m02
+```
 
-ノード２から退避
-
+テイントを付与してノードから退避
+```
 $ kubectl taint nodes minikube-m02 workload:NoExecute
 $ kubectl get pods -o wide
-NAME                       READY   STATUS    RESTARTS   AGE     IP           NODE           NOMINATED NODE   READINESS GATES
-my-pods-66974f9784-b2t4l   1/1     Running   0          2m52s   10.244.2.3   minikube-m03   <none>           <none>
-my-pods-66974f9784-cczr8   1/1     Running   0          35s     10.244.2.7   minikube-m03   <none>           <none>
-my-pods-66974f9784-q8f8d   1/1     Running   0          2m52s   10.244.2.2   minikube-m03   <none>           <none>
-my-pods-66974f9784-vt65c   1/1     Running   0          35s     10.244.2.5   minikube-m03   <none>           <none>
-my-pods-66974f9784-wv2h7   1/1     Running   0          35s     10.244.2.6   minikube-m03   <none>           <none>
+NAME                       READY   STATUS    RESTARTS   AGE    IP            NODE
+my-pods-76668bb48c-4lwnb   1/1     Running   0          101s   10.244.2.9    minikube-m03
+my-pods-76668bb48c-bqf92   1/1     Running   0          101s   10.244.2.8    minikube-m03
+my-pods-76668bb48c-h2zlv   1/1     Running   0          101s   10.244.2.7    minikube-m03
+my-pods-76668bb48c-p7nxb   1/1     Running   0          42s    10.244.2.11   minikube-m03
+my-pods-76668bb48c-thwsd   1/1     Running   0          42s    10.244.2.10   minikube-m03
+```
 
+テイントの削除と再配置
+```
 $ kubectl taint nodes minikube-m02 workload:NoExecute-
-node/minikube-m02 untainted
+$ kubectl rollout restart deployment my-pods
+$ kubectl get pods -o wide
+NAME                       READY   STATUS    RESTARTS   AGE   IP            NODE
+my-pods-58675dff7d-44f6j   1/1     Running   0          75s   10.244.1.10   minikube-m02
+my-pods-58675dff7d-jg965   1/1     Running   0          76s   10.244.2.12   minikube-m03
+my-pods-58675dff7d-n7t7t   1/1     Running   0          76s   10.244.1.9    minikube-m02
+my-pods-58675dff7d-nk2qn   1/1     Running   0          75s   10.244.2.13   minikube-m03
+my-pods-58675dff7d-ntgnt   1/1     Running   0          76s   10.244.1.8    minikube-m02
+```
+
+tolerationSecondsで、テイントで追い出されるまでの猶予時間を設定できる。
+deployment-toler-2.yaml(抜粋)
+```
+      tolerations:
+        - key: "workload"
+          operator: "Equal"
+          value: "true"
+          effect: "NoExecute"
+          tolerationSeconds: 600
+```
 
 
+## 参考資料
+- https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
 
-minikube start --nodes=3
-$ kubectl get no
-NAME           STATUS   ROLES           AGE   VERSION
-minikube       Ready    control-plane   69s   v1.28.3
-minikube-m02   Ready    <none>          48s   v1.28.3
-minikube-m03   Ready    <none>          34s   v1.28.3
-kubectl taint nodes minikube controller:NoSchedule
-kubectl apply -f deployment-toler-2.yaml
-kubectl get pod -o wide
-NAME                       READY   STATUS    RESTARTS   AGE   IP            NODE           NOMINATED NODE   READINESS GATES
-my-pods-85d7965575-cr6c6   1/1     Running   0          16s   10.244.1.8    minikube-m02   <none>           <none>
-my-pods-85d7965575-fsqrn   1/1     Running   0          16s   10.244.2.10   minikube-m03   <none>           <none>
-my-pods-85d7965575-j8z47   1/1     Running   0          16s   10.244.1.7    minikube-m02   <none>           <none>
-my-pods-85d7965575-r62nw   1/1     Running   0          16s   10.244.2.9    minikube-m03   <none>           <none>
-my-pods-85d7965575-xtrk6   1/1     Running   0          16s   10.244.1.9    minikube-m02   <none>           <none>
-
-kubectl taint nodes minikube-m02 workload=true:NoExecute
-kubectl get pod -o wide
-
-$ kubectl get pod -o wide
-NAME                       READY   STATUS    RESTARTS   AGE   IP            NODE           NOMINATED NODE   READINESS GATES
-my-pods-85d7965575-cr6c6   1/1     Running   0          53s   10.244.1.8    minikube-m02   <none>           <none>
-my-pods-85d7965575-fsqrn   1/1     Running   0          53s   10.244.2.10   minikube-m03   <none>           <none>
-my-pods-85d7965575-j8z47   1/1     Running   0          53s   10.244.1.7    minikube-m02   <none>           <none>
-my-pods-85d7965575-r62nw   1/1     Running   0          53s   10.244.2.9    minikube-m03   <none>           <none>
-my-pods-85d7965575-xtrk6   1/1     Running   0          53s   10.244.1.9    minikube-m02   <none>           <none>
-
-
-$ while true; do kubectl get pod -o wide;sleep 60;done
-<中略>
-NAME                       READY   STATUS    RESTARTS   AGE     IP            NODE           NOMINATED NODE   READINESS GATES
-my-pods-85d7965575-cr6c6   1/1     Running   0          9m31s   10.244.1.8    minikube-m02   <none>           <none>
-my-pods-85d7965575-fsqrn   1/1     Running   0          9m31s   10.244.2.10   minikube-m03   <none>           <none>
-my-pods-85d7965575-j8z47   1/1     Running   0          9m31s   10.244.1.7    minikube-m02   <none>           <none>
-my-pods-85d7965575-r62nw   1/1     Running   0          9m31s   10.244.2.9    minikube-m03   <none>           <none>
-my-pods-85d7965575-xtrk6   1/1     Running   0          9m31s   10.244.1.9    minikube-m02   <none>           <none>
-NAME                       READY   STATUS    RESTARTS   AGE   IP            NODE           NOMINATED NODE   READINESS GATES
-my-pods-85d7965575-cr6c6   1/1     Running   0          10m   10.244.1.8    minikube-m02   <none>           <none>
-my-pods-85d7965575-fsqrn   1/1     Running   0          10m   10.244.2.10   minikube-m03   <none>           <none>
-my-pods-85d7965575-j8z47   1/1     Running   0          10m   10.244.1.7    minikube-m02   <none>           <none>
-my-pods-85d7965575-r62nw   1/1     Running   0          10m   10.244.2.9    minikube-m03   <none>           <none>
-my-pods-85d7965575-xtrk6   1/1     Running   0          10m   10.244.1.9    minikube-m02   <none>           <none>
-NAME                       READY   STATUS    RESTARTS   AGE   IP            NODE           NOMINATED NODE   READINESS GATES
-my-pods-85d7965575-f67dl   1/1     Running   0          47s   10.244.1.10   minikube-m02   <none>           <none>
-my-pods-85d7965575-fsqrn   1/1     Running   0          11m   10.244.2.10   minikube-m03   <none>           <none>
-my-pods-85d7965575-mkm7k   1/1     Running   0          47s   10.244.2.11   minikube-m03   <none>           <none>
-my-pods-85d7965575-r62nw   1/1     Running   0          11m   10.244.2.9    minikube-m03   <none>           <none>
-my-pods-85d7965575-zkpt6   1/1     Running   0          47s   10.244.1.11   minikube-m02   <none>           <none>
-
-
-
-
-kubectl taint nodes minikube-m02 app=true:NoSchedule-

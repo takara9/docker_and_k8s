@@ -28,6 +28,6 @@ spec:
               matchExpressions: # 選択条件
               - key: database   # ラベルのキー
                 operator: In    # 含む
-                values:
-                - exist         # ラベルの値
+                values:         # ラベルの値
+                - exist
             topologyKey: "kubernetes.io/hostname" # 同じホストに配置

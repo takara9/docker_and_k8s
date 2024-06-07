@@ -18,11 +18,11 @@ $ kubectl taint nodes minikube workload:NoSchedule
 ```
 $ kubectl apply -f priority-class.yaml 
 
-$ kubectl get PriorityClass high-priority
+$ kubectl get pc high-priority
 NAME            VALUE     GLOBAL-DEFAULT   AGE
 high-priority   1000000   false            14s
 
-$ kubectl describe PriorityClass high-priority
+$ kubectl describe pc high-priority
 Name:              high-priority
 Value:             1000000
 GlobalDefault:     false
@@ -83,11 +83,11 @@ preemptionPolicy: Never  # 他のポッドを押し除けない
 ```
 $ kubectl delete -f priority-class-nonp.yaml
 $ kubectl apply -f priority-class-nonp.yaml 
-$ kubectl get PriorityClass high-priority
+$ kubectl get pc high-priority
 NAME            VALUE     GLOBAL-DEFAULT   AGE
 high-priority   1000000   false            42s
 
-$ kubectl describe PriorityClass high-priority
+$ kubectl describe pc high-priority
 Name:              high-priority
 Value:             1000000
 GlobalDefault:     false

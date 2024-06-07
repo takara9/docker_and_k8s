@@ -3,17 +3,20 @@ kind: Deployment
 metadata:
   name: my-pods
 spec:
-  replicas: 5 
+  replicas: 1
   selector:
     matchLabels:
       app: my-pod
-  template: 
+  template:
     metadata:     
       labels:
         app: my-pod
     spec:
       securityContext:
-        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
       containers:
         - name: ubuntu
-          image: ghcr.io/takara9/ex1:1.0
+          image: ghcr.io/takara9/ex1:1.1
+  

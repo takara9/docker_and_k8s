@@ -1,3 +1,17 @@
+##　コンセプト 
+
+手っ取り早く Docker と Kubernetes　のスキルを身に付けたい人に向けた本
+
+本書で以下を、始めるための知識が身につきます。
+・コンテナ
+・Kubernetes
+・オブザバビリティ
+・CICD
+
+使用する教材は、ダウンロード可能な無料のソフトウェアです。
+Mac, Windows11 などのパソコンがあれば、自己研鑽を始められます。
+本書で、スキルを磨いて、なりたい自分へ近づきましょう。
+
 
 
 ## 簡単にメリットを訴える方法
@@ -214,3 +228,19 @@ mini:~ takara$ kubectl exec -it -n kube-system etcd-minikube -- sh -c "ETCDCTL_A
 /registry/pods/kube-system/kube-proxy-hc84z
 /registry/pods/kube-system/kube-scheduler-minikube
 /registry/pods/kube-system/storage-provisioner
+
+
+To run Docker as a non-privileged user, consider setting up the
+Docker daemon in rootless mode for your user:
+
+    dockerd-rootless-setuptool.sh install
+
+Visit https://docs.docker.com/go/rootless/ to learn about rootless mode.
+
+
+To run the Docker daemon as a fully privileged service, but granting non-root
+users access, refer to https://docs.docker.com/go/daemon-access/
+
+WARNING: Access to the remote API on a privileged Docker daemon is equivalent
+         to root access on the host. Refer to the 'Docker daemon attack surface'
+         documentation for details: https://docs.docker.com/go/attack-surface/
