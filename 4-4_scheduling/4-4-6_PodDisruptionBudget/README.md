@@ -68,6 +68,11 @@ $ kubectl get pods -o=jsonpath='{.items[].spec.containers[].image}';echo
 ghcr.io/takara9/ex1:1.1
 ```
 
+## クリーンナップ
+```
+minikube delete
+```
+
 
 ## 参考資料
 - https://kubernetes.io/docs/tasks/run-application/configure-pdb/

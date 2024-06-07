@@ -1,19 +1,15 @@
 # リソースクオータとリミットレンジ
-
 ネームスペースのCPUとメモリの要求と制限を設定する。
-
 - リソースクオータ: ResourceQuotashは、ネームスペースのCPUとメモリの消費量を決定します。
 - リミットレンジ: リソースのデフォルトの要求/制限を設定し、実行時にそれらをコンテナーに自動的に挿入します。
 
-準備作業
+## 準備
 ```
-$ minikube delete
 $ minikube start
 ```
 
 
 ## リソースクオータ
-
 リソースクォータがネームスペースに設定されていると、リソースが設定されていないとデプロイできない。
 ```
 $ kubectl apply -f resourceQuota.yaml 
@@ -28,7 +24,6 @@ Error from server (Forbidden): error when creating "pod.yaml": pods "my-pod" is 
 
 ## リミットレンジを設定することで、設定が自動的に埋め込まれ、デプロイできる様になる。
 ネームスペースに、デフォルトのリソースを設定する。
-
 ```
 $ kubectl apply -f limitRange.yaml 
 $ kubectl get limits
@@ -37,7 +32,6 @@ mem-min-max   2024-06-02T01:57:29Z
 ```
 
 リミットレンジで設定したリソースの値が、ポッドに挿入されるので、デプロイできる。
-
 ```
  kubectl apply -f pod.yaml 
 $ kubectl get pod
@@ -58,8 +52,13 @@ $ kubectl get pod my-pod -o jsonpath='{.spec.containers[].resources}' |jq -r .
 ```
 
 
+## クリーンナップ
+```
+minikube delete
+```
+
+
 ## 参照資料
 - https://kubernetes.io/docs/concepts/policy/resource-quotas/
 - https://kubernetes.io/docs/concepts/policy/limit-range/
-
 

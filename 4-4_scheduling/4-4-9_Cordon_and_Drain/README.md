@@ -1,13 +1,15 @@
 # コードンとドレイン
+コードンは、ノードへのポッドのスケジュールを禁止します。
+ドレインは、ノードへのスケジュールを禁止して、ポッドを退避させます。
 
-準備作業
+
+## 準備
 ```
 $ minikube delete
 $ minikube start --nodes=3
 $ kubectl taint nodes minikube workload:NoSchedule
 ```
-
-ポッドの配置
+ポッドの配置しておく
 ```
 $ kubectl apply -f deployment.yaml 
 $ kubectl get po -o wide
@@ -18,6 +20,9 @@ my-pods-normal-5b5569d958-kvq95   1/1     Running   25s   10.244.1.4   minikube-
 my-pods-normal-5b5569d958-qv26x   1/1     Running   25s   10.244.1.2   minikube-m02
 my-pods-normal-5b5569d958-xwn5k   1/1     Running   25s   10.244.1.3   minikube-m02
 ```
+
+
+## 実行例
 
 ノード2からポッドを退避する
 ```
@@ -72,7 +77,6 @@ my-pods-normal-5b5569d958-xbr77   1/1     Running   3m12s   10.244.2.5   minikub
 ```
 
 偏ったポッドの配置を、均一に配置し直す
-
 ```
 $ kubectl rollout restart deployment my-pods-normal
 deployment.apps/my-pods-normal restarted
@@ -84,4 +88,14 @@ my-pods-normal-848f45587b-h7xvk   1/1     Running   40s   10.244.2.7   minikube-
 my-pods-normal-848f45587b-hk8dn   1/1     Running   40s   10.244.1.6   minikube-m02
 my-pods-normal-848f45587b-psd8x   1/1     Running   40s   10.244.1.5   minikube-m02
 ```
+
+## クリーンナップ
+```
+minikube delete
+```
+
+
+## 参照資料
+- https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/
+- https://kubernetes.io/docs/reference/kubectl/generated/kubectl_cordon/
 

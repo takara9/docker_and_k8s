@@ -5,8 +5,7 @@
 管理者は ResourceQuota を使用して、ユーザーが高優先度でポッドを作成できないようにすることができます。
 
 
-
-環境のセットアップ
+## 準備
 ```
 $ minikube start -n 2
 $ minikube addons enable metrics-server
@@ -14,7 +13,7 @@ $ kubectl get no
 $ kubectl taint nodes minikube workload:NoSchedule
 ```
 
-### プライオリティクラスの設定
+## プライオリティクラスの設定
 ```
 $ kubectl apply -f priority-class.yaml 
 
@@ -33,7 +32,7 @@ Annotations:       kubectl.kubernetes.io/last-applied-configuration={"apiVersion
 Events:  <none>
 ```
 
-### プライオリティクラスなしのデプロイメントの適用
+## プライオリティクラスなしのデプロイメントの適用
 minikubeのリソース一杯のCPU要求数でデプロイする。これ以上レプリカ数を増やしても、リソースが確保されず Pending となる。
 ```
 $ kubectl apply -f deployment-normal.yaml
@@ -44,7 +43,7 @@ my-pods-normal-7f696b6b96-cp4bj   1/1     Running   0          19s   10.244.1.4 
 my-pods-normal-7f696b6b96-qrncv   1/1     Running   0          19s   10.244.1.3   minikube-m02
 ```
 
- ### 高優先度のデプロイメントの適用
+## 高優先度のデプロイメントの適用
  プライオリィクラス high-priority を設定してデプロイする。
  その結果、優先度を指定しない低優先度のポッドは押しのけられ、Pending状態になり、高優先度のポッドに置き換わる。
 ```
@@ -60,14 +59,7 @@ my-pods-normal-7f696b6b96-w6rlk          0/1     Pending   0          35s   <non
 ```
 
 
-
-### 既存で動作しているポッドを退かさない様にするには
-
-```
-$ kubectl delete deploy my-pods-high-priority
-```
-
-`preemptionPolicy: Never` を追加したプライオリティ・クラスへ変更します。
+## 既存で動作しているポッドを退かさない様にするには
 
 priority-class-nonp.yaml(抜粋)
 ```
@@ -76,12 +68,12 @@ kind: PriorityClass
 metadata:
   name: high-priority
 value: 1000000
-preemptionPolicy: Never  # 他のポッドを押し除けない
+preemptionPolicy: Never  # これを追加する。他のポッドを押し除けない
 ```
 
-
+既存の高優先度のクラスを削除して、上記設定を追加した高優先度クラスを適用する
 ```
-$ kubectl delete -f priority-class-nonp.yaml
+$ kubectl delete -f priority-class.yaml
 $ kubectl apply -f priority-class-nonp.yaml 
 $ kubectl get pc high-priority
 NAME            VALUE     GLOBAL-DEFAULT   AGE
@@ -97,7 +89,7 @@ Annotations:       kubectl.kubernetes.io/last-applied-configuration={"apiVersion
 <以下省略>
 ```
 
-今度は、低優伝度のポッドが止められるのを抑止できました。
+「`preemptionPolicy: Never`」によって低優伝度のポッドが止められるのを抑止できた。
 ```
 $ kubectl apply -f deployment-hp.yaml 
 $ kubectl get pod -o wide
@@ -121,6 +113,13 @@ my-pods-high-priority-5cd9c8ccb9-gwpfl   1/1     Running   0          3m    10.2
 my-pods-high-priority-5cd9c8ccb9-qkfj5   1/1     Running   0          3m    10.244.1.12   minikube-m02
 my-pods-high-priority-5cd9c8ccb9-w5z99   1/1     Running   0          3m    10.244.1.11   minikube-m02
 ```
+
+
+## クリーンナップ
+```
+minikube delete
+```
+
 
 ## 参照資料
 - https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
