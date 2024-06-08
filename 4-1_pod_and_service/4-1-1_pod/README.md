@@ -1,14 +1,22 @@
-## ポッドの実行開始と起動確認
+# ポッドの実行開始と起動確認
+Kubernetesでのコンテナの実行単位であるポッドをKubernetes上で起動します。
 
-実行例 4.1.1-1 ポッドの実行開始
 
+## 準備
+最小構成のKubernetesクラスタを起動します。
+```
+$ minikube start
+```
+
+
+## 実行例
+ポッドの実行開始
 ```
 $ kubectl apply -f pod.yaml 
 pod/my-pod created
 ```
 
-実行例 4.1.1 2 ポッド起動の確認
-
+ポッド起動の確認
 ```
 $ kubectl get pod
 NAME     READY   STATUS              RESTARTS   AGE
@@ -19,8 +27,7 @@ NAME     READY   STATUS    RESTARTS   AGE
 my-pod   1/1     Running   0          56s
 ```
 
-実行例 4.1.1-3 minikube K8sクラスタのポッド
-
+K8sクラスタのネームスペース kube-system で起動しているポッド
 ```
 $ kubectl get pod -n kube-system
 NAME                               READY   STATUS    RESTARTS        AGE
@@ -33,12 +40,7 @@ kube-scheduler-minikube            1/1     Running   0               4m30s
 storage-provisioner                1/1     Running   1 (3m47s ago)   4m30s
 ```
 
-Kubernetesチートシート
-https://kubernetes.io/docs/reference/kubectl/quick-reference/
-
-
-実行例 4.1.1-4 minikube K8sクラスタで実行する全ポッドのリスト
-
+K8sクラスタで実行する全ポッドのリスト
 ```
 $ kubectl get po -A
 NAMESPACE     NAME                               READY   STATUS    RESTARTS        AGE
@@ -52,8 +54,7 @@ kube-system   kube-scheduler-minikube            1/1     Running   0            
 kube-system   storage-provisioner                1/1     Running   1 (7m29s ago)   8m12s
 ```
 
-実行例 4.1.1 5 コントロールプレーンのetcdからPodのリストを表示
-
+コントロールプレーンのetcdからPodのリストを表示
 ```
 $ kubectl exec -it -n kube-system etcd-minikube -- sh -c "ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cert /var/lib/minikube/certs/etcd/server.crt --key /var/lib/minikube/certs/etcd/server.key --cacert /var/lib/minikube/certs/etcd/ca.crt get / --prefix --keys-only" | awk 'length($0)>1'|grep pods
 /registry/pods/default/my-pod
@@ -65,3 +66,15 @@ $ kubectl exec -it -n kube-system etcd-minikube -- sh -c "ETCDCTL_API=3 etcdctl 
 /registry/pods/kube-system/kube-scheduler-minikube
 /registry/pods/kube-system/storage-provisioner
 ```
+
+
+## クリーンナップ
+```
+minikube delete
+```
+
+
+## 参考資料
+- https://kubernetes.io/docs/concepts/workloads/pods/
+- https://kubernetes.io/docs/reference/kubectl/quick-reference/
+

@@ -1,8 +1,19 @@
 ## 4.1.3. コンテナの起動と停止のインタフェース
+ポッドでコンテナを起動と終了処理に必要な以下３点について学ぶ
+  - 引数
+  - 環境変数
+  - シグナル処理
 
 
+## 準備
+最小構成のKubernetesクラスタを起動する
+```
+minikube start
+```
 
-実行例 4.1.3-1 コマンドライン引数を指定したポッドの実行結果
+
+## 実行例
+コマンドライン引数を指定したポッドの実行結果
 ```
 $ kubectl create -f pod-cmd-args.yaml  (1) ポッドの起動
 pod/pod-cmd-args created
@@ -17,8 +28,7 @@ tcp://10.96.0.1:443
 ```
 
 
-
-実行例 4.1.3-2　ポッドのデプロイとコマンド実行結果
+ポッドのデプロイとコマンド実行結果
 ```
 $ kubectl apply -f pod-env.yaml   (1) ポッドのデプロイ（起動）
 pod/pod-env created
@@ -33,7 +43,7 @@ Hello from the environment
 ```
 
 
-実行例 4.1.3-3　ポッドのデプロイと環境変数の確認
+ポッドのデプロイと環境変数の確認
 ```
 $ kubectl apply -f pod-cm.yaml # (1) YAMLをデプロイ
 configmap/my-config created
@@ -57,7 +67,7 @@ very
 ```
 
 
-実行例 ポッドのデプロイと環境変数の確認
+ポッドのデプロイと環境変数の確認
 ```
 kubectl apply -f pod-secret.yaml
 kubectl get secret my-secret
@@ -68,8 +78,7 @@ nobody@my-pod-secret:/app$ echo $MY_PASSWORD
 ```
 
 
-
-実行例 4.1.3-4 ポッド内のログ表示
+ポッド内のログ表示
 ```
 $ kubectl apply -f pod-hook.yaml   # (1) ポッドをデプロイ
 pod/my-pod-hook created
@@ -90,7 +99,7 @@ $
 ```
 
 
-実行例 ghcr.io/takara9/ex1:1.4のビルドとリポジトリへの登録
+ghcr.io/takara9/ex1:1.4のビルドとリポジトリへの登録
 ```
 ls Dockerfile app.py app.log 
 docker build -t ex1:1.4 .
@@ -100,3 +109,16 @@ echo $CR_PAT | docker login ghcr.io -u $USERNAME --password-stdin
 docker tag ex1:1.4 ghcr.io/takara9/ex1:1.4
 docker push ghcr.io/takara9/ex1:1.4
 ```
+
+
+## クリーンナップ
+```
+minikube delete
+```
+
+
+## 参考リンク
+- https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/
+- https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
+- https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
+- https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination

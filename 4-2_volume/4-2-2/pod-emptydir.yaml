@@ -6,8 +6,8 @@ spec: # ポッドのスペック
   containers: # コンテナセクション
    - name: my-container-1
      image: ghcr.io/takara9/ex1:1.0
-     command: ["sleep"]   # コンテナ実行時のコマンド
-     args: ["120"]        # コマンドライン引数
+     #command: ["sleep"]   # コンテナ実行時のコマンド
+     #args: ["120"]        # コマンドライン引数
      volumeMounts: # ボリュームマウント
       - mountPath: /cache  # ファイルシステムのツリーの位置を指定してマウントする
         name: cache-volume # ボリュームセクションで宣言したボリューム名

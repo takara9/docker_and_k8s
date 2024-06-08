@@ -1,6 +1,18 @@
-## 4.1.7.サービスの役割
+# サービスの役割
+サービスは、ポッドにリクエストを届けるためのオブジェクトです。ポッドは揮発性の性質を補うものとして、IPアドレスの永続化やDNSへの登録を担う役目もあります。
 
-実行例 4.1.7-1 サービスのIPアドレス
+
+## 準備
+
+```
+$ minikube start --nodes=3
+$ minikube status
+$ kubectl get no
+```
+
+## 実行例
+
+サービスのIPアドレス
 ```
 $ kubectl run my-pod --image=ghcr.io/takara9/ex1:1.0
 pod/my-pod created
@@ -11,7 +23,7 @@ NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
 my-service   ClusterIP   10.100.2.115   <none>        9100/TCP   9s
 ```
 
-実行例 4.1.7-2 別ポッドからサービスの存在を環境変数で知る
+別ポッドからサービスの存在を環境変数で知る
 ```
 $ kubectl run -it mypod2 --image=ghcr.io/takara9/my-ubuntu:0.2 -- bash
 If you don't see a command prompt, try pressing enter.
@@ -25,15 +37,13 @@ MY_SERVICE_SERVICE_PORT=9100
 MY_SERVICE_PORT_9100_TCP_PORT=9100
 ```
 
-
-実行例 4.1.7-3 別ポッドからサービスのIPアドレスをDNSで知る方法
+別ポッドからサービスのIPアドレスをDNSで知る方法
 ```
 root@mypod2:/# dig my-service.default.svc.cluster.local +short
 10.100.2.115
 ```
 
-
-実行例 4.1.7-4　ヘッドレスのサービスのデプロイ
+ヘッドレスのサービスのデプロイ
 ```
 ## 最初にポッドをデプロイしておくため、前述のClusteIPタイプのマニフェストを適用します
 $ kubectl apply -f service-clusterip.yaml 
@@ -63,8 +73,7 @@ Forwarding from [::1]:9100 -> 9100
 Handling connection for 9100
 ```
 
-
-実行例 4.1.7-5　ヘッドレスのサービスの動作確認
+ヘッドレスのサービスの動作確認
 ```
 ## 対話型でポッドを起動
 $ kubectl run -it mypod --image=ghcr.io/takara9/my-ubuntu:0.2 -- bash
@@ -93,3 +102,12 @@ PONG!root@mypod:/# curl ex1-hl:9100/ping;echo
 PONG!
 ```
 
+
+## クリーンナップ
+```
+$ minikube delete
+```
+
+
+## 参考資料
+- https://kubernetes.io/docs/concepts/services-networking/service/

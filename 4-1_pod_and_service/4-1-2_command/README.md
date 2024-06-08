@@ -1,7 +1,15 @@
+# コマンドでポッドを起動
+Kubernetesでのコンテナの実行単位であるポッドをKubernetes上で起動します。
 
-## 4.1.2.1.	コマンドでポッドを起動
 
-実行例 4.1.2-1 ポッドの実行例
+## 準備
+最小構成のKubernetesクラスタを起動します。
+```
+$ minikube start
+```
+
+## 実行例
+コマンドによるポッドの起動例
 ```
 $ kubectl run myserver --image=ghcr.io/takara9/ex3:1.0
 pod/myserver created
@@ -11,8 +19,7 @@ NAME       READY   STATUS    RESTARTS   AGE
 myserver   1/1     Running   0          15s
 ```
 
-
-実行例 4.1.2-2 ポッドの起動と対話形シェルの実行
+ポッドで対話形シェルを実行
 ```
 $ kubectl run -it my-ubuntu --image=ubuntu -- bash
 If you don't see a command prompt, try pressing enter.
@@ -33,8 +40,7 @@ Session ended, resume using 'kubectl attach my-ubuntu -c my-ubuntu -i -t' comman
 $ 
 ```
 
-
-実行例 4.1.2-3 ポートフォワードとパソコンからポッドへのアクセス
+パソコンからポッドのポートへのアクセス
 ```
 $ kubectl port-forward myserver 3000:3000 &
 [1] 20200
@@ -46,10 +52,7 @@ Handling connection for 3000
 pong
 ```
 
-
-## 4.1.2.2.ポッドのAPI起動と状態取得
-
-実行例 4.1.2-4 ポッドの実行開始と起動の確認
+ポッドの実行開始と起動の確認
 ```
 $ kubectl apply -f pod.yaml
 pod/my-pod created
@@ -58,7 +61,7 @@ NAME     READY   STATUS    RESTARTS   AGE
 my-pod   1/1     Running   0          13s
 ```
 
-実行例 4.1.2-5 ポッドの詳細表示
+ポッドの詳細表示
 ```
 $ kubectl describe pod my-pod
 Name:             my-pod           (1) ポッドの基本情報
@@ -112,11 +115,10 @@ Events:                             (8) ポッドのイベント
   Normal  Pulled     51s   kubelet            Successfully pulled image "ghcr.io/takara9/ex3:1.0" in 6.232s (6.232s including waiting)
   Normal  Created    51s   kubelet            Created container container-1
   Normal  Started    51s   kubelet            Started container container-1
-  ```
+```
 
 
-
-実行例 4.1.2-6 実行中ポッドのAPI表示
+実行中ポッドのAPI表示
 ```
 $ kubectl get pod my-pod -o yaml
 apiVersion: v1
@@ -221,7 +223,7 @@ status:　　　　　　　　　　　　　　　　　　　　　　　　(
 ```
 
 
-4.1.2-7 コントローラーによるポッドの起動と確認
+コントローラーによるポッドの起動と確認
 ```
 $ kubectl apply -f deployment.yaml 
 deployment.apps/ex1-deploy created
@@ -236,4 +238,15 @@ ex1-deploy-86cfd74b9d-b8qds   1/1     Running   0          3m19s   10.244.0.4   
 ex1-deploy-86cfd74b9d-hq4g4   1/1     Running   0          3m19s   10.244.0.5   minikube
 ex1-deploy-86cfd74b9d-n7z97   1/1     Running   0          3m19s   10.244.0.3   minikube
 ```
+
+
+## クリーンナップ
+```
+minikube delete
+```
+
+
+## 参考資料
+- https://kubernetes.io/docs/concepts/workloads/pods/
+- https://kubernetes.io/docs/reference/kubectl/quick-reference/
 

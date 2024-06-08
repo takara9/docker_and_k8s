@@ -1,4 +1,12 @@
-# ポッドセキュリティ
+# ポッド・セキュリティ
+ポッド・セキュリティ・コンテキストは、コンテナ実行時のユーザーID,グループIDを強制的に変更して、アクセス権限を変更します。
+ポッド・セキュリティ・アドミッションは、ポッド・セキュリティ標準に準拠に従う様に、警告発生や実行拒否をします
+
+
+## 準備
+```
+$ minikube start
+```
 
 ## ポッドセキュリティコンテキスト
 コンテナの実行時のユーザーIDなどを強制する。また、ルート権限の実行を禁止する。
@@ -50,7 +58,6 @@ nobody@my-pod2:/$ ls -la /mnt/test
 
 
 ## ポッドセキュリティアドミッション
-
 ポッドセキュリティスタンダードに準拠する。
 このルール違反した場合、エラー発生、ポッドの実行を拒否するなど選択できる。
 
@@ -67,6 +74,12 @@ Error from server (Forbidden): error when creating "pod-fail-case.yaml": pods "h
 ```
 $ kubectl apply -f pod-fail-case.yaml 
 pod/hostpathvolumes1 created
+```
+
+
+# クリーンナップ
+```
+minikube delete
 ```
 
 

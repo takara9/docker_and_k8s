@@ -1,8 +1,18 @@
-## 4.1.5.複数のコンテナを内包するポッド
+# 複数のコンテナを内包するポッド
+ポッドの中に、複数のコンテナを含むケースについて見ていきます。
 
-実行例 4.1.5-1 複数のコンテナを内包するポッドの実行と起動
+
+## 準備
+最小構成のKubernetesクラスタを起動します。
 ```
-kubectl apply -f pod-multi-container.yaml 
+$ minikube start
+```
+
+
+## 実行例
+複数のコンテナを内包するポッドの実行と起動
+```
+$ kubectl apply -f pod-multi-container.yaml 
 pod/my-pod-mc created
 
 $ kubectl get pod my-pod-mc -o wide
@@ -10,8 +20,7 @@ NAME       READY   STATUS    RESTARTS   AGE   IP           NODE
 my-pod-mc  2/2     Running   0          28m   10.244.0.8   minikube
 ```
 
-
-実行例 4.1.5-2 ポッドで実行するコンテナの表示
+ポッドで実行するコンテナの表示
 ```
 $ kubectl get pod my-pod-mc -o jsonpath='{.spec.containers}' |jq -r '.[]| [.name, .image]'
 [
@@ -24,8 +33,7 @@ $ kubectl get pod my-pod-mc -o jsonpath='{.spec.containers}' |jq -r '.[]| [.name
 ]
 ```
 
-
-実行例 4.1.5-3 ボリュームを共有するコンテナを内包するポッドの起動と確認
+ボリュームを共有するコンテナを内包するポッドの起動と確認
 ```
 $ kubectl apply -f pod-vol-share.yaml 
 pod/my-pod-vol-share created
@@ -111,7 +119,7 @@ Events:
 
 
 
-実行例 4.1.5-4 コンテナ１から共有ボリュームへの書き込み
+コンテナ１から共有ボリュームへの書き込み
 ```
 $ kubectl exec -it my-pod-vol-share -c my-container-1 -- bash
 nobody@my-pod-vol-share:/app$ ps -ax > /cache/test.dat
@@ -124,7 +132,7 @@ nobody@my-pod-vol-share:/app$ exit
 exit
 ```
 
-実行例 4.1.5-5 ポッドの実行開始と起動の確認
+ポッドの実行開始と起動の確認
 ```
 $ kubectl exec -it my-pod-vol-share -c my-container-2 -- bash
 node@my-pod-vol-share:/app$ cat /cache/test.dat 
@@ -137,7 +145,7 @@ bash: ps: command not found
 ```
 
 
-実行例 4.1.5-6 初期化専用コンテナの実行例
+初期化専用コンテナの実行例
 ```
 $ kubectl apply -f init-container.yaml 
 pod/myapp-pod created
@@ -153,3 +161,16 @@ myapp-pod   1/1     Running   0          32s　　← メインコンテナが�
 $ kubectl logs -c myapp myapp-pod
 initialize data
 ```
+
+
+# クリーンナップ
+```
+minikube delete
+```
+
+
+## 参考資料
+- https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+- https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
+- https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/
+

@@ -1,6 +1,15 @@
-## 4.1.4. ポッドとコンテナの状態管理
+# ポッドとコンテナの状態管理
+ポッドのライフサイクルの状態を表示します。
 
-実行例 4.1.4-1 ポッドのフェーズ表示
+## 準備
+最小構成のKubernetesクラスタを起動します。
+```
+$ minikube start
+```
+
+
+## 実行例
+ポッドのフェーズ表示
 ```
 $ kubectl run my-pod --image=ubuntu --restart=Never
 pod/my-pod created
@@ -8,8 +17,7 @@ $ kubectl get pod my-pod -o jsonpath='{.status.phase}';echo
 Succeeded
 ```
 
-
-実行例 4.1.4-2 ポッド上のコンテナのステータス表示
+ポッド上のコンテナのステータス表示
 ```
 $ kubectl get pod my-pod -o jsonpath='{.status.containerStatuses[]}'| jq -r .
 {
@@ -33,8 +41,7 @@ $ kubectl get pod my-pod -o jsonpath='{.status.containerStatuses[]}'| jq -r .
 }
 ```
 
-
-実行例 4.1.4-3　ポッドのデプロイとログの表示
+ポッドのデプロイとログの表示
 ```
 $ kubectl run nginx1 --image=nginx:latest
 pod/nginx1 created
@@ -68,3 +75,13 @@ $ kubectl logs nginx1
 2024/03/31 00:16:42 [notice] 1#1: start worker process 36
 ```
 
+
+## クリーンナップ
+```
+minikube delete
+```
+
+
+## 参考リンク
+- https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/
+- https://kubernetes.io/docs/concepts/cluster-administration/logging/

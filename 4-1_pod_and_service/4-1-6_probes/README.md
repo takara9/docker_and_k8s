@@ -1,13 +1,22 @@
-## 4.1.6.コンテナプローブ
+# コンテナプローブ
+ポッド内のコンテナの活動状態を調べる３つの方法を見ていきます。
 
-実行例 4.1.6-1　ライブネスプローブを使用するポッドのデプロイ
+
+## 準備
+最小構成のKubernetesクラスタを起動します。
+```
+$ minikube start
+```
+
+
+## 実行例
+ライブネスプローブを使用するポッドのデプロイ
 ```
 $ kubectl apply -f pod-liveness-probe.yaml
 pod/liveness-probe created
 ```
 
-
-実行例 4.1.6-2　コンテナの起動から再スタートのイベント（編集済み）
+コンテナの起動から再スタートのイベント（編集済み）
 ```
 $ kubectl describe pod liveness-probe
 Name:             liveness-probe
@@ -71,7 +80,7 @@ Events:
   ```
 
 
-実行例 4.1.6-3　レディネスプローブを使用するポッドのデプロイ
+レディネスプローブを使用するポッドのデプロイ
 ```
 $ kubectl apply -f pod-readiness-probe.yaml
 pod/readiness-probe created
@@ -82,5 +91,15 @@ readiness-probe   0/1     ContainerCreating   0          0s
 readiness-probe   0/1     Running             0          4s
 readiness-probe   1/1     Running             0          21s
 ```  
+
+
+# クリーンナップ
+```
+minikube delete
+```
+
+
+## 参考資料
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 
 

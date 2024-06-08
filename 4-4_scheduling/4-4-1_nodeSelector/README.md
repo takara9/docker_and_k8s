@@ -57,6 +57,11 @@ my-pods-744c85b57-j9pvm   1/1     Running   84s    10.244.2.5   minikube-m03
 my-pods-744c85b57-kxvts   1/1     Running   85s    10.244.2.4   minikube-m03
 ```
 
+## クリーンナップ
+```
+$ minikube delete
+```
+
 
 ## 参考資料
 - https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/
