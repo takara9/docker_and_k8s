@@ -4,7 +4,7 @@
 
 ## 準備
 最小構成のKubernetesクラスタを起動して、デフォルトのストレージクラスを無効化します。そして、`csi-hostpath-driver`を有効化します。
-これで永続ストレージのダイナミックプロビジョニングを利用できます。
+これで永続ボリュームのダイナミックプロビジョニングを利用できます。
 ```
 $ minikube start
 $ minikube addons disable storage-provisioner
