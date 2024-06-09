@@ -13,9 +13,9 @@ spec:          # (1)コントローラーのスペック
         app: my-pod
     spec:              # (6)ポッドのスペック
       securityContext: # (7)実行時のユーザーとグループ（任意)
-        runAsUser: 65534
-        runAsGroup: 65534
-        fsGroup: 65534
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
       - name: ex1-pod
         image: ghcr.io/takara9/ex1:1.5
