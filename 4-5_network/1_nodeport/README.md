@@ -12,7 +12,7 @@ NAME     TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
 mypods   NodePort   10.104.42.127   <none>        9100:32429/TCP   8s
 ```
 
-Intelプロセッサーを使用する MacBook Proでは、以下のとおり、ノードポートへトンネルすることができました。
+Intelプロセッサーを使用する MacBook Pro, Ubuntu 22.04 Linux では、以下のとおり、ノードポートへトンネルすることができました。
 ```
 $  minikube service mypods --url
 http://192.168.101.2:32429
