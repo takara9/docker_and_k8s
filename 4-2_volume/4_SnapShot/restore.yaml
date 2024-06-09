@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-vol-snapshot  # リストアの永続ボリューム名
+spec:
+  storageClassName: csi-hostpath-sc
+  dataSource:
+    name: my-snapshot    # スナップショットの名前
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

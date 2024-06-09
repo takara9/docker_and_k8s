@@ -1,0 +1,15 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: pod-emptydir
+spec:                # ポッドのスペック
+  containers:          # コンテナセクション
+   - name: my-container-1
+     image: ghcr.io/takara9/ex1:1.0
+     volumeMounts:     # ボリュームマウント
+      - mountPath: /cache  # ファイルシステムのツリーの位置を指定してマウントする
+        name: cache-volume # ボリュームセクションで宣言したボリューム名
+  volumes:             # ボリュームセクション
+  - name: cache-volume     # ボリューム名、複数設定でき、マウント時に名前の指定が必要
+    emptyDir:              # このキーでemptyDirの使用が決まる。以下はAPIに実装されたパラメータ
+      sizeLimit: 500Mi 

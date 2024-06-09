@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-cm-vol
+spec:
+  containers:
+    - name: ex1-container
+      image: ghcr.io/takara9/ex1:1.0        # 3-5-1で作ったコンテナイメージ
+      command: ["tail", "-f", "/dev/null"]  # コンテナを待機状態にする
+      volumeMounts:
+      - name: cm-vol       # ボリュームを指定、/confへマウント
+        mountPath: /conf
+  volumes:
+    - name: cm-vol
+      configMap:           # コンフィグマップをボリュームとして利用
+        name: app-conf

@@ -1,0 +1,8 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: my-snapshot # スナップショットのオブジェクト名
+spec:
+  volumeSnapshotClassName: csi-hostpath-snapclass
+  source:
+    persistentVolumeClaimName: my-vol  # 元の永続ボリューム名を指定
