@@ -1,5 +1,6 @@
 # ノードポート
 
+
 ## 準備
 注意点として、Apple M2 mac, Windows 11 の場合、利用できないことがある様です。
 
@@ -76,7 +77,9 @@ W0609 14:06:34.730347    2580 main.go:291] Unable to resolve the current Docker 
 minikube delete
 ```
 
+
 ## 参照資料
 - https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
 - https://minikube.sigs.k8s.io/docs/handbook/accessing/
+- https://minikube.sigs.k8s.io/docs/commands/service/
 
