@@ -15,6 +15,7 @@ NAME     TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
 mypods   NodePort   10.104.42.127   <none>        9100:32429/TCP   8s
 ```
 
+## 実行例
 ノードポートへ minikube service を介して接続する。
 ```
 $ minikube version
