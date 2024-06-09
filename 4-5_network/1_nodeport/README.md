@@ -8,11 +8,17 @@ $ minikube start
 $ kubectl create deployment mypods --image=ghcr.io/takara9/ex1:1.5
 $ kubectl expose deployment mypods --type=NodePort --port=9100
 $ kubectl get svc mypods
+
+
+チップが Apple M2 で minikube version: v1.32.0　のケースでは、以下のエラーが NodePortが使えませんでした。
+```
 $ minikube service mypods --url
 
 ❌  MK_UNIMPLEMENTED が原因で終了します: minikube service is not currently implemented with the builtin network on QEMU, try starting minikube with '--network=socket_vmnet'
 
 ```
+
+
 
 
 ```
