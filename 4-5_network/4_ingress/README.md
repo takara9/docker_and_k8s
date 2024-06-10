@@ -45,9 +45,9 @@ Ingress
 - https://kubernetes.io/docs/concepts/services-networking/ingress/
 - https://minikube.sigs.k8s.io/docs/tutorials/nginx_tcp_udp_ingress/
 - https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/
-- https://gateway-api.sigs.k8s.io/guides/migrating-from-ingress/#migrating-from-ingress
 
 Gateway API
 - https://kubernetes.io/blog/2023/10/31/gateway-api-ga/
 - https://kubernetes.io/docs/concepts/services-networking/gateway/
 - https://gateway-api.sigs.k8s.io/
+- https://gateway-api.sigs.k8s.io/guides/migrating-from-ingress/#migrating-from-ingress
