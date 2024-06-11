@@ -1,65 +1,36 @@
-kind: Pod
-apiVersion: v1
-metadata:
-  name: foo-app
-  labels:
-    app: foo
-spec:
-  containers:
-    - name: foo-app
-      image: 'kicbase/echo-server:1.0'
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: foo-service
-spec:
-  selector:
-    app: foo
-  ports:
-    - port: 8080
----
-kind: Pod
-apiVersion: v1
-metadata:
-  name: bar-app
-  labels:
-    app: bar
-spec:
-  containers:
-    - name: bar-app
-      image: 'kicbase/echo-server:1.0'
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: bar-service
-spec:
-  selector:
-    app: bar
-  ports:
-    - port: 8080
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: example-ingress
+  name: my-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"   # 正規表現を使用する
+    nginx.ingress.kubernetes.io/rewrite-target: /$2 # ２番目(.*)にマッチした文字列はを当てはめる
 spec:
   rules:
-    - http:
+    - host: "foo.bar.com" # DNS名でアクセスする必要がある
+      http:
+        paths:
+          - pathType: Prefix    # 固定の先頭パス
+            path: /foo          # 下記のサービスを foo.bar.com/foo に一致したら、次のバックエンドへ転送  
+            backend:
+              service:          # 転送するサービス名とポート番号
+                name: foo-service
+                port:
+                  number: 8080
+          - pathType: ImplementationSpecific  # 正規表現などに一致したパス
+            path: /bar(/|$)(.*)               # /bar文字列を削除して、その下の文字列をリクエストに加える
+            backend:
+              service:  # 転送するサービス名とポート番号
+                name: bar-service
+                port:
+                  number: 9100
+    - http: # hostが設定されていないので、IPアドレスでアクセス可能
         paths:
           - pathType: Prefix
-            path: /foo
+            path: /foo  # 下記のサービスを (トンネル または minikubeのIPアドレス)/foo へ付け替える
             backend:
               service:
                 name: foo-service
                 port:
                   number: 8080
-          - pathType: Prefix
-            path: /bar
-            backend:
-              service:
-                name: bar-service
-                port:
-                  number: 8080
----
+
