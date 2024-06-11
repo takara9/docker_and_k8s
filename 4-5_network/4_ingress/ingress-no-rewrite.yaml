@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+  annotations:
+    #nginx.ingress.kubernetes.io/use-regex: "true"
+    #nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: "foo.bar.com" # DNS名でアクセスする必要がある
+      http:
+        paths:
+          - pathType: Prefix
+            path: /foo  # 下記のサービスを foo.bar.com/foo へ付け替える  
+            backend:
+              service:  # 転送するサービス名とポート番号
+                name: foo-service
+                port:
+                  number: 8080
+          #- pathType: ImplementationSpecific
+          #  path: /bar(/|$)(.*) 
+          - pathType: Prefix
+            path: /bar  
+            backend:
+              service:  # 転送するサービス名とポート番号
+                name: bar-service
+                port:
+                  number: 9100
+    - http: # hostが設定されていないので、IPアドレスでアクセス可能
+        paths:
+          - pathType: Prefix
+            path: /foo  # 下記のサービスを (トンネル または minikubeのIPアドレス)/foo へ付け替える
+            backend:
+              service:
+                name: foo-service
+                port:
+                  number: 8080
+---
