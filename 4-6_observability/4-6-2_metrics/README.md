@@ -6,35 +6,36 @@ CPUとメモリの使用率、ディスクへの書き込みと読み取りの�
 
 ## Minikubeのセットアップ
 グラフィカルな表示などに、CPUとメモリを必要とするので、メモリ7G CPU４コアを設定します。
-読者の環境によっては動かせないかもしれませんので、ご了承ください。
+読者の環境によっては動かせないかもしれませんのが、ご了承ください。
 デフォルトのストレージクラスに csi-hostpath を設定します。
+このセットアップは、次節のロギングでも使用します。
 
 ```
-minikube start --memory='7g' --cpus='4'
-minikube addons disable storage-provisioner
-minikube addons disable default-storageclass
-minikube addons list
-minikube addons enable ingress
-minikube addons enable csi-hostpath-driver
-kubectl patch storageclass csi-hostpath-sc -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-kubectl get sc
+$ minikube start --memory='7g' --cpus='4'
+$ minikube addons disable storage-provisioner
+$ minikube addons disable default-storageclass
+$ minikube addons list
+$ minikube addons enable ingress
+$ minikube addons enable csi-hostpath-driver
+$ kubectl patch storageclass csi-hostpath-sc -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+$ kubectl get sc
 ```
 
 ## 時系列データベースのプロメテウスをインストール
 プロメテウスをHelmを使用してインストールします。Helmのインストールは参考資料を参照してインストールしてください。
 
 ```
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-kubectl create ns monitoring
-helm install -n monitoring prometheus prometheus-community/prometheus
+$ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+$ kubectl create ns monitoring
+$ helm install -n monitoring prometheus prometheus-community/prometheus
 ```
 
 ## 視覚化ツールのグラファナのインストール
 こちらも、Helmを使用してインストールします。
 
 ```
-helm repo add grafana https://grafana.github.io/helm-charts
-helm install -n monitoring grafana grafana/grafana
+$ helm repo add grafana https://grafana.github.io/helm-charts
+$ helm install -n monitoring grafana grafana/grafana
 ```
 
 
@@ -99,6 +100,10 @@ Grafana.com dashboard URL or ID のフィールドに1860をインプットし�
 
 
 
+## クリーンナップ
+```
+$ minikube delete
+```
 
 
 ## 参考資料
