@@ -138,3 +138,5 @@ Gateway API
 - https://gateway-api.sigs.k8s.io/
 - https://gateway-api.sigs.k8s.io/guides/migrating-from-ingress/#migrating-from-ingress
 
+
+https://qiita.com/pqrst1987/items/4b944f4cb805e989915e
