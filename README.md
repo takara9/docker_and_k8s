@@ -51,3 +51,4 @@ git clone https://github.com/takara9/docker_and_k8s.git
 git submodule update --init --recursive
 ```
 
+## フォークして変更してプッシュ
