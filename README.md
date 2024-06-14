@@ -49,6 +49,7 @@ git clone --recursive　https://github.com/takara9/docker_and_k8s.git
 ```
 git clone https://github.com/takara9/docker_and_k8s.git
 git submodule update --init --recursive
+git submodule update --remote --merge
 ```
 
 ## フォークして変更してプッシュ
