@@ -29,7 +29,7 @@ mkdir -p .github/workflows
 Githubにpushされた後に、実行する作業を記述したファイルを配置します。
 ```
 cd 4-7_CICD/1_Continous_Integration/
-cp ci.yaml ../../.github/workflows
+cp 4-7_CICD/1_Continous_Integration/ci.yaml .github/workflows
 ```
 
 ## ブランチしたディレクトリにファイルを作成する
