@@ -26,12 +26,13 @@ $ git branch
 ## CIのワークフローを作成する
 CI-TESTの下で、ワークフローのファイルの置くディレクトリを作成する
 ```
-mkdir -p .github/workflow
+mkdir -p .github/workflows
 ```
 
 Githubにpushされた後に、実行する作業を記述したファイルを配置します。
 ```
-cp template/ci.yaml .github/workflow
+cd 4-7_CICD/1_Continous_Integration/
+cp ci.yaml ../../.github/workflows
 ```
 
 
