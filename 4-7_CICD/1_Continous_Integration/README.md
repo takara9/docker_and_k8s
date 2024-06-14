@@ -16,10 +16,7 @@ $ cd docker_and_k8s
 git でブランチ ci-test を作る
 ```
 $ git checkout -b ci-test
-Switched to a new branch 'ci-test'
 $ git branch
-* ci-test
-  main
 ```
 
 
@@ -35,27 +32,20 @@ cd 4-7_CICD/1_Continous_Integration/
 cp ci.yaml ../../.github/workflows
 ```
 
-
 ## ブランチしたディレクトリにファイルを作成する
+ディレクトリ docker_and_k8s の直下に移動して、変更したディレクトリとファイルを追加して、コミットして、
+クローンしたリポジトリへプッシュする。
 ```
-$ cp ~/work/deployment-ex5.yaml ./4-7_CICD/
-$ git status
+$ cd ../../
 $ git add .
-$ git status
-```
-
-```
 $ git commit -m "test update"
-$ git push
-```
-
-```
 $ git push --set-upstream origin ci-test
 ```
 
+Webの画面に戻って、フォークしたリポジトリへPRを実施する
+もし、フォーク元の　https://github.com/takara9/docker_and_k8s へプルリクを実施しても受け付けません。
+
+
 ## GitHub Actions のワークフローの実行を観察
-
-
-
 
 

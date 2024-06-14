@@ -6,7 +6,13 @@ jobs:
     runs-on: ubuntu-latest
     name: build example and deploy to minikube
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout from github.com:takara9/docker_and_k8s.git
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Update submodules
+      id: update
+      run: git submodule update --init --recursive    
     - name: Start minikube
       uses: medyagh/setup-minikube@master
     - name: Try the cluster !
@@ -15,8 +21,7 @@ jobs:
       run: |
         export SHELL=/bin/bash
         eval $(minikube -p minikube docker-env)
-        docker build -f ./3-5_app_development/5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev 3-5_app_development/5-java
-        echo -n "verifying images:"
+        docker build -f ./3-5_app_development/3-5-5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev 3-5_app_development/3-5-5-java
         docker images        
     - name: Deploy to minikube
       run: |
