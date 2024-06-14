@@ -44,7 +44,7 @@ git submodule add https://github.com/takara9/ex5 3-5-5-java
 git clone --recursive　https://github.com/takara9/docker_and_k8s.git
 ```
 
-一度、クローンした後に、サブモジュールを取り込むには、以下の手順を実行します。
+一度、クローンした後に、サブモジュールを取り込み、最新版の更新するには、以下の手順を実行します。
 
 ```
 git clone https://github.com/takara9/docker_and_k8s.git
@@ -52,4 +52,3 @@ git submodule update --init --recursive
 git submodule update --remote --merge
 ```
 
-## フォークして変更してプッシュ
