@@ -46,17 +46,25 @@ CONNECT REPO USING HTTPS
 
 
 
-## シールドシークレットのインストール
+## シールドシークレットのインストールと秘密鍵の復元
 
 ArgoCDでは、GitHub上のマニフェストで、Kubernetesクラスタへアプリケーションをデプロイします。
 そのため、シークレットに記載されたパスワードやトークンが外部から参照しても、外部へ漏洩しないように、シールドシークレットで暗号化します。
 ```
 $ helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
+```
+
+```
 $ helm install sealed-secrets -n kube-system --set-string fullnameOverride=sealed-secrets-controller sealed-secrets/sealed-secrets
+$ kubectl appy -f private/sealed-secrets-key.yaml 
+$ kubectl rollout restart -n kube-system deploy/sealed-secrets-controller
+
 ```
 
 kubesealコマンドのインストールは、参考資料を見てインストールしてください。
 
+
+## シールドシークレットを使ってシークレットを暗号化　（オプション）
 暗号化のための証明書を、デプロイ先となるK8sクラスタから取り出します。
 ```
 $ kubeseal --fetch-cert > cert.pem
@@ -68,6 +76,7 @@ $ kubeseal --format=yaml -n stage --cert=cert.pem < private/secret.yaml > webser
 $ kubeseal --format=yaml -n prod --cert=cert.pem  < private/secret.yaml > webservice-system/overlays/prod/secret-encrypted.yaml 
 ```
 
+## ArgoCDのアプリケーション登録
 
 ArgoCDに、アプリケーションを登録するマニフェストを登録します。
 
