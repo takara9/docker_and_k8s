@@ -64,8 +64,8 @@ $ kubeseal --fetch-cert > cert.pem
 
 パスワードが記述されたステージング用と本番用のシークレットを、それぞれ暗号化します。
 ```
-$ kubeseal --format=yaml -n stage --cert=cert.pem < sealed-secret/secret.yaml > webservice-system/overlays/stage/secret-encrypted.yaml 
-$ kubeseal --format=yaml -n prod --cert=cert.pem  < sealed-secret/secret.yaml > webservice-system/overlays/prod/secret-encrypted.yaml 
+$ kubeseal --format=yaml -n stage --cert=cert.pem < private/secret.yaml > webservice-system/overlays/stage/secret-encrypted.yaml 
+$ kubeseal --format=yaml -n prod --cert=cert.pem  < private/secret.yaml > webservice-system/overlays/prod/secret-encrypted.yaml 
 ```
 
 
