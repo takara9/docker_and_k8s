@@ -91,6 +91,14 @@ $ kubectl apply -f application-prod.yaml
 ```
 
 
+## クリーンナップ
+
+```
+$ minikube delete
+```
+
+
+
 ## 参考資料
 - https://github.com/bitnami-labs/sealed-secrets
 - https://sealed-secrets.netlify.app/
