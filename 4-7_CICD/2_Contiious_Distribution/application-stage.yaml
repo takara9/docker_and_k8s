@@ -10,9 +10,10 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@github.com/takara9/docker_and_k8s.git
+    # repoURLの値は、フォークしたリポジトリに置き換えてください 
+    repoURL: https://github.com/takara9/docker_and_k8s.git
     targetRevision: HEAD
-    path: 4-7_CICD/4-7-2_Contiious_Distribution/webservice-system/overlays/stage
+    path: 4-7_CICD/2_Contiious_Distribution/webservice-system/overlays/stage
 
   destination:
     server: https://kubernetes.default.svc

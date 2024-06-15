@@ -11,7 +11,7 @@ resources:
 images:
   - name: ghcr.io/takara9/ex1
     newName: ghcr.io/takara9/ex1
-    newTag: "1.7"
+    newTag: "1.6"
   - name: mariadb
     newName: mariadb
     newTag: 11.3.2-jammy
