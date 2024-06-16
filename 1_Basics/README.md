@@ -1,4 +1,4 @@
-#　Docker と Kubernetes の基本 
+# Docker と Kubernetes の基本 
 
 手っ取り早く Docker と Kubernetes　のスキルを身に付けたい人に向けた本
 
