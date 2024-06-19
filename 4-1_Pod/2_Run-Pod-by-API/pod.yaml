@@ -1,0 +1,8 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: my-pod     # イメージ名と無関係に命名可能、ただし、ネームスペース内でポッド名の重複禁止、
+spec:
+  containers:      # コンテナの定義、複数のコンテナの起動が可能
+   - name: container-1               # コンテナ名
+     image: ghcr.io/takara9/ex3:1.0  # コンテナのイメージ名

@@ -1,5 +1,5 @@
 # ポッドのログ表示
-ポッドのライフサイクルの状態を表示します。
+ポッド内部のコンテナの標準出力と標準エラー出力の表示方法です。
 
 
 ## 準備
@@ -9,12 +9,15 @@ $ kubectl get no
 ```
 
 
-## ポッドのデプロイとログの表示
-
+## 実行例
+起動時にメッセージを表示する Webサーバー nginx　のコンテナを起動
 ```
 $ kubectl run nginx1 --image=nginx:latest
 pod/nginx1 created
+```
 
+コンテナで出力されたメッセージを表示
+```
 $ kubectl logs nginx1
 /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
 /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/

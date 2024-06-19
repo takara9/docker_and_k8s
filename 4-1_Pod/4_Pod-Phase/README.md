@@ -1,5 +1,5 @@
 # ポッドのフェーズ表示
-ポッドのライフサイクルの状態を表示します。
+ポッドのライフサイクルと内部のコンテナの状態を確認する方法です。
 
 ## 準備
 ```
@@ -9,15 +9,19 @@ $ kubectl get no
 
 
 ## 実行例
-ポッドのフェーズ表示
+
+起動して終了するコンテナを、コマンドで起動して、状態を確認
 ```
 $ kubectl run my-pod --image=ubuntu --restart=Never
-pod/my-pod created
+```
+
+ポッドのフェースだけを抜き出して表示
+```
 $ kubectl get pod my-pod -o jsonpath='{.status.phase}';echo
 Succeeded
 ```
 
-ポッド上のコンテナのステータス表示
+ポッドのコンテナのステータスを抜き出して表示
 ```
 $ kubectl get pod my-pod -o jsonpath='{.status.containerStatuses[]}'| jq -r .
 {

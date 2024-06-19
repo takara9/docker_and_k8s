@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   name: myapp-pod
 spec:
-  initContainers: # 初期化専用コンテナ
+  initContainers:        ### 初期化専用コンテナ
   - name: init-data
     image: ubuntu:22.04
     # 共有ぼリュームへ、メッセージファイルを書き込んで、20秒待って、終了
@@ -11,15 +11,15 @@ spec:
     volumeMounts:
       - mountPath: /vol
         name: share-volume
-  containers: 
-  - name: myapp # アプリケーションのメインコンテナ
+  containers:            ### メインのコンテナ
+  - name: myapp
     image: ubuntu:22.04
-    # 共有ボリュームのファイルを読んで、１時間後の終了
+    # 共有ボリュームのファイルをcatで表示して、１時間後の終了
     command: ['sh', '-c', 'cat /vol/data && sleep 3600']
     volumeMounts:
       - mountPath: /vol
         name: share-volume
-  volumes: # 共有ボリューム
+  volumes:               ### 共有ボリューム
   - name: share-volume
     emptyDir:
       sizeLimit: 10Mi

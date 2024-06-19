@@ -1,5 +1,8 @@
 # ポッドのステータス
 
+ポッドは、IPアドレスを持ち、複数のコンテナを実行でき、ボリュームを共有、コンテナの診断を実行するなどの、
+コンテナを実行するための軽量なサーバーと言えるオブジェクトです。ポッドの状態とAPI設定の見かたです。
+
 ## 準備
 ```
 $ minikube start
@@ -19,7 +22,7 @@ NAME     READY   STATUS    RESTARTS   AGE
 my-pod   1/1     Running   0          13s
 ```
 
-ポッドの詳細表示
+ポッドの状態の詳細表示
 ```
 $ kubectl describe pod my-pod
 Name:             my-pod           (1) ポッドの基本情報
@@ -76,7 +79,7 @@ Events:                             (8) ポッドで発生したイベント
 ```
 
 
-実行中ポッドのAPI表示
+実行中ポッドのAPI設定の表示
 ```
 $ kubectl get pod my-pod -o yaml
 apiVersion: v1
