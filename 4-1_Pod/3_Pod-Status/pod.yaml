@@ -1,8 +1,8 @@
 kind: Pod
 apiVersion: v1
 metadata:
-  name: my-pod # 注意 同じネームスペースで同じポッド名は許されない
+  name: my-pod     # 注意 ネームスペース内でポッド名の重複禁止
 spec:
-  containers:
-   - name: container-1
-     image: ghcr.io/takara9/ex3:1.0 # コンテナのイメージを指定する
+  containers:      # コンテナの定義、複数設定可
+   - name: container-1               # コンテナ名
+     image: ghcr.io/takara9/ex3:1.0  # コンテナのイメージ名
