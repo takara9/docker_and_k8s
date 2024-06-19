@@ -20,7 +20,7 @@ $ kubectl run my-web --image=ghcr.io/takara9/ex3:1.0
 ```
 
 
-Webサービスのポッドを起動の確認
+Webサービスのコンテナを内包したポッドの起動
 ```
 $ kubectl get pod
 NAME     READY   STATUS    RESTARTS   AGE
@@ -32,7 +32,7 @@ my-web   1/1     Running   0          19s   10.244.0.3   minikube   <none>      
 ```
 
 
-対話型ポッドを起動
+対話型シェルのポッドを起動
 ```
 $ kubectl run -it my-pod --image=ghcr.io/takara9/my-ubuntu:0.3 -- bash
 If you don't see a command prompt, try pressing enter.
