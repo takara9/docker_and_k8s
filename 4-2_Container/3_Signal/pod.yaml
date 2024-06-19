@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-signal
+spec:
+  containers:
+  - name: my-container
+    image: signal-handler:dev

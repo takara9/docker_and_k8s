@@ -1,0 +1,28 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: my-pod-vol-share
+spec:
+  containers:
+   - name: my-container-1  # コンテナ-１
+     image: ghcr.io/takara9/ex1:1.0
+     ports:
+      - name: ex1-port
+        containerPort: 9100
+     volumeMounts: 
+      - mountPath: /cache  # マウント位置
+        name: cache-volume # 共有ボリューム名
+
+   - name: my-container-2  # コンテナ-２
+     image: ghcr.io/takara9/ex3:1.0
+     ports:
+      - name: ex3-port
+        containerPort: 3000
+     volumeMounts:
+      - mountPath: /cache  # マウント位置
+        name: cache-volume # 共有ボリューム名
+
+  volumes: # 共有ボリューム
+  - name: cache-volume
+    emptyDir:  # ボリュームの種類
+      sizeLimit: 500Mi # サイズ

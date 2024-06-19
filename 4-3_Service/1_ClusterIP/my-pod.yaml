@@ -1,0 +1,15 @@
+## サービスと連携するポッド例
+apiVersion: v1
+kind: Pod 
+metadata:
+  name: my-pod    # ポッド名
+  labels:
+    apg: my-grp1
+    app: my-pod
+spec:
+  containers:
+  - name: my-container #コンテナ名
+    image: ghcr.io/takara9/ex1:1.1
+    ports:
+     - name: rest-service
+       containerPort: 9100
