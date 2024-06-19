@@ -1,5 +1,4 @@
-# コンテナの起動と停止のインタフェース　　引数（アーギュメント）
-
+# コンテナの起動パラメータ　（引数：アーギュメント）
 ポッドでコンテナを起動と終了処理に必要な以下３点の中から、引数（アーギュメント）を取り上げます。
   - 引数（アーギュメント）
   - 環境変数
@@ -7,12 +6,10 @@
 
 
 ## 準備
-
 ```
 $ minikube start
 $ kubectl get no
 ```
-
 
 ## 実行例
 
@@ -30,8 +27,6 @@ spec:
 コマンドライン引数を指定したポッドの実行結果
 ```
 $ kubectl create -f pod-cmd-args.yaml  (1) ポッドの起動
-pod/pod-cmd-args created
-
 $ kubectl get pod pod-cmd-args         (2) 実行状態の確認
 NAME           READY   STATUS      RESTARTS   AGE
 pod-cmd-args   0/1     Completed   0          21s

@@ -16,19 +16,20 @@ pod-env.yaml（抜粋）
   containers:
   - name: my-container
     image: ghcr.io/takara9/ex1:1.0
-    env:                                  # 環境変数API
+    env:                                    # 環境変数API
     - name: DEMO_GREETING                   # 環境変数名
       value: "Hello from the environment"   # 環境変数の値
 ```
 
+
 ポッドを起動して、ポッドのコンテナで対話型シェルを起動して、環境変数を表示します。
 ```
 $ kubectl apply -f pod-env.yaml 
-
 $ kubectl get pod
-NAME      READY   STATUS    RESTARTS   AGE
-pod-env   1/1     Running   0          18s
+```
 
+ポッドのステータスが Runningになったら、コンテナに入って環境変数を表示
+```
 $ kubectl exec -it pod-env -- bash
 nobody@pod-env:/app$ echo $DEMO_GREETING 
 Hello from the environment

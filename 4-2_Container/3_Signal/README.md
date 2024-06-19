@@ -6,8 +6,7 @@
 
 
 ## 準備
-
-Dockerのレジストリをminikubeからアクセスできるようにします。 
+minikube を起動して、Dockerデスクトップのコンテナ・レジストリを minikube からアクセスできるように設定 
 
 ```
 $ minikube start
@@ -31,6 +30,7 @@ def handler(signum, frame):
 signal.signal(signal.SIGTERM, handler)
 ```
 
+コンテナのビルド
 ```
 $ cd container-signal
 $ docker build -t signal-handler:dev .
@@ -40,35 +40,38 @@ signal-handler   dev       c4cea75c1209   About a minute ago   676MB
 ```
 
 
-ポッドを起動します。
+上記でビルドしたコンテナをポッドから起動
 ```
 $ cd ..
 $ kubectl apply -f pod.yaml 
 $ kubectl get pod
 ```
 
-二つのターミナルを使って、シグナルを受けた後の動作を確認します。
 
-１番目のポッドを起動したターミナルで、コンテナに入って、ログを表示します。
+二つのターミナルを使って、シグナルを受けた後の動作を確認する。
+
+１番目のポッドを起動したターミナルで、コンテナに入って、ログを表示。
+このままターミナルを放置して、ログ表示を継続
 ```
 $ kubectl exec -it pod-signal -- bash
 nobody@pod-signal:/app$ tail -f  /app/app.log 
 Start Web service
 ```
 
-後から起動したターミナルでポッドを削除します。
+
+追加でターミナルを起動して、ポッドを削除
 ```
 $ kubectl delete pod pod-signal
 pod "pod-signal" deleted
 ```
 
-１番目のターミナルで、ログに以下のように表示され、ポッドは削除されました。
+
+１番目のターミナルで、ログに以下のように表示され、ポッドは削除が完了
 ```
 Accept SIGNAL
 
 command terminated with exit code 137
 ```
-
 
 
 ## クリーンナップ
@@ -82,5 +85,4 @@ docker desktopもリスタートしておく。
 
 ## 参考リンク
 - https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/
-
 
