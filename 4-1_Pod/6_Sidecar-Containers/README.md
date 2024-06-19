@@ -10,6 +10,24 @@ $ kubectl get no
 
 
 ## サイドカーコンテナ
+spec.containersの下に、配列として、複数のコンテナを書くことができます。
+
+sidecar-container.yaml(抜粋)
+```
+spec:
+  containers:
+   - name: my-container-1  # メインコンテナと呼ばれる事もある
+     image: ghcr.io/takara9/ex1:1.0
+     ports:
+      - name: ex1-port
+        containerPort: 9100
+   - name: my-container-2  # サポートコンテナやサイドカーコンテナと呼ばれる事がある
+     image: ghcr.io/takara9/ex3:1.0
+     ports:
+      - name: ex3-port
+        containerPort: 3000
+```
+
 ポッド内で複数のコンテナを起動
 ```
 $ kubectl apply -f sidecar-container.yaml 
@@ -33,6 +51,37 @@ $ kubectl get pod my-pod-mc -o jsonpath='{.spec.containers}' |jq -r '.[]| [.name
 
 
 ## ポッド間のストレージ共有
+spec.volumesに複数のボリュームを記述
+各コンテナで、volumeMountsで、ボリューム名とマウントパスを指定して、コンテナのファイルシステムにマウント
+
+pod-vol-share.yaml(抜粋)
+```
+spec:
+  containers:
+   - name: my-container-1  # コンテナ-１
+     image: ghcr.io/takara9/ex1:1.0
+     ports:
+      - name: ex1-port
+        containerPort: 9100
+     volumeMounts: 
+      - mountPath: /cache  # マウント位置
+        name: cache-volume # 共有ボリューム名
+
+   - name: my-container-2  # コンテナ-２
+     image: ghcr.io/takara9/ex3:1.0
+     ports:
+      - name: ex3-port
+        containerPort: 3000
+     volumeMounts:
+      - mountPath: /cache  # マウント位置
+        name: cache-volume # 共有ボリューム名
+
+  volumes: # 共有ボリューム
+  - name: cache-volume
+    emptyDir:  # ボリュームの種類
+      sizeLimit: 500Mi # サイズ
+```
+
 
 ボリュームを共有するコンテナを内包するポッドの起動と確認
 ```
@@ -69,6 +118,33 @@ bash: ps: command not found
 
 
 ## 初期化専用コンテナの実行例
+
+init-container.yaml(抜粋)
+```
+spec:
+  initContainers:        ### 初期化専用コンテナ
+  - name: init-data
+    image: ubuntu:22.04
+    # 共有ぼリュームへ、メッセージファイルを書き込んで、20秒待って、終了
+    command: ['sh', '-c', "echo 'initialize data' > /vol/data; sleep 20"]
+    volumeMounts:
+      - mountPath: /vol
+        name: share-volume
+  containers:            ### メインのコンテナ
+  - name: myapp
+    image: ubuntu:22.04
+    # 共有ボリュームのファイルをcatで表示して、１時間後の終了
+    command: ['sh', '-c', 'cat /vol/data && sleep 3600']
+    volumeMounts:
+      - mountPath: /vol
+        name: share-volume
+  volumes:               ### 共有ボリューム
+  - name: share-volume
+    emptyDir:
+      sizeLimit: 10Mi
+```
+
+
 ```
 $ kubectl apply -f init-container.yaml 
 $ kubectl get po myapp-pod
@@ -82,6 +158,7 @@ myapp-pod   1/1     Running   0          32s　　← メインコンテナが�
 $ kubectl logs -c myapp myapp-pod
 initialize data
 ```
+
 
 # クリーンナップ
 ```
