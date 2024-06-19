@@ -14,13 +14,12 @@ minikube   Ready    control-plane   22s   v1.30.0
 
 ## 実行例
 
-起動
+Webサービスのコンテナを内包したポッドの起動
 ```
 $ kubectl run my-web --image=ghcr.io/takara9/ex3:1.0
 ```
 
-
-Webサービスのコンテナを内包したポッドの起動
+ポッド起動の確認
 ```
 $ kubectl get pod
 NAME     READY   STATUS    RESTARTS   AGE
