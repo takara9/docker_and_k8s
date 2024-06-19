@@ -44,7 +44,10 @@ nobody@my-pod:/$ ps -ux
 USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 nobody         1  0.0  0.0   4116  3200 pts/0    Ss   23:25   0:00 bash
 nobody        10  0.0  0.0   6408  2432 pts/0    R+   23:27   0:00 ps -ux
+```
 
+先に起動したWebサービスのポッドのIPアドレスへ、curlコマンドでアクセス
+```
 nobody@my-pod:/$ curl http://10.244.0.3:3000/ping;echo
 pong
 nobody@my-pod:/$ exit
