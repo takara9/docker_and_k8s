@@ -13,6 +13,7 @@ minikube   Ready    control-plane   22s   v1.30.0
 ```
 $ kubectl apply -f pod.yaml
 pod/my-pod created
+
 $ kubectl get pods
 NAME     READY   STATUS    RESTARTS   AGE
 my-pod   1/1     Running   0          13s
@@ -64,7 +65,7 @@ QoS Class:                   BestEffort
 Node-Selectors:              <none>
 Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
-Events:                             (8) ポッドのイベント
+Events:                             (8) ポッドで発生したイベント
   Type    Reason     Age   From               Message
   ----    ------     ----  ----               -------
   Normal  Scheduled  58s   default-scheduler  Successfully assigned default/my-pod to minikube
@@ -97,7 +98,7 @@ spec:                                        (3) ポッドのスペック（仕�
     resources: {}                            (7) リソース: CPU時間やメモリの割り当て
     terminationMessagePath: /dev/termination-log
     terminationMessagePolicy: File
-    volumeMounts:                            (8) ポッドにマウントするボリューム
+    volumeMounts:                            (8) コンテナにマウントするボリューム
     - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
       name: kube-api-access-rv6d9
       readOnly: true
@@ -113,15 +114,15 @@ spec:                                        (3) ポッドのスペック（仕�
   serviceAccountName: default
   terminationGracePeriodSeconds: 30          (11) 終了シグナルを受けてから強制終了されるまでの猶予秒数
   tolerations:                               (12) ポッドがノードへスケジュールするための設定
-  - effect: NoExecute                        (13) 以下のkeyが付いたノードから排除され、ポッドはスケジュールされない
+  - effect: NoExecute                        (13) 以下のkeyが付いたノードでは、実行やスケジュールされない
     key: node.kubernetes.io/not-ready
     operator: Exists
-    tolerationSeconds: 300                   (14) taintがノードに付けられ、ポッドが排除されるまでの秒数
+    tolerationSeconds: 300                   (14) ノードにtaintが付けられ、ポッドが排除されるまでの猶予秒数
   - effect: NoExecute                        (15) 以下、(12)〜(14)に同じ、繰り返し
     key: node.kubernetes.io/unreachable
     operator: Exists
     tolerationSeconds: 300
-  volumes:　　　　　　　　　　　　　　　　　　　　　(16) ポッドに自動定義されたボリュームの情報
+  volumes:　　　　　　　　　　　　　　　　　　　　　(16) ポッドに定義されたボリュームの情報
   - name: kube-api-access-rv6d9
     projected:
       defaultMode: 420
@@ -172,8 +173,8 @@ status:　　　　　　　　　　　　　　　　　　　　　　　　(
         startedAt: "2024-03-29T02:15:35Z"
   hostIP: 192.168.49.2
   phase: Running　　　　　　　　　　　　　　　　　　(19) ポッドのフェーズ
-  podIP: 10.244.0.3                           (20) ポッドのIPアドレス
-  podIPs:                                     (21) ポッドにセカンドIPがあれば、ここに表示される
+  podIP: 10.244.0.3                           (20) ポッドのプライマリのIPアドレス
+  podIPs:                                     (21) ポッドの他のIPアドレス
   - ip: 10.244.0.3
   qosClass: BestEffort                        (22) リソース設定により、QOSクラスが決定される.
   startTime: "2024-03-29T02:15:28Z"                  「BestEffor」は優先度が一番低い
@@ -191,98 +192,3 @@ $ minikube delete
 - https://kubernetes.io/docs/concepts/workloads/pods/
 - https://kubernetes.io/docs/reference/kubectl/quick-reference/
 
-
-
-
-
-
-
-
-
-# ポッドとコンテナの状態管理
-ポッドのライフサイクルの状態を表示します。
-
-## 準備
-最小構成のKubernetesクラスタを起動します。
-```
-$ minikube start
-```
-
-
-## 実行例
-ポッドのフェーズ表示
-```
-$ kubectl run my-pod --image=ubuntu --restart=Never
-pod/my-pod created
-$ kubectl get pod my-pod -o jsonpath='{.status.phase}';echo
-Succeeded
-```
-
-ポッド上のコンテナのステータス表示
-```
-$ kubectl get pod my-pod -o jsonpath='{.status.containerStatuses[]}'| jq -r .
-{
-  "containerID": "docker://b7c16cda01d27cd32ee0acb8c8fd92f0f98ca7153cb259cda6e4d67436e49031",
-  "image": "ubuntu:latest",
-  "imageID": "docker-pullable://ubuntu@sha256:77906da86b60585ce12215807090eb327e7386c8fafb5402369e421f44eff17e",
-  "lastState": {},
-  "name": "my-pod",
-  "ready": false,
-  "restartCount": 0,
-  "started": false,
-  "state": {
-    "terminated": {
-      "containerID": "docker://b7c16cda01d27cd32ee0acb8c8fd92f0f98ca7153cb259cda6e4d67436e49031",
-      "exitCode": 0,
-      "finishedAt": "2024-03-31T00:05:18Z",
-      "reason": "Completed",
-      "startedAt": "2024-03-31T00:05:18Z"
-    }
-  }
-}
-```
-
-ポッドのデプロイとログの表示
-```
-$ kubectl run nginx1 --image=nginx:latest
-pod/nginx1 created
-
-$ kubectl logs nginx1
-Error from server (BadRequest): container "nginx1" in pod "nginx1" is waiting to start: ContainerCreating
-
-$ kubectl logs nginx1
-/docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
-/docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
-/docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
-10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
-10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
-/docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
-/docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
-/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
-/docker-entrypoint.sh: Configuration complete; ready for start up
-2024/03/31 00:16:42 [notice] 1#1: using the "epoll" event method
-2024/03/31 00:16:42 [notice] 1#1: nginx/1.25.4
-2024/03/31 00:16:42 [notice] 1#1: built by gcc 12.2.0 (Debian 12.2.0-14) 
-2024/03/31 00:16:42 [notice] 1#1: OS: Linux 6.6.12-linuxkit
-2024/03/31 00:16:42 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
-2024/03/31 00:16:42 [notice] 1#1: start worker processes
-2024/03/31 00:16:42 [notice] 1#1: start worker process 29
-2024/03/31 00:16:42 [notice] 1#1: start worker process 30
-2024/03/31 00:16:42 [notice] 1#1: start worker process 31
-2024/03/31 00:16:42 [notice] 1#1: start worker process 32
-2024/03/31 00:16:42 [notice] 1#1: start worker process 33
-2024/03/31 00:16:42 [notice] 1#1: start worker process 34
-2024/03/31 00:16:42 [notice] 1#1: start worker process 35
-2024/03/31 00:16:42 [notice] 1#1: start worker process 36
-```
-
-
-## クリーンナップ
-```
-minikube delete
-```
-
-
-## 参考リンク
-- https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/
-- https://kubernetes.io/docs/concepts/cluster-administration/logging/
