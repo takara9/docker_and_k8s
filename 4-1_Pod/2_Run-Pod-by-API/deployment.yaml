@@ -7,7 +7,6 @@ spec:
   selector:        # コントローラーの管理対象ポッドをラベルで識別
     matchLabels:
       app: ex1     # キー(app)と値(ex1)のセットでラベルとして認識
-
   template:        # 以下は、ポッドのテンプレート（雛形）
     metadata:
       labels: 

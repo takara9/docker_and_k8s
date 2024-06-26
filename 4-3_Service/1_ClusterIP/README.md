@@ -19,10 +19,24 @@ NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
 my-service   ClusterIP   10.100.2.115   <none>        9100/TCP   9s
 ```
 
-別ポッドは、環境変数でサービスの存在を知る
+別ポッドで、DNSでサービス名から、IPアドレスを引く
 ```
 $ kubectl run -it mypod2 --image=ghcr.io/takara9/my-ubuntu:0.3 -- bash
 If you don't see a command prompt, try pressing enter.
+
+nobody@mypod2:/$ nslookup my-service
+Server:         10.96.0.10
+Address:        10.96.0.10#53
+
+Name:   my-service.default.svc.cluster.local
+Address: 10.109.31.118
+
+root@mypod2:/$ dig my-service.default.svc.cluster.local +short
+10.100.2.115
+```
+
+ポッドの環境変数で、サービスの存在やIPアドレスなどがセットされる
+```
 root@mypod2:/$ env |grep MY_SERVICE
 MY_SERVICE_SERVICE_HOST=10.100.2.115
 MY_SERVICE_PORT=tcp://10.100.2.115:9100
@@ -33,11 +47,51 @@ MY_SERVICE_SERVICE_PORT=9100
 MY_SERVICE_PORT_9100_TCP_PORT=9100
 ```
 
-別ポッドは、DNSでサービスのIPアドレスを知る
+同じネームスペースから、サービス名でポッドをアクセス
 ```
-root@mypod2:/$ dig my-service.default.svc.cluster.local +short
-10.100.2.115
+nobody@mypod2:/$ curl http://my-service:9100/ping;echo
+<p>pong</p>
 ```
+
+サービスは、ポッドのラベルで、転送先を決定
+```
+mini:2_ClusterIP takara$ kubectl get pod my-pod --show-labels
+NAME     READY   STATUS    RESTARTS   AGE     LABELS
+my-pod   1/1     Running   0          7m32s   run=my-pod
+```
+
+
+サービスのYAMLを表示、セレクターに対象ポッドのラベル名がセットされている
+```
+$ kubectl get svc my-service -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2024-06-24T21:06:32Z"
+  labels:
+    run: my-pod
+  name: my-service
+  namespace: default
+  resourceVersion: "486"
+  uid: fdf74e53-32d9-432e-ad5e-a93f0e7c8f2b
+spec:
+  clusterIP: 10.109.31.118
+  clusterIPs:
+  - 10.109.31.118
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - port: 9100
+    protocol: TCP
+    targetPort: 9100
+  selector:
+    run: my-pod             # セレクターのラベル
+  sessionAffinity: None
+  type: ClusterIP
+```
+
 
 ```
 root@mypod2:/$ exit
@@ -62,60 +116,39 @@ spec:
 ```
 
 
-最初にポッドをデプロイ
+ヘッドレスサービスのデプロイ
 ```
 $ kubectl apply -f my-pod.yaml 
-```
-
-ヘッドレスのサービスをデプロイします
-```
 $ kubectl apply -f service-headless.yaml 
-```
-
-ポッドのIPアドレスを確認しておきます
-```
 $ kubectl get po -o wide
-NAME    READY  STATUS   RESTARTS   AGE   IP           NODE
-my-pod  1/1    Running  0          82s   10.244.0.5   minikube
-```
+NAME     READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
+my-pod   1/1     Running   0          18s   10.244.0.3   minikube   <none>           <none>
 
-サービスをリストする
-```
 $ kubectl get svc my-service-hl
 NAME            TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
-my-service-hl   ClusterIP   None         <none>        9100/TCP   22s
+my-service-hl   ClusterIP   None         <none>        9100/TCP   21s
 ```
 
-## ヘッドレスのサービスの動作確認
-
-対話型でポッドを起動
+ヘッドレスサービスのオブジェクトの動作確認
 ```
 $ kubectl run -it my-pod3 --image=ghcr.io/takara9/my-ubuntu:0.3 -- bash
-```
+If you don't see a command prompt, try pressing enter.
 
-サービス名が内部DNSへ登録されたこと、ポッドのIPアドレスがセットされていることを確認
-```
-nobody@my-pod3:/$ nslookup  
-> my-service-hl
+nobody@my-pod3:/$ nslookup my-service-hl
 Server:         10.96.0.10
 Address:        10.96.0.10#53
 
 Name:   my-service-hl.default.svc.cluster.local
-Address: 10.244.0.5
-```
+Address: 10.244.0.3
 
-ヘッドレスのサービス名が、環境変数にセットされていないこと確認
-```
 nobody@my-pod3:/$ env |grep MY_SERVICE
 nobody@my-pod3:/$ 
-```
 
-DNS名でアクセスできることを確認
-```
-nobody@my-pod3:/$ curl http://my-service-hl.default.svc.cluster.local:9100/ping;echo
+nobody@my-pod3:/$ curl my-service-hl:9100/ping;echo
 PONG!
-
 ```
+
+
 
 ## クリーンナップ
 ```

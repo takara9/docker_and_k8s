@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: my-pod2
+  name: my-pod-4
 spec:
   securityContext:
-    runAsNonRoot: true
+    runAsNonRoot: true  # 非rootで実行する宣言
   volumes:
   - name: sec-ctx-vol
     emptyDir: {}
   containers:
   - name: my-container
-    image: ghcr.io/takara9/my-ubuntu:0.3
+    image: ubuntu:latest
     command: [ "bash", "-c", "tail -f /dev/null" ]
     volumeMounts:
     - name: sec-ctx-vol

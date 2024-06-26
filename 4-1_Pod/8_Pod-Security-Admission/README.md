@@ -4,9 +4,24 @@
 
 ## 準備
 ```
-$ minikube start
+$ minikube delete
+$ mkdir -p ~/.minikube/files/etc/ssl/certs
+
+$ cat <<EOF > ~/.minikube/files/etc/ssl/certs/audit-policy.yaml
+# Log all requests at the Metadata level.
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+- level: Metadata
+EOF
+
+$ minikube start \
+  --extra-config=apiserver.audit-policy-file=/etc/ssl/certs/audit-policy.yaml \
+  --extra-config=apiserver.audit-log-path=-
+
 $ kubectl get no
 ```
+
 
 
 ## ポッドセキュリティアドミッション
@@ -14,19 +29,17 @@ $ kubectl get no
 このルール違反した場合、エラー発生、ポッドの実行を拒否するなど選択可能
 
 
-ルールを設定したネームスペースに、違反するポットをデプロイ、エラー発生でデプロイ失敗
 ```
 $ kubectl apply -f ns_restricted.yaml 
-
-$ kubectl apply -n my-namespace -f pod-fail-case.yaml 
-Error from server (Forbidden): error when creating "pod-fail-case.yaml": pods "hostpathvolumes1" is forbidden: violates PodSecurity "restricted:latest": allowPrivilegeEscalation != false (containers "initcontainer1", "container1" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (containers "initcontainer1", "container1" must set securityContext.capabilities.drop=["ALL"]), restricted volume types (volumes "volume-hostpath-a", "volume-hostpath-b" use restricted volume type "hostPath"), runAsNonRoot != true (pod or containers "initcontainer1", "container1" must set securityContext.runAsNonRoot=true), seccompProfile (pod or containers "initcontainer1", "container1" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+$ kubectl get ns my-namespace --show-labels
+NAME           STATUS   AGE     LABELS
+my-namespace   Active   2m13s   kubernetes.io/metadata.name=my-namespace,pod-security.kubernetes.io/audit=restricted,pod-security.kubernetes.io/enforce=restricted,pod-security.kubernetes.io/warn=restricted
 ```
 
-
-ルールを設定していないネームスペースにデプロイ、エラーなく、デプロイ成功
+ルールを設定したネームスペースに、違反するポットをデプロイ、エラー発生でデプロイ失敗
 ```
-$ kubectl apply -f pod-fail-case.yaml 
-pod/hostpathvolumes1 created
+$ kubectl run -it my-pod-1 -n my-namespace --image=ubuntu:latest -- bash
+Error from server (Forbidden): pods "my-pod-1" is forbidden: violates PodSecurity "restricted:latest": allowPrivilegeEscalation != false (container "my-pod-1" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "my-pod-1" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "my-pod-1" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "my-pod-1" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
 ```
 
 
@@ -40,3 +53,6 @@ $ minikube delete
 - https://kubernetes.io/docs/concepts/security/pod-security-standards/
 - https://kubernetes.io/docs/concepts/security/pod-security-admission/
 - https://github.com/kubernetes/kubernetes/tree/master/staging/src/k8s.io/pod-security-admission/test/testdata
+- https://minikube.sigs.k8s.io/docs/handbook/filesync/
+
+

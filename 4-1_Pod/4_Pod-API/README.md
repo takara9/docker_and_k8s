@@ -1,5 +1,7 @@
-# ポッドのフェーズ表示
-ポッドのライフサイクルと内部のコンテナの状態を確認する方法です。
+# 実行中ポッドのAPI表示
+実行中ポッドの全てのAPIを表示します。
+これには、statusの表示項目があり、ポッドのライフサイクルと内部のコンテナの状態も確認できます。
+
 
 ## 準備
 ```
@@ -8,20 +10,24 @@ $ kubectl get no
 ```
 
 
-## 実行例
+## 実行中ポッドのAPI表示
 
-起動して終了するコンテナを、コマンドで起動して、状態を確認
 ```
-$ kubectl run my-pod --image=ubuntu --restart=Never
+$ kubectl get pod my-pod -o yaml
 ```
 
-ポッドのフェースだけを抜き出して表示
+ポッドのステータスを抜き出して表示
+```
+$ kubectl get pod my-pod -o jsonpath='{.status}';echo
+```
+
+ポッドのステータスからフェースだけを抜き出して表示
 ```
 $ kubectl get pod my-pod -o jsonpath='{.status.phase}';echo
-Succeeded
 ```
 
-ポッドのコンテナのステータスを抜き出して表示
+
+ポッドのコンテナのステータスだけを抜き出して表示
 ```
 $ kubectl get pod my-pod -o jsonpath='{.status.containerStatuses[]}'| jq -r .
 {
@@ -54,5 +60,8 @@ $ minikube delete
 
 
 ## 参考リンク
+- https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/
+- https://kubernetes.io/docs/reference/ 
 - https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/
 - https://kubernetes.io/docs/reference/kubectl/jsonpath/
+

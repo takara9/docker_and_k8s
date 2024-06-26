@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-cmd-args-3
+spec:
+  containers:
+  - name: my-container
+    image: ghcr.io/takara9/ex1:1.0
+    command: ["printenv", "HOSTNAME", "KUBERNETES_PORT"]    # コマンドとパラメータ
+  restartPolicy: Never    # 失敗した時のみ再スタート
+  

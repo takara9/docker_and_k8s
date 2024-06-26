@@ -72,5 +72,5 @@ $ minikube delete
 
 ## 参考リンク
 - https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/
-
+- https://github.com/takara9/ex1/tree/1.4
 

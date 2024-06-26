@@ -13,40 +13,32 @@ $ kubectl get no
 
 ## 実行例
 
+
 ポッドとサービス(タイプ=NodePort)をデプロイして、サービスを確認する。
 ```
-$ kubectl create deployment hello-minikube1 --image=kicbase/echo-server:1.0
-$ kubectl expose deployment hello-minikube1 --type=NodePort --port=8080
-$ kubectl get svc hello-minikube1
-NAME              TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
-hello-minikube1   NodePort    10.100.94.31   <none>        8080:31017/TCP   5s
-```
-
-ノードのIPアドレスで 30017 をアクセスすることで、サービスが連携するポッドへアクセスできる。
-```
-$ curl http://ノードのIPアドレス:31017/
+$ kubectl create deployment my-pods --image=ghcr.io/takara9/ex1:1.5
+$ kubectl expose deployment my-pods --type=NodePort --port=9100
+$ kubectl get svc my-pods
+NAME      TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+my-pods   NodePort   10.107.15.170   <none>        9100:30900/TCP   8s
 ```
 
 Minikubeは、Dockerネットワーク内にノードのIPアドレスがあるので、直接アクセスできない。
 次のコマンドで、NodePortのサービスへ繋げることできる。
-
 ```
-$ minikube service hello-minikube1 --url
-http://127.0.0.1:50966
-❗  Docker ドライバーを darwin 上で使用しているため、実行するにはターミナルを開く必要があります。
+$ minikube service my-pods --url
+http://192.168.49.2:30900
 ```
 
-アクセステスト
+上記表示されたURLへアクセスすることで、ノードポートで開いたと同じ様に、クラスタ内のポッドにアクセスできる
 ```
-$ curl http://127.0.0.1:50966/
-Request served by hello-minikube1-67bf99b564-pm5nn
-
-HTTP/1.1 GET /
-
-Host: 127.0.0.1:50966
-Accept: */*
-User-Agent: curl/8.6.0
+$ curl http://192.168.49.2:30900/info
+Host Name: my-pods-66dbbd8bd4-l42fq
+Host IP: 10.244.0.3
+Client IP : 10.244.0.1
 ```
+
+
 
 
 ## クリーンナップ

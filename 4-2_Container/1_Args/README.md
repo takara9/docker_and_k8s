@@ -26,12 +26,12 @@ spec:
 
 コマンドライン引数を指定したポッドの実行結果
 ```
-$ kubectl create -f pod-cmd-args.yaml  (1) ポッドの起動
-$ kubectl get pod pod-cmd-args         (2) 実行状態の確認
+$ kubectl create -f pod-cmd-args.yaml  ポッド起動
+$ kubectl get pod pod-cmd-args         実行状態の確認
 NAME           READY   STATUS      RESTARTS   AGE
 pod-cmd-args   0/1     Completed   0          21s
 
-$ kubectl logs pod-cmd-args            (3) 実行結果の確認（ログの表示）
+$ kubectl logs pod-cmd-args            実行結果の確認（ログの表示）
 pod-cmd-args
 tcp://10.96.0.1:443
 ```
@@ -39,7 +39,7 @@ tcp://10.96.0.1:443
 
 ## クリーンナップ
 ```
-$ kubectl delete pod-cmd-args
+$ kubectl delete pod pod-cmd-args
 $ minikube delete
 ```
 
