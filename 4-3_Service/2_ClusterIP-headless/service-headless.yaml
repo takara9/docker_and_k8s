@@ -4,6 +4,7 @@ kind: Service ### サービス
 metadata:
   name: my-service-hl # サービス名 
 spec:
+  type: ClusterIP
   clusterIP: None  # ヘッドレス（IPアドレスなしを指定）
   ports:
     - port: 9100
