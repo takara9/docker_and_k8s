@@ -73,16 +73,17 @@ nobody@pod-pvc:/mnt$ exit
 $
 ```
 
-一旦ポッドを削除して、永続ボリュームが存在していることを確認する。
+ポッドを削除して、永続ボリュームが存在していることを確認する。
+
 ```
+$ kubectl delete po pod-pvc
 $ kubectl get pvc
 NAME     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS      AGE
 my-vol   Bound    pvc-e7da2af2-2c9d-47d3-a219-61cd0e6ad45d   1Gi        RWO            csi-hostpath-sc   3m7s
 ```
 
-ポッドを削除して、再度、ポッドを起動して、ボリュームがマウントされていることを確認する
+再度、ポッドを起動する
 ```
-$ kubectl delete po pod-pvc
 $ kubectl apply -f pod-pvc.yaml 
 ```
 
@@ -104,13 +105,14 @@ groups: cannot find name for group ID 1000
 I have no name!@pod-pvc:/app$ cd /mnt
 I have no name!@pod-pvc:/mnt$ ls -lh
 total 389M
--rw-rw-r-- 1 1000 1000 389M Apr  8 06:34 test.tar
+-rw-rw-r-- 1 nobody nogroup 389M Jun 29 12:11 test.tar
 ```
 
 
 ## クリーンナップ
 ```
-$ minikube delete
+$ minikube deletels
+
 ```
 
 

@@ -12,8 +12,11 @@ $ minikube start
 コンフィグマップにするディレクトリconfigを確認する。
 ディレクトリconfigの中には、二つのテキストファイル
 ```
-$ ls config
-default.config  test.conf
+$ tree config
+config
+├── default.config
+└── test.conf
+
 ```
 
 コマンドで、ディレクトリをコンフィグマップにする

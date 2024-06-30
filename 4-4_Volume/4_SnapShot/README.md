@@ -71,7 +71,7 @@ restore.yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: my-vol-snapshot  # リストアの永続ボリューム名
+  name: my-vol-snapshot  # リストアする永続ボリューム名
 spec:
   storageClassName: csi-hostpath-sc
   dataSource:
