@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-pods
+spec:          # デプロイメントのスペック
+  replicas: 3  # ポッドの要求数 
+  selector:    # 対象ポッドを選択 (必須)
+    matchLabels:
+      app: my-pod
+  template:      # ポッドのテンプレート 
+    metadata:     
+      labels:    # ラベル（必須)
+        app: my-pod
+    spec:              # ポッドのスペック
+      containers:
+      - name: ex2-pod
+        image: ghcr.io/takara9/ex1:1.5
+        ports:
+        - containerPort: 9100

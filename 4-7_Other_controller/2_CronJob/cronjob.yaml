@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: job-every-1min
+spec:
+  schedule: "* * * * *"   # UNIX cron形式のスケジュール設定
+  jobTemplate:            # ジョブのテンプレート
+    spec:
+      ttlSecondsAfterFinished: 100  
+      backoffLimit: 2
+      activeDeadlineSeconds: 10
+      template:
+        spec:
+          containers:
+          - name: shell
+            image: ghcr.io/takara9/my-ubuntu:0.3
+            command:
+            - bash
+            - "-c"
+            - |
+              set -e
+              for i in {1..5}
+              do
+                od -An -tu4  -N2 /dev/random | sed 's/^ *//'
+              done
+          restartPolicy: Never

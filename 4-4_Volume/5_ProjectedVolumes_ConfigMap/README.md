@@ -71,7 +71,7 @@ $ kubectl exec -it pod-cm-kv -- bash -c 'cat /config/user-interface.properties'
 ```
 $ minikube delete
 ```
-
+https://github.com/takara9/docker_and_k8s/tree/main/4-4_Volume
 
 ## 参考資料
 - https://kubernetes.io/docs/concepts/storage/projected-volumes/

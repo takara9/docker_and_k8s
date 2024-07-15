@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: batch-to
+spec:
+  ttlSecondsAfterFinished: 100 # 終了して100秒後に自動削除  
+  backoffLimit: 2              # ジョブ失敗時の再試行回数
+  activeDeadlineSeconds: 10    # 最大実行時間
+  template:  # ポッドテンプレート
+    spec:
+      containers:
+      - name: shell
+        image: ghcr.io/takara9/my-ubuntu:0.3
+        command:
+        - bash
+        - "-c"
+        - |
+          set -e
+          for i in {1..5}
+          do
+            od -An -tu4  -N2 /dev/random | sed 's/^ *//'
+            sleep 4
+          done
+      restartPolicy: Never

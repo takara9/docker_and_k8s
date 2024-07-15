@@ -1,0 +1,50 @@
+# MariaDBのサービス
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-svc
+spec:
+  ports:
+  - name: mariadb-port
+    port: 3306
+  clusterIP: None             # IPアドレスは無し
+  selector:                   # ステートフルセットと連携するためのラベルセレクター 
+    app: mariadb
+---
+# MariaDBのステートフルセット
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb-sts
+spec:                     # ステートフルセットのスペック
+  serviceName: mariadb-svc    # 連携するサービス名をセット
+  #replicas: 3                # 注意 レプリカを複数起動しても、連携するわけではない。
+  selector:                   # ステートフルセットとポッドを繋ぐラベルセレクター
+    matchLabels:
+      app: mariadb
+  template:                   # ポッドのテンプレートを意味する
+    metadata:
+      labels:
+        app: mariadb          # コントローラーがポッドと連携するためのラベル
+    spec:                 # ポッドのスペック
+      containers:
+      - name: database
+        image: mariadb:11.3.2-jammy
+        ports:
+        - containerPort: 3306
+          name: mariadb-port
+        env:
+        - name: MARIADB_ROOT_PASSWORD
+          value: s0cRet
+        volumeMounts:  # 永続ボリュームのマウントポイント
+        - name: dbvl                    # ポッド内のボリューム名
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: dbvl                        # ポッド内のボリューム名
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "csi-hostpath-sc"   # ストレージクラス
+      resources:
+        requests:
+          storage: 20Mi

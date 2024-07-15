@@ -1,5 +1,8 @@
 # デーモンセット
 
+
+
+## 準備
 起動状態では、最初からデーモンセットがデプロイされている。
 ```
 $ minikube start -n 2
@@ -15,6 +18,8 @@ kindnet      2         2         2       2            2           <none>        
 kube-proxy   2         2         2       2            2           kubernetes.io/os=linux   64s
 ```
 
+
+## 実行例
 
 全てのノードにポッドが作成される
 ```
@@ -47,6 +52,14 @@ No resources found in kube-system namespace.
 ```
 
 
+## クリーンナップ
+```
+$ minikube delete
+```
  
+
 ## 参考資料
-- https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+- デーモンセット https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+- デーモンセットAPIリファレンス https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/daemon-set-v1/
+- 自動生成 APIリファレンス https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#daemonset-v1-apps
+
