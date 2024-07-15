@@ -1,8 +1,7 @@
 # その他コントローラー
 
 
-- [1_Job](ジョブ)
-- [2_CronJob](クーロンジョブ)
-- [3_DaemonSet](デーモンセット)
-- [4_CustomController](カスタムコントローラー)
-
+- [ジョブ](1_Job)
+- [クーロンジョブ](2_CronJob)
+- [デーモンセット](3_DaemonSet)
+- [カスタムコントローラー](4_CustomController)
