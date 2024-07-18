@@ -23,7 +23,7 @@ rest-service-lb   LoadBalancer   10.106.55.146   127.0.0.1     9100:30176/TCP   
 
 起動したポッドのIPアドレスを確認します。
 ```
-mini:2_LoadBalancer takara$ kubectl get po -o wide
+$ kubectl get po -o wide
 NAME                      READY   STATUS    RESTARTS   AGE   IP           NODE
 my-pods-8d5f6cfb4-bgdtq   1/1     Running   0          58s   10.244.0.3   minikube
 my-pods-8d5f6cfb4-h7qbd   1/1     Running   0          58s   10.244.0.5   minikube
@@ -32,23 +32,27 @@ my-pods-8d5f6cfb4-pdg96   1/1     Running   0          58s   10.244.0.4   miniku
 
 curlコマンドで、アクセスすると、応答のIPアドレスから、ランダムにポッドへ割り振られることがわかります。
 ```
-mini:2_LoadBalancer takara$ curl http://localhost:9100/info
+$ curl http://localhost:9100/info
 Host Name: my-pods-8d5f6cfb4-pdg96
 Host IP: 10.244.0.4
 Client IP : 10.244.0.1
-mini:2_LoadBalancer takara$ curl http://localhost:9100/info
+
+$ curl http://localhost:9100/info
 Host Name: my-pods-8d5f6cfb4-pdg96
 Host IP: 10.244.0.4
 Client IP : 10.244.0.1
-mini:2_LoadBalancer takara$ curl http://localhost:9100/info
+
+$ curl http://localhost:9100/info
 Host Name: my-pods-8d5f6cfb4-h7qbd
 Host IP: 10.244.0.5
 Client IP : 10.244.0.1
-mini:2_LoadBalancer takara$ curl http://localhost:9100/info
+
+$ curl http://localhost:9100/info
 Host Name: my-pods-8d5f6cfb4-pdg96
 Host IP: 10.244.0.4
 Client IP : 10.244.0.1
-mini:2_LoadBalancer takara$ curl http://localhost:9100/info
+
+$ curl http://localhost:9100/info
 Host Name: my-pods-8d5f6cfb4-bgdtq
 Host IP: 10.244.0.3
 Client IP : 10.244.0.1

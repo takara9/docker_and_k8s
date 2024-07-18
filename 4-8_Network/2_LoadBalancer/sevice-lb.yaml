@@ -1,10 +1,9 @@
-# MariaDBのサービス
 apiVersion: v1
 kind: Service
 metadata:
   name: rest-service-lb
 spec:
-  type: LoadBalancer
+  type: LoadBalancer   # この設定によりロードバランサーと連携
   ports:
   - port: 9100
     name: webservice

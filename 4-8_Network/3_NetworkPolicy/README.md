@@ -20,7 +20,7 @@ $ kubectl expose deployment nginx --port=80
 $ kubectl run my-pod --rm -ti --image=ghcr.io/takara9/my-ubuntu:0.3 -- /bin/sh
 If you don't see a command prompt, try pressing enter.
 
-# curl http://nginx/
+nobody@my-pod:/$ curl http://nginx/
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,7 +33,7 @@ If you don't see a command prompt, try pressing enter.
 
 ## アクセス元を、ラベルを持ったポッドに限定
 
-np.yamlでは、ラベル access=true に限定する様にします。
+np-pod-label.yaml ラベル access=true に限定する様にします。
 ```
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -49,42 +49,55 @@ spec:
 
 この設定により、ポッドにラベルが無ければアクセスできません。
 ```
-$ kubectl apply -f np.yaml 
-$ kubectl run my-pod --rm -ti --image=ghcr.io/takara9/my-ubuntu:0.3 -- /bin/sh
+$ kubectl apply -f np-pod-label.yaml 
+$ kubectl get networkpolicy
+NAME           POD-SELECTOR   AGE
+access-nginx   <none>         39s
 
-$ curl http://nginx/
-^C
-$ 
+$ kubectl run my-pod --rm -ti --image=ghcr.io/takara9/my-ubuntu:0.3 -- /bin/sh
+nobody@my-pod:/$ curl -m 3 http://nginx/
+curl: (28) Connection timed out after 3004 milliseconds
+$ exit
 ```
 
 ラベルを付与したポッドではアクセスがきます。
 ```
 $ kubectl run my-pod --rm -ti --image=ghcr.io/takara9/my-ubuntu:0.3 --labels="access=true" -- bash
-$ curl http://rest-service.prod.svc.cluster.local:9100/info
-Host Name: my-pods-5c84c44bc6-nhd6m
-Host IP: 10.244.120.73
-Client IP : 10.244.120.76
+nobody@my-pod:/$ curl -m 3 http://nginx/
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+＜中略＞
+$ exit
+```
+
+前述のネットワークポリシーは、削除しておきます。
+```
+$ kubectl delete -f np-pod-label.yaml 
 ```
 
 
 ## アクセス元をネームスペースに限定する
-前述のネットワークポリシーは、削除しておきます。
 ネームスペースを作成して、Nginxにアクセスできる様に、ラベルを付与します。
 ```
-$ kubectl delete -f np.yaml 
 $ kubectl create ns client
 $ kubectl label namespace client access=true
 $ kubectl get ns --show-labels client
 NAME     STATUS   AGE    LABELS
 client   Active   117s   access=true,kubernetes.io/metadata.name=client
+```
+
+```
 $ kubectl apply -f np-namespace.yaml
+$ kubectl get networkpolicy
 ```
 
 ネームスペースに、curlクライアントでアクセスするポッドを作成します。
 curlコマンドで、デフォルトネームスペースのnginxへアクセスできることが確認できました。
 ```
 $ kubectl run my-pod --rm -ti -n client --image=ghcr.io/takara9/my-ubuntu:0.3 -- bash
-nobody@my-pod:/$ curl http://nginx.default/
+nobody@my-pod:/$ curl -m 3 http://nginx.default/
 <!DOCTYPE html>
 <html>
 <head>
@@ -97,8 +110,8 @@ curlでアクセスできるかテストします。結果は、応答があり�
 ```
 $ kubectl run my-pod --rm -ti --image=ghcr.io/takara9/my-ubuntu:0.3 -- bash
 If you don't see a command prompt, try pressing enter.
-nobody@my-pod:/$ curl http://nginx/
-^C
+nobody@my-pod:/$ curl -m 3 http://nginx/
+
 ```
 
 
