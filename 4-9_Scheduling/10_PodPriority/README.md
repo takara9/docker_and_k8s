@@ -16,11 +16,9 @@ $ kubectl taint nodes minikube workload:NoSchedule
 ## プライオリティクラスの設定
 ```
 $ kubectl apply -f priority-class.yaml 
-
 $ kubectl get pc high-priority
 NAME            VALUE     GLOBAL-DEFAULT   AGE
 high-priority   1000000   false            14s
-
 $ kubectl describe pc high-priority
 Name:              high-priority
 Value:             1000000
@@ -44,8 +42,8 @@ my-pods-normal-7f696b6b96-qrncv   1/1     Running   0          19s   10.244.1.3 
 ```
 
 ## 高優先度のデプロイメントの適用
- プライオリィクラス high-priority を設定してデプロイする。
- その結果、優先度を指定しない低優先度のポッドは押しのけられ、Pending状態になり、高優先度のポッドに置き換わる。
+プライオリィクラス high-priority を設定してデプロイする。
+その結果、優先度を指定しない低優先度のポッドは押しのけられ、Pending状態になり、高優先度のポッドに置き換わる。
 ```
 $ kubectl apply -f deployment-hp.yaml 
 $ kubectl get po -o wide

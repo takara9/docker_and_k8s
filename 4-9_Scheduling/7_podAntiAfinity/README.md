@@ -1,5 +1,5 @@
 # ポッドアンチアフィニティ
-ごdSpeed＄5050全て異なるノードに、ポッドを配置する。
+ポッドを、すべて異なるノードに、ポッドを配置する。
 
 ## 準備
 ４ノードのK8sクラスタを起動、す
@@ -17,7 +17,7 @@ deployment-aa.yaml(抜粋)
 <前略>
       affinity:
         podAntiAffinity:　# ポッドアンチアフィニティ
-          requiredDuringSchedulingIgnoredDuringExecution: #スケジュール時有効
+          requiredDuringSchedulingIgnoredDuringExecution:  # スケジュール時必要、実行時無効
           - labelSelector:  # ラベルセレクター
               matchExpressions:  # 選択条件
               - key: app     # ラベルのキー

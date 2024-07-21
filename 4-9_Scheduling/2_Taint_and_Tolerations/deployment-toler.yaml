@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-pods
+spec:
+  replicas: 5 
+  selector:
+    matchLabels:
+      app: my-pod
+  template: 
+    metadata:     
+      labels:
+        app: my-pod
+    spec:
+      containers:
+        - name: ubuntu
+          image: ghcr.io/takara9/ex1:1.5
+      tolerations:       # ノードに一致するテイントがあれば配置可能となる
+        - key: "workload"
+          operator: "Exists"
+          effect: "NoSchedule"

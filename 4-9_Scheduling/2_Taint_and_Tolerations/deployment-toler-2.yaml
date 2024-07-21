@@ -16,7 +16,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: ubuntu
-          image: ghcr.io/takara9/ex1:1.0
+          image: ghcr.io/takara9/ex1:1.5
       tolerations:          # ノードに一致するテイントがあれば配置可能となる
         - key: "workload"
           operator: "Equal"

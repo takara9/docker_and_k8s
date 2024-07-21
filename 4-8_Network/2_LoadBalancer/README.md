@@ -14,7 +14,7 @@ $ minikube tunnel
 ターミナルをもう一つ開いて、オブジェクトを起動します。
 ```
 $ kubectl apply -f deployment.yaml 
-$ kubectl apply -f sevice-lb.yaml 
+$ kubectl apply -f service-lb.yaml 
 
 $ kubectl get svc rest-service-lb
 NAME              TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE

@@ -3,28 +3,22 @@ kind: Deployment
 metadata:
   name: my-pods
 spec:
-  replicas: 3 
+  replicas: 3
   selector:
     matchLabels:
       app: my-pod
-  template: 
+  template:
     metadata:     
       labels:
         app: my-pod
     spec:
-      nodeName: minikube-m03  # ノードネーム
-      securityContext:     # いらない
-        runAsUser: 65534
-        runAsGroup: 65534
-        fsGroup: 65534
+      nodeSelector:    # ノードセレクター
+        disktype: ssd  # このラベルを持つノードへ配置する
       containers:
         - name: ubuntu
           image: ghcr.io/takara9/ex1:1.0
           command: ["tail", "-f", "/dev/null"] 
-          volumeMounts: # いらない
-          - name: work-vol
-            mountPath: /mnt
-      volumes: # いらない
+      volumes:
       - name: work-vol
         emptyDir:
           sizeLimit: 50Mi 

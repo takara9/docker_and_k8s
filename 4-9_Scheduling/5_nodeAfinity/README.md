@@ -16,17 +16,12 @@ kubectl label nodes minikube-m03 topology.kubernetes.io/zone=tokyo-east1
 
 deployment-na.yaml(抜粋)
 ~~~
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: my-pods
-spec:
-  <中略>
+＜前略＞
   template:
     spec:
-      affinity:        # アフィニティ(親和性)
-        nodeAffinity:    # ノードアフィニティ（ノードへの親和性)
-          requiredDuringSchedulingIgnoredDuringExecution:  # スケジュール時に限定
+      affinity:          # アフィニティ(親和性)
+        nodeAffinity:    # ノードアフィニティ（ノードへの親和性）
+          requiredDuringSchedulingIgnoredDuringExecution:  # スケジュール時必要、実行時無視
             nodeSelectorTerms:   # ノードを選択する条件
             - matchExpressions:    # 一致の式
               - key: topology.kubernetes.io/zone   # ゾーンを使用
@@ -34,8 +29,6 @@ spec:
                 values:
                 - tokyo-east1                      # ゾーンの名前
                 - tokyo-west1                      # 同上
-    <中略>
-    containers:
 <以下省略>
 ~~~
 

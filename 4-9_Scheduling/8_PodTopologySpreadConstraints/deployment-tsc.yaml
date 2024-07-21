@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: my-pods
 spec:
-  replicas: 9
+  replicas: 10
   selector:
     matchLabels:
       app: my-pod
@@ -24,7 +24,7 @@ spec:
             mountPath: /mnt
       topologySpreadConstraints: # トポロジー・スプレッド・コンストレインツ
         - topologyKey: kubernetes.io/hostname  # ノードの分散配置
-          maxSkew: 1
+          maxSkew: 2
           whenUnsatisfiable: DoNotSchedule
           labelSelector:
             matchLabels:

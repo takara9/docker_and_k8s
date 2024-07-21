@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mypods
+  namespace: default
+spec:
+  selector:                  # 対象ポッド検索のために必須
+    app: mypods
+  type: NodePort             # ノードタイプを指定
+  ports:
+  - port: 9100

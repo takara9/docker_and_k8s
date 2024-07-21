@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: my-pods
 spec:
-  replicas: 5 
+  replicas: 3 
   selector:
     matchLabels:
       app: my-pod
@@ -12,12 +12,9 @@ spec:
       labels:
         app: my-pod
     spec:
-      securityContext:
-        runAsNonRoot: true
+      nodeName: minikube-m03  # ノードネーム
       containers:
         - name: ubuntu
           image: ghcr.io/takara9/ex1:1.0
-      tolerations:       # ノードに一致するテイントがあれば配置可能となる
-        - key: "controller"
-          operator: "Exists"
-          effect: "NoSchedule"
+          command: ["tail", "-f", "/dev/null"] 
+  

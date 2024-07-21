@@ -7,31 +7,51 @@ Kubernetesクラスタのノードにポットへアクセスするためのポ�
 注意点として、Apple M2 mac, Windows 11 の場合、利用できないことがある様です。
 
 ```
-$ minikube start
-$ kubectl create deployment mypods --image=ghcr.io/takara9/ex1:1.5
-$ kubectl expose deployment mypods --type=NodePort --port=9100
-$ kubectl get svc mypods
-NAME     TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-mypods   NodePort   10.104.42.127   <none>        9100:32429/TCP   8s
-```
-
-## 実行例
-ノードポートへ minikube service を介して接続する。
-```
 $ minikube version
 minikube version: v1.33.1
 commit: 5883c09216182566a63dff4c326a6fc9ed2982ff
+$ minikube start
+```
 
+デプロイメントを先に適用
+```
+$ kubectl create deployment mypods --image=ghcr.io/takara9/ex1:1.5
+```
+
+最小限のノードタイプサービスのYAML
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: mypods
+  namespace: default
+  labels:
+    app: mypods
+spec:
+  type: NodePort             # ノードタイプを指定
+  selector:　　　　　　　　　　　# 必須
+    app: mypods
+  ports:
+  - port: 9100
+```
+
+サービスの適用
+```
+$ kubectl apply -f service-nodeport.yaml 
+$ kubectl get svc mypods
+NAME     TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+mypods   NodePort   10.100.207.66   <none>        9100:32164/TCP   2m14s
+```
+
+minikube serviceで、ノードポートのサービスのプロキシを作成
+```
 $ minikube service mypods --url
 http://127.0.0.1:56402
 ❗  Docker ドライバーを darwin 上で使用しているため、実行するにはターミナルを開く必要があります。
 ```
 
-ターミナルをもう一つ開いて、ノードポートで開いたポッドへアクセスする。
+ターミナルをもう一つ開いて、ノードポートで開いたサービスのポッドへアクセス
 ```
-$ curl http://127.0.0.1:56402/ping;echo
-PONG!
-
 $ curl http://127.0.0.1:56402/info
 Host Name: mypods-5766dfdb7f-wjzkb
 Host IP: 10.244.0.3
@@ -39,9 +59,9 @@ Client IP : 10.244.0.1
 ```
 
 
-## 失敗ケース
 
-チップが Apple M2 で minikube version: v1.32.0　のケースでは、以下のエラーが NodePortが使えませんでした。
+## 失敗ケース
+チップが Apple M2 で minikube version: v1.32.0では、以下のエラーが NodePortが使えませんでした。
 ```
 mini:docker_and_k8s takara$ minikube version
 minikube version: v1.32.0
@@ -82,7 +102,9 @@ minikube delete
 
 
 ## 参照資料
-- https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
-- https://minikube.sigs.k8s.io/docs/handbook/accessing/
-- https://minikube.sigs.k8s.io/docs/commands/service/
+- サービスノードポート https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+- サービスAPIリファレンス https://kubernetes.io/docs/reference/kubernetes-api/service-resources/service-v1/
+- 自動生成 APIリファレンス https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#service-v1-core
+- minikube ハンドブック https://minikube.sigs.k8s.io/docs/handbook/accessing/
+- minikube サービス https://minikube.sigs.k8s.io/docs/commands/service/
 

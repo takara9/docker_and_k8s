@@ -20,14 +20,14 @@ deployment-tsc.yaml(抜粋)
 ```
 <前略>    
       topologySpreadConstraints:   # トポロジー・スプレッド・コンストレインツ
-        - topologyKey: kubernetes.io/hostname  # ノードの分散配置
-          maxSkew: 1
-          whenUnsatisfiable: DoNotSchedule
-          labelSelector:
+        - topologyKey: kubernetes.io/hostname       # ノードの分散配置
+          maxSkew: 1                                # 許容不均一差
+          whenUnsatisfiable: DoNotSchedule          # 条件を満たさな場合、割り当てない
+          labelSelector:                            # 適用対象のラベル
             matchLabels:
               app: my-pod
         - topologyKey: topology.kubernetes.io/zone  # ゾーンに分散配置
-          maxSkew: 1
+          maxSkew: 1                                # 以下同上
           whenUnsatisfiable: DoNotSchedule
           labelSelector:
             matchLabels:
@@ -41,17 +41,10 @@ deployment-tsc.yaml(抜粋)
 
 ```console
 $ kubectl apply -f deployment-tsc.yaml 
-$ kubectl get po -o wide
-NAME                       READY   STATUS    AGE   IP           NODE
-my-pods-68786c8db9-8pv87   1/1     Running   33s   10.244.3.3   minikube-m04
-my-pods-68786c8db9-f5qsh   1/1     Running   33s   10.244.1.3   minikube-m02
-my-pods-68786c8db9-ggqv2   1/1     Running   33s   10.244.2.3   minikube-m03
-my-pods-68786c8db9-gpngh   1/1     Running   33s   10.244.2.5   minikube-m03
-my-pods-68786c8db9-pf7lm   1/1     Running   33s   10.244.2.4   minikube-m03
-my-pods-68786c8db9-ppgq7   1/1     Running   33s   10.244.3.4   minikube-m04
-my-pods-68786c8db9-sk8lr   1/1     Running   33s   10.244.1.4   minikube-m02
-my-pods-68786c8db9-tg4zr   1/1     Running   33s   10.244.3.2   minikube-m04
-my-pods-68786c8db9-wbb7v   1/1     Running   33s   10.244.1.5   minikube-m02
+$ kubectl get pods -o=jsonpath='{range .items[*]}{.spec.nodeName}{"\n"}{end}' |sort -k 1|uniq -c
+   3 minikube-m02
+   3 minikube-m03
+   3 minikube-m04
 ```
 
 
@@ -63,5 +56,7 @@ minikube delete
 
 ## 参考リンク
 - https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
+- https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#topologyspreadconstraint-v1-core
+
 
 

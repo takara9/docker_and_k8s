@@ -16,7 +16,7 @@ deployment-pa.yaml(抜粋)
 <前略>
       affinity:
         podAffinity:  # ポッドアフィニティ
-          requiredDuringSchedulingIgnoredDuringExecution: # スケジュール時が対象
+          requiredDuringSchedulingIgnoredDuringExecution:   # スケジュール時必要、実行時無視
           - labelSelector: # ラベルセレクター
               matchExpressions: # 選択条件
               - key: database   # ラベルのキー

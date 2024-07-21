@@ -34,19 +34,17 @@ $ kubectl apply -f my-pdb.yaml
 
 ## 非自発的中断を防止
 デプロイされたノードを調べてドレインする。
+しかし、PDBが設定があるので、エラーが発生してドレインできない。
 
 ```
 $ kubectl apply -f deployment-pdb-1.yaml
-$ kubectl get po -o wide
-$ kubectl drain NODENAME --ignore-daemonsets 
-```
-
-しかし、PDBが設定があるので、エラーが発生してドレインできない。
-```
-$ kubectl drain minikube-m03 --ignore-daemonsets 
+$ NODE=$(kubectl get pods -o=jsonpath='{range .items[*]}{.spec.nodeName}{" "}{end}')
+$ kubectl drain $NODE --ignore-daemonsets 
 node/minikube-m03 already cordoned
-Warning: ignoring DaemonSet-managed Pods: kube-system/kindnet-d75pc, kube-system/kube-proxy-qmgkj
-evicting pod default/my-pods-5b5569d958-fw8xz
+Warning: ignoring DaemonSet-managed Pods: kube-system/kindnet-sd9xp, kube-system/kube-proxy-b72rl
+evicting pod default/my-pods-744958c68c-ldl24
+error when evicting pods/"my-pods-744958c68c-ldl24" -n "default" (will retry after 5s): Cannot evict pod as it would violate the pod's disruption budget.
+＜以下コマンドを中断＞
 ```
 
 自発的中断はPDBが効かない事に注意
