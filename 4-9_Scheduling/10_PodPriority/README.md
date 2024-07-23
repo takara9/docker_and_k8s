@@ -19,15 +19,6 @@ $ kubectl apply -f priority-class.yaml
 $ kubectl get pc high-priority
 NAME            VALUE     GLOBAL-DEFAULT   AGE
 high-priority   1000000   false            14s
-$ kubectl describe pc high-priority
-Name:              high-priority
-Value:             1000000
-GlobalDefault:     false
-PreemptionPolicy:  PreemptLowerPriority
-Description:       This priority class should be used for XYZ service pods only.
-Annotations:       kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"scheduling.k8s.io/v1","description":"This priority class should be used for XYZ service pods only.","globalDefault":false,"kind":"PriorityClass","metadata":{"annotations":{},"name":"high-priority"},"value":1000000}
-
-Events:  <none>
 ```
 
 ## プライオリティクラスなしのデプロイメントの適用
@@ -47,13 +38,13 @@ my-pods-normal-7f696b6b96-qrncv   1/1     Running   0          19s   10.244.1.3 
 ```
 $ kubectl apply -f deployment-hp.yaml 
 $ kubectl get po -o wide
-NAME                                     READY   STATUS    RESTARTS   AGE   IP           NODE
-my-pods-high-priority-5cd9c8ccb9-5s6kn   1/1     Running   0          35s   10.244.1.5   minikube-m02
-my-pods-high-priority-5cd9c8ccb9-fb4mv   1/1     Running   0          35s   10.244.1.6   minikube-m02
-my-pods-high-priority-5cd9c8ccb9-xb7kb   1/1     Running   0          35s   10.244.1.7   minikube-m02
-my-pods-normal-7f696b6b96-86zjs          0/1     Pending   0          35s   <none>       <none>
-my-pods-normal-7f696b6b96-gs8p6          0/1     Pending   0          35s   <none>       <none>
-my-pods-normal-7f696b6b96-w6rlk          0/1     Pending   0          35s   <none>       <none>
+NAME                                     READY   STATUS    AGE   IP           NODE
+my-pods-high-priority-5cd9c8ccb9-5s6kn   1/1     Running   35s   10.244.1.5   minikube-m02
+my-pods-high-priority-5cd9c8ccb9-fb4mv   1/1     Running   35s   10.244.1.6   minikube-m02
+my-pods-high-priority-5cd9c8ccb9-xb7kb   1/1     Running   35s   10.244.1.7   minikube-m02
+my-pods-normal-7f696b6b96-86zjs          0/1     Pending   35s   <none>       <none>
+my-pods-normal-7f696b6b96-gs8p6          0/1     Pending   35s   <none>       <none>
+my-pods-normal-7f696b6b96-w6rlk          0/1     Pending   35s   <none>       <none>
 ```
 
 

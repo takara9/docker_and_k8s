@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: mem-cpu-limit
+spec:
+  hard:
+    requests.memory: 100Mi  # メモリ要求量（最小量）
+    limits.memory: 200Mi    # 上限量
+    requests.cpu: 1         # CPU要求量（１秒当たりの使用時間割合)
+    limits.cpu: 2           # 上限量

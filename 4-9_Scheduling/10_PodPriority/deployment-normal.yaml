@@ -12,8 +12,6 @@ spec:
       labels:
         app: my-pod
     spec:
-      #securityContext:
-      #  runAsNonRoot: true
       containers:
         - name: ubuntu
           image: ghcr.io/takara9/stress-ng:1.0

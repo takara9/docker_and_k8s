@@ -13,8 +13,6 @@ spec:
         app: my-pod
     spec:
       priorityClassName: high-priority  # プライオリティクラスの設定
-      #securityContext:
-      #  runAsNonRoot: true
       containers:
         - name: ubuntu
           image: ghcr.io/takara9/stress-ng:1.0

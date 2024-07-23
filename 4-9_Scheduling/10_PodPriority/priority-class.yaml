@@ -2,6 +2,6 @@ apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
   name: high-priority
-value: 1000000
+value: 1000000    # 値が大きいほど、優先度が高くなり、範囲は -2147483648 から 1000000000 まで 
 globalDefault: false
 description: "This priority class should be used for XYZ service pods only."
