@@ -63,3 +63,6 @@ minikube delete
 
 ## 参考リンク
 - https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/
+
+
+https://github.com/takara9/docker_and_k8s/tree/main/4-9_Scheduling
