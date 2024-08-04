@@ -21,7 +21,8 @@ jobs:
       run: |
         export SHELL=/bin/bash
         eval $(minikube -p minikube docker-env)
-        docker build -f ./3-5_App_development/3-5-5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev ./3-5_App_development/3-5-5-java
+        ls ./3-5_App_development/3-5-5-java/
+        docker build -f ./3-5_App_development/3-5-5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev ./3-5_App_development/3-5-5-java/
         docker images        
     - name: Deploy to minikube
       run: |
