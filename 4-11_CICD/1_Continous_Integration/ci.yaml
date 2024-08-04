@@ -23,7 +23,8 @@ jobs:
         eval $(minikube -p minikube docker-env)
         pwd
         ls -al
-        docker build -f ./3-5_App_development/3-5-5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev ./3-5_App_development/3-5-5-java/
+        ls -al ./3-5_app_development/
+        docker build -f ./3-5_app_development/3-5-5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev ./3-5_app_development/3-5-5-java/
         docker images        
     - name: Deploy to minikube
       run: |
