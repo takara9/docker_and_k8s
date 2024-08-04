@@ -97,38 +97,25 @@ http://localhost:3000/
   ユーザー: admin
   パスワード: 上記シークレットから取得した値
 
-
-データソースにPrometheusの選択します<p>
-
-<img src="image/add-data-source.png" width="500">
-
-
+データソースにPrometheusの選択します
 PrometheusデータベースのURLアドレス 'http://prometheus-server' をインプットします。
-<p>
-<img src="image/add-data-source-pro.png" width="500">
-
 それ以外はデフォルトのままで、「Save & test」をクリックします。
 
 
-
 ### 作成済みダッシュボードの設定
-Dashboads -> Newボタン　-> import
-Grafana.com dashboard URL or ID のフィールドに 1860 をインプットします。
-
-<img src="image/node.png" width="500">
-
-データソースのプロメテウスを選択します。
+Dashboards -> Newボタン　-> import
+Grafana.com dashboard URL or ID のフィールドに 1860 をインプット
+データソースのプロメテウスを選択して、ボタン「Import」をクリック
 
 
 ## 監視対象のアプリケーションのインストール
+既存のターミナルは、そのままにしておき、新規にターミナルを開く
 ネームスペース `my-apps` を作成して、アプリケーションをデプロイします。
 
 ```
 $ kubectl create ns my-apps
 $ kubectl apply -n my-apps -f ../../4-8_Network/2_LoadBalancer/deployment.yaml 
 $ kubectl apply -n my-apps -f ../../4-8_Network/2_LoadBalancer/service-lb.yaml 
-$ kubectl get -n my-apps pod
-$ kubectl get -n my-apps svc
 $ minikube tunnel
 ```
 
@@ -190,4 +177,4 @@ $ minikube delete
 - グラファナのインストール、https://grafana.com/docs/grafana/latest/setup-grafana/installation/helm/
 - グラファナHP、https://grafana.com/
 - グラファナダッシュボードのカタログ、https://grafana.com/grafana/dashboards/
-
+- プロメテウスの検索式、https://prometheus.io/docs/prometheus/latest/querying/basics/

@@ -167,3 +167,4 @@ $ minikube delete
 - Lokiインストール、https://grafana.com/docs/loki/latest/setup/install/helm/install-monolithic/
 - ログの検索、https://grafana.com/docs/grafana/latest/explore/logs-integration/
 - ログの検索式、https://grafana.com/docs/loki/latest/query/log_queries/
+- PromQLチートシート、https://promlabs.com/promql-cheat-sheet/

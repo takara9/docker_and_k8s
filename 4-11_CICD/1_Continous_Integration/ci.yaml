@@ -21,11 +21,11 @@ jobs:
       run: |
         export SHELL=/bin/bash
         eval $(minikube -p minikube docker-env)
-        docker build -f ./3-5_app_development/3-5-5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev 3-5_app_development/3-5-5-java
+        docker build -f ../../3-5_App_development/3-5-5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev 3-5_app_development/3-5-5-java
         docker images        
     - name: Deploy to minikube
       run: |
-        kubectl apply -f ./4-7_CICD/1_Continous_Integration/ci-deployment.yaml
+        kubectl apply -f ./4-11_CICD/1_Continous_Integration/ci-deployment.yaml
         echo "--- waiting to running ---"
         sleep 60
         kubectl get svc -n exercise
