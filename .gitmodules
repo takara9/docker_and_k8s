@@ -13,3 +13,18 @@
 [submodule "3-5_app_development/3-5-1-python"]
 	path = 3-5_app_development/3-5-1-python
 	url = https://github.com/takara9/ex1
+[submodule "3-5_App_development/3-5-1-python"]
+	path = 3-5_App_development/3-5-1-python
+	url = https://github.com/takara9/ex1
+[submodule "3-5_App_development/3-5-2-php"]
+	path = 3-5_App_development/3-5-2-php
+	url = https://github.com/takara9/ex1
+[submodule "3-5_App_development/3-5-3-node"]
+	path = 3-5_App_development/3-5-3-node
+	url = https://github.com/takara9/ex1
+[submodule "3-5_App_development/3-5-4-golang"]
+	path = 3-5_App_development/3-5-4-golang
+	url = https://github.com/takara9/ex1
+[submodule "3-5_App_development/3-5-5-java"]
+	path = 3-5_App_development/3-5-5-java
+	url = https://github.com/takara9/ex1
