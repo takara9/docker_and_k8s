@@ -15,15 +15,16 @@ jobs:
       run: git submodule update --remote --merge    
     - name: Start minikube
       uses: medyagh/setup-minikube@master
-    - name: Try the cluster !
-      run: kubectl get pods -A
     - name: Build image
       run: |
         export SHELL=/bin/bash
         eval $(minikube -p minikube docker-env)
         ls -al
         docker build -f ./3-5_App_development/3-5-5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev ./3-5_App_development/3-5-5-java/
-        docker images        
+        docker images
+    - name: Check vulnerabilities 
+      run: |
+        docker run -v /var/run/docker.sock:/var/run/docker.sock --rm aquasec/trivy image --no-progress ghcr.io/takara9/ex5:dev
     - name: Deploy to minikube
       run: |
         kubectl apply -f ./4-11_CICD/1_Continous_Integration/ci-deployment.yaml
