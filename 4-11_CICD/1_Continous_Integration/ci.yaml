@@ -30,10 +30,6 @@ jobs:
         ls -al
         docker build -f ./3-5_App_development/3-5-5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev ./3-5_App_development/3-5-5-java/
         docker images
-    # コンテナイメージの脆弱性検査
-    - name: Check vulnerabilities 
-      run: |
-        docker run -v /var/run/docker.sock:/var/run/docker.sock --rm aquasec/trivy image --no-progress ghcr.io/takara9/ex5:dev
     # Kubernetesへデプロイ
     - name: Deploy to kubernetes
       run: |
