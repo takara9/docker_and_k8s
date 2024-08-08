@@ -30,7 +30,7 @@ $ kubectl port-forward service/argocd-server -n argocd 8080:80
 ```
 $ kubectl -n argocd get secret/argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 ```
-ブラウザから、http://localhost:8080/　アクセスして、ユーザー：admin と上記で表示されたパスワードをインプットして、ログインします。
+ブラウザから、http://localhost:8080/ アクセスして、ユーザー：admin と上記で表示されたパスワードをインプットして、ログインします。
 
 ## ArgoCDへリポジトリの登録
 メニューから移動 Setting -> Repositories -> CCNNECT REPO
@@ -60,6 +60,7 @@ $ helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
 ```
 $ helm install sealed-secrets -n kube-system --set-string fullnameOverride=sealed-secrets-controller sealed-secrets/sealed-secrets
 $ kubectl apply -f private/sealed-secrets-key.yaml 
+$ kubectl get po -n kube-system
 $ kubectl rollout restart -n kube-system deploy/sealed-secrets-controller
 ```
 

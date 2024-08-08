@@ -1,20 +1,28 @@
 name: CI
+# プルリクエストでワークフローが起動
 on:
   - pull_request
 jobs:
+  # ジョブ１を実行
   job1:
+    # 実行環境にUbuntu Linux の最新版を使用
     runs-on: ubuntu-latest
     name: build example and deploy to minikube
+    # ジョブのステップ
     steps:
+    # リポジトリをチェックアウト
     - name: Checkout from github.com:takara9/docker_and_k8s.git
       uses: actions/checkout@v2
       with:
         submodules: recursive
+    # サブモジュールを更新
     - name: Update submodules
       id: update
-      run: git submodule update --remote --merge    
+      run: git submodule update --remote --merge
+    # Minikubeを起動    
     - name: Start minikube
       uses: medyagh/setup-minikube@master
+    # コンテナイメージのビルド
     - name: Build image
       run: |
         export SHELL=/bin/bash
@@ -22,10 +30,12 @@ jobs:
         ls -al
         docker build -f ./3-5_App_development/3-5-5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev ./3-5_App_development/3-5-5-java/
         docker images
+    # コンテナイメージの脆弱性検査
     - name: Check vulnerabilities 
       run: |
         docker run -v /var/run/docker.sock:/var/run/docker.sock --rm aquasec/trivy image --no-progress ghcr.io/takara9/ex5:dev
-    - name: Deploy to minikube
+    # Kubernetesへデプロイ
+    - name: Deploy to kubernetes
       run: |
         kubectl apply -f ./4-11_CICD/1_Continous_Integration/ci-deployment.yaml
         echo "--- waiting to running ---"
@@ -34,6 +44,7 @@ jobs:
         kubectl get deployment -n exercise
         kubectl get pod -n exercise
         kubectl describe pod -n exercise
+    # アクセステスト
     - name: Test service URLs
       run: |        
         minikube service -n exercise list
