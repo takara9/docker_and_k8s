@@ -31,7 +31,8 @@ CI-TESTの下で、ワークフローのファイルの置くディレクトリ�
 Githubにpushされた後に、実行する作業を記述したファイルを配置します。
 ```
 $ mkdir -p .github/workflows
-$ cp ci.yaml .github/workflows
+$ cp 4-11_CICD/1_Continous_Integration/ci.yaml .github/workflows
+$ git status
 ```
 
 
