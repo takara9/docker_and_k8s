@@ -94,6 +94,14 @@ $ kubeseal --format=yaml -n stage --cert=cert.pem < private/secret.yaml > webser
 $ kubeseal --format=yaml -n prod --cert=cert.pem  < private/secret.yaml > webservice-system/overlays/prod/secret-encrypted.yaml 
 ```
 
+復号鍵を取り出す
+```
+$ kubectl get secret -n kube-system \
+-l sealedsecrets.bitnami.com/sealed-secrets-key=active \
+-o yaml > private/sealed-secrets-key.yaml 
+```
+
+
 ## ArgoCDのアプリケーション登録
 
 ArgoCDに、アプリケーションを登録するマニフェストを登録します。
