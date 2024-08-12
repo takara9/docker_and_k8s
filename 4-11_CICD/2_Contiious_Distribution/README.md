@@ -71,7 +71,7 @@ $ kubectl rollout restart -n kube-system deploy/sealed-secrets-controller
 
 
 
-## シールドシークレットを使ってシークレットを暗号化　（オプション）
+## シールドシークレットを使ってシークレットを暗号化　（オプション、実施済みのため）
 
 kubesealコマンドのインストールは、参考資料を見てインストールしてください。
 暗号化のための証明書を、デプロイ先となるK8sクラスタから取り出します。
