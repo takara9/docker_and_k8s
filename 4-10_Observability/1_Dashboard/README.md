@@ -25,4 +25,5 @@ minikube delete
 
 
 ## 参考資料
-- https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+- Kubernetesダッシュボード、https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+- メトリックスサーバー、https://github.com/kubernetes-sigs/metrics-server
