@@ -56,10 +56,10 @@ GitHub 上の minikube は自動的にクリーンナップされます。
 
 
 ## 参考資料
-- https://docs.github.com/ja/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
-- https://docs.github.com/ja/repositories/working-with-files/managing-files/adding-a-file-to-a-repository#adding-a-file-to-a-repository-using-the-command-line
-- https://docs.github.com/ja/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo
-- https://docs.github.com/ja/actions/learn-github-actions/understanding-github-actions
-- https://github.com/medyagh/setup-minikube
+- GitHub 新しい SSH キーを生成して ssh-agent に追加する、https://docs.github.com/ja/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+- GitHub コマンドラインを使用してファイルをリポジトリに追加する、https://docs.github.com/ja/repositories/working-with-files/managing-files/adding-a-file-to-a-repository#adding-a-file-to-a-repository-using-the-command-line
+- GitHub リポジトリをフォークする、https://docs.github.com/ja/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo
+- GitHub Actions を理解する、https://docs.github.com/ja/actions/learn-github-actions/understanding-github-actions
+- GitHub Actionsでminikubeをセットアップ、https://github.com/medyagh/setup-minikube
 
 
