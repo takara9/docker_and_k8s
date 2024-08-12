@@ -59,8 +59,13 @@ $ helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
 シールドシークレットを起動して、秘密鍵をリストアします。
 ```
 $ helm install sealed-secrets -n kube-system --set-string fullnameOverride=sealed-secrets-controller sealed-secrets/sealed-secrets
-$ kubectl apply -f private/sealed-secrets-key.yaml 
+$ helm list -n kube-system 
 $ kubectl get po -n kube-system
+```
+sealed-secrets-controller-xxxのSTATUSがRunningになったら、次へ進む
+
+```
+$ kubectl apply -f private/sealed-secrets-key.yaml 
 $ kubectl rollout restart -n kube-system deploy/sealed-secrets-controller
 ```
 
