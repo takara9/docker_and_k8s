@@ -10,19 +10,19 @@ jobs:
     name: build example and deploy to minikube
     # ジョブのステップ
     steps:
-    # リポジトリをチェックアウト
+      # リポジトリをチェックアウト
     - name: Checkout from github.com:takara9/docker_and_k8s.git
       uses: actions/checkout@v2
       with:
         submodules: recursive
-    # サブモジュールを更新
+      # サブモジュールを更新
     - name: Update submodules
       id: update
       run: git submodule update --remote --merge
-    # Minikubeを起動    
+      # Minikubeを起動    
     - name: Start minikube
       uses: medyagh/setup-minikube@master
-    # コンテナイメージのビルド
+      # コンテナイメージのビルド
     - name: Build image
       run: |
         export SHELL=/bin/bash
@@ -30,7 +30,7 @@ jobs:
         ls -al
         docker build -f ./3-5_App_development/3-5-5-java/Dockerfile.maven -t ghcr.io/takara9/ex5:dev ./3-5_App_development/3-5-5-java/
         docker images
-    # Kubernetesへデプロイ
+      # Kubernetesへデプロイ
     - name: Deploy to kubernetes
       run: |
         kubectl apply -f ./4-11_CICD/1_Continous_Integration/ci-deployment.yaml
@@ -40,7 +40,7 @@ jobs:
         kubectl get deployment -n exercise
         kubectl get pod -n exercise
         kubectl describe pod -n exercise
-    # アクセステスト
+      # アクセステスト
     - name: Test service URLs
       run: |        
         minikube service -n exercise list
