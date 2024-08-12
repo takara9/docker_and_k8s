@@ -116,15 +116,15 @@ $ minikube delete
 
 
 ## 参考資料
-- ArgoCD ホームページ、https://argoproj.github.io/cd/
+- ArgoCD HP、https://argoproj.github.io/cd/
 - ArgoCD インストール方法、https://argo-cd.readthedocs.io/en/stable/getting_started/
 - ArgoCD ユーザーガイド、https://argo-cd.readthedocs.io/en/stable/user-guide/
 - ArgoCD Application API、https://argo-cd.readthedocs.io/en/stable/user-guide/application-specification/
 - シールドシークレット、https://github.com/bitnami-labs/sealed-secrets
 - シールドシークレット ホームページ、https://sealed-secrets.netlify.app/
-- Fluxホームページ、https://fluxcd.io/
+- Flux HP、https://fluxcd.io/
 - External Secrets Operator、https://external-secrets.io/latest/
 - Kustomizeホームページ、https://kustomize.io/
-- Helmホームページ、https://helm.sh/
-- Jsonnetホームページ、https://jsonnet.org/
+- Helm HP、https://helm.sh/
+- Jsonnet HP、https://jsonnet.org/
 
