@@ -1,67 +1,119 @@
 # Docker と Kubernetes の基本 
 
-手っ取り早く Docker と Kubernetes　のスキルを身に付けたい人に向けた本
-
-本書で以下を、始めるための知識が身につきます。
-・コンテナ
-・Kubernetes
-・オブザバビリティ
-・CICD
-
-使用する教材は、ダウンロード可能な無料のソフトウェアです。
-Mac, Windows11 などのパソコンがあれば、自己研鑽を始められます。
-本書で、スキルを磨いて、なりたい自分へ近づきましょう。
 
 
+## Docker 
+- Dockerホームページ https://www.docker.com/
+- Docker 日本語リファレンス https://matsuand.github.io/docs.docker.jp.onthefly/reference/
+- Docker ドキュメント https://docs.docker.com/
+- Docker ドキュメント日本語化プロジェクト https://docs.docker.jp/
+- docker コマンドリファレンス https://docs.docker.com/reference/cli/docker/
+- Dockerfile リファレンス https://docs.docker.com/reference/dockerfile/
+- Dockerエンジン https://docs.docker.com/engine/
 
-## Linux の基本操作
-本書は、読者が Linux OS の基本操作の基礎知識を前提としています。本文中にLinuxコマンドを説明しません。
+## レジストリサービス
+- Docker Hub コンテナレジストリー https://hub.docker.com/
+- Amazon Elastic Container Registry https://aws.amazon.com/ecr/
+- Google Artifact Registry https://cloud.google.com/artifact-registry/docs
+- GitHub packages https://github.co.jp/features/packages
 
-- https://www.media.ryukoku.ac.jp/seta/manual/old/ubuntu/command/command.html
+
+### Dockerの歴史、基礎技術
+- Docker の歴史 https://en.wikipedia.org/wiki/Docker_(software)#History
+- OSレベル仮想化 https://en.wikipedia.org/wiki/OS-level_virtualization
+- UnionFS ユニオンファイルシステム https://ja.wikipedia.org/wiki/UnionFS
+- OverlayFS ストレージ ドライバー https://docs.docker.com/engine/storage/drivers/overlayfs-driver/
+- DockerのBuild,Share,Run https://www.docker.com/resources/what-container/
+- Dockerビルドの概要 https://docs.docker.com/build/
+- Docker ガイド https://docs.docker.com/guides/
+- Docker マニュアル　https://docs.docker.com/manuals/
+- Docker リファレンス ドキュメント https://docs.docker.com/reference/
 
 
-## Docker コンテナの基本
-Docker を体系的に学ぶためのお勧めのリンクです。
+### OSSの現状
+- Linux Foundation アニュアルレポート日本語版2023 https://www.linuxfoundation.jp/publications/2024/01/linux-foundation-annual-report-2023-jp/
+- GitHub OSSの現状 2023 https://github.blog/news-insights/research/the-state-of-open-source-and-ai/
 
-- https://docs.docker.com/guides/
 
-- [仮想マシンとコンテナの比較](https://www.google.com/search?q=virtual+machine+vs+container&sca_esv=92608ac12c65487e&sca_upv=1&rlz=1C5CHFA_enJP1090JP1091&sxsrf=ADLYWIJbwJYeCNu9H-VRbd75Mxp-qk5ovQ%3A1718488266213&ei=ygxuZtvYDI2m2roP2vYS&oq=virtual+machine+vs+&gs_lp=Egxnd3Mtd2l6LXNlcnAiE3ZpcnR1YWwgbWFjaGluZSB2cyAqAggAMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABEiueVCRCVjuX3AIeAGQAQKYAXmgAdEbqgEFMTkuMTe4AQHIAQD4AQGYAiOgApQWqAIKwgIKEAAYsAMY1gQYR8ICCBAAGIAEGKIEwgIHECMYJxjqAsICBBAjGCfCAgoQIxiABBgnGIoFwgIFEC4YgATCAgsQLhiABBjRAxjHAcICCxAuGIAEGMcBGK8BwgIaEC4YgAQYxwEYrwEYlwUY3AQY3gQY4ATYAQHCAgoQABiABBhDGIoFwgIHEC4YgAQYCsICBxAAGIAEGArCAgoQLhiABBhDGIoFwgIIEAAYgAQYywHCAggQLhiABBjLAcICCxAAGIAEGJECGIoFwgIrEC4YgAQYQxiKBRiXBRjcBBjeBBjgBBj0AxjxAxj1Axj2Axj3Axj4A9gBAZgDBYgGAZAGCroGBggBEAEYFJIHBTE3LjE4oAe44gI&sclient=gws-wiz-serp)
+### セキュリティ
+- CVEの目的と定義 https://www.csoonline.com/article/562175/what-is-cve-its-definition-and-purpose.html
+- 共通脆弱性識別子CVE概説 https://www.ipa.go.jp/security/vuln/scap/cve.html
+- 共通脆弱性評価システムCVSS概説 https://www.ipa.go.jp/security/vuln/scap/cvss.html
+- 共通脆弱性タイプ一覧CWE概説 https://www.ipa.go.jp/security/vuln/scap/cwe.html
 
+- 米国CERTコーディネーションセンター https://www.kb.cert.org/vuls/
+- JPCERTコーディネーションセンター https://www.jpcert.or.jp/
+- NVD 米国 国立脆弱性データベース https://nvd.nist.gov/
+- JVN 日本国 脆弱性対策データベース https://jvndb.jvn.jp/apis/myjvn/
+
+- コンテナセキュリティに関するよくある質問 https://docs.docker.com/security/faqs/containers/
+- 一般的なセキュリティに関する質問 https://docs.docker.com/security/faqs/general/
+- Dockerコンテナのセキュリティ https://docs.docker.com/engine/security/
+
+
+### Linuxディストリビューション パッケージの脆弱性
+- alpine linux Security Issue Tracker https://security.alpinelinux.org/
+- debian linux Security Bug Tracker https://security-tracker.debian.org/tracker/
+- Red Hat セキュリティーアドバイザリー https://access.redhat.com/security/security-updates/
+- Ubuntu Security Notices https://ubuntu.com/security/notices
+- SUSE linux Update Advisories https://www.suse.com/support/update/
+
+
+### コンテナイメージ作成のベストプラクティス
+- Dockerfile Best Practices https://github.com/dnaprawa/dockerfile-best-practices
+- Dockerfile Best Practices 入門ガイド https://www.docker.com/blog/intro-guide-to-dockerfile-best-practices/
+- Dockerコンテナ内でsshdを実行してはいけない理由 https://postd.cc/docker-ssh-considered-evil/
+- Docker ビルドのベストプラクティス https://docs.docker.com/build/building/best-practices/
+- なぜコンテナにSSHログが無いのですか？ https://www.reddit.com/r/docker/comments/10ob337/why_does_docker_container_doesnt_have_ssh_log/
+
+
+## マイクロサービスとコンテナ 
+- コンテナはマイクロサービス専用か？ https://www.docker.com/blog/are-containers-only-for-microservices-myth-debunked/
+- マイクロサービス　https://martinfowler.com/articles/microservices.html
+- マイクロサービスとコンテナ: アプリケーション アーキテクチャの現代的な解釈 https://laerciosantanna.medium.com/microservices-and-containers-a-modern-take-on-application-architecture-2ca97bdd0699
 
 
 
 ## Kubernetes の基本コンセプト
-Kubernetesの設計コンセプトなどが体系的に記述されたリンクです。
-
+- Kubernetesプロジェクトホームページ https://kubernetes.io/
 - コンセプト https://kubernetes.io/docs/concepts/
+- Kubernetes とは何か? 開発者として知っておくべきこと https://medium.com/@rphilogene/what-is-kubernetes-what-you-need-to-know-as-a-developer-674af25e3947
+- Kubernetesの概要 https://kubernetes.io/docs/concepts/overview/
 - チュートリアル　https://kubernetes.io/docs/tutorials/
+- クラウドネイティブ ランドスケープ https://landscape.cncf.io/
+
+## Kuberntesの歴史
+- Kubernetesの10年間の歴史 https://kubernetes.io/ja/blog/2024/06/06/10-years-of-kubernetes/
+- Kubernetesの歴史 https://ja.wikipedia.org/wiki/Kubernetes#%E6%AD%B4%E5%8F%B2
+- TechCrunch: Kubernetes が 1.0 に到達、Google は新たに設立された Cloud Native Computing Foundation に技術を寄付 https://www.cncf.io/news/2015/07/21/techcrunch-as-kubernetes-hits-1-0-google-donates-technology-to-newly-formed-cloud-native-computing-foundation/
+
+## Kubernetesのアーキテクチャー
+- Kubernetesのアーキテクチャー https://kubernetes.io/docs/concepts/architecture/
+- Kubernetesコンポーネント https://kubernetes.io/docs/concepts/overview/components/
 
 
-## クラウドネイティブの進め方
+## Kubernetesに必要だけど含まれないもの
+- Kubernetes インフラストラクチャとは https://www.vmware.com/topics/kubernetes-infrastructure
+- 
 
-- CNCFトレイルマップ　https://github.com/cncf/trailmap
-
-
-## Gitの基本
-
-- https://codezine.jp/article/detail/16559
-
-
-
-## CICDの説明
-
-- [継続的インテグレーション(Continous Integration)](https://www.google.com/search?q=%E7%B6%99%E7%B6%9A%E7%9A%84%E3%82%A4%E3%83%B3%E3%83%86%E3%82%B0%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%EF%BC%88CI%EF%BC%89%E3%81%A8%E3%81%AF&sca_esv=1ae8609d6a051828&sca_upv=1&rlz=1C5CHFA_enJP1090JP1091&sxsrf=ADLYWIKQr7VpckFsFCiw03EhtBV8h86LuA%3A1718487670005&ei=dgpuZoUFgNPV7w-4ugU&ved=0ahUKEwiFmPy4yd6GAxWAafUHHThdAQAQ4dUDCBA&oq=%E7%B6%99%E7%B6%9A%E7%9A%84%E3%82%A4%E3%83%B3%E3%83%86%E3%82%B0%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%EF%BC%88CI%EF%BC%89%E3%81%A8%E3%81%AF&gs_lp=Egxnd3Mtd2l6LXNlcnAiMue2mee2mueahOOCpOODs-ODhuOCsOODrOODvOOCt-ODp-ODs--8iENJ77yJ44Go44GvMgQQABhHMgQQABhHMgQQABhHMgQQABhHMgQQABhHMgQQABhHMgQQABhHMgQQABhHMgQQABhHMgQQABhHSMwhUABYAHAAeAGQAQCYAVygAVyqAQExuAEMyAEAmAIBoAIJmAMAiAYBkAYKkgcBMaAHugY&sclient=gws-wiz-serp)
-
-- [継続的デリバリー(Continuous Delivery)とは](https://www.google.com/search?q=%E7%B6%99%E7%B6%9A%E7%9A%84%E3%83%87%E3%83%AA%E3%83%90%E3%83%AA%E3%83%BC%28CD%29%E3%81%A8%E3%81%AF&sca_esv=1ae8609d6a051828&sca_upv=1&rlz=1C5CHFA_enJP1090JP1091&sxsrf=ADLYWIJJGwexize630FsWZgedWMGcq8bMw%3A1718487858036&ei=MgtuZrvwAZ_H0-kP0qeIqA8&ved=0ahUKEwi70dCSyt6GAxWf4zQHHdITAvUQ4dUDCBA&uact=5&oq=%E7%B6%99%E7%B6%9A%E7%9A%84%E3%83%87%E3%83%AA%E3%83%90%E3%83%AA%E3%83%BC%28CD%29%E3%81%A8%E3%81%AF&gs_lp=Egxnd3Mtd2l6LXNlcnAiIue2mee2mueahOODh-ODquODkOODquODvChDRCnjgajjga8yBhAAGAgYHjIIEAAYgAQYogQyCBAAGKIEGIkFMggQABiABBiiBDIIEAAYgAQYogRIoTZQ2BJYoDNwBHgBkAEAmAFtoAHCB6oBAzkuMrgBA8gBAPgBAZgCDqACgAfCAgoQABiwAxjWBBhHwgIEEAAYHsICCBAAGAQYCBgemAMAiAYBkAYKkgcEMTMuMaAHox4&sclient=gws-wiz-serp)
+### クラウドのKubernetesサービス
+- Google Kubernetes Engine（GKE）https://cloud.google.com/kubernetes-engine?hl=ja
+- Amazon Elastic Kubernetes Service (EKS) https://aws.amazon.com/jp/eks/
+- Azure Kubernetes Service (AKS) https://azure.microsoft.com/ja-jp/products/kubernetes-service
+- IBM Cloud Kubernetes Service https://www.ibm.com/products/kubernetes-service
 
 
-## Observability (可観測性)
+### オンプレミスのKubernetes製品
+- VMware Tanzu Kubernetes クラスタ https://docs.vmware.com/jp/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-DC22EA6A-E086-4CFE-A7DA-2654891F5A12.html
+- Red Hat OpenShift https://www.redhat.com/ja/explore/openshift
+- SUSE テクニカル リファレンス ドキュメント: コンテナ管理 https://documentation.suse.com/ja-jp/trd/kubernetes/
+- Ubuntu linux kubernetes https://jp.ubuntu.com/kubernetes
 
-- [Observability (可観測性)とは](https://www.google.com/search?q=%E3%82%AA%E3%83%96%E3%82%B6%E3%83%BC%E3%83%90%E3%83%93%E3%83%AA%E3%83%86%E3%82%A3&rlz=1C5CHFA_enJP1090JP1091&oq=%E3%82%AA%E3%83%96%E3%81%96%E3%81%B0%E3%83%93%E3%83%AA%E3%83%86%E3%82%A3&gs_lcrp=EgZjaHJvbWUqCwgBEAAYBBgKGIAEMgYIABBFGDkyCwgBEAAYBBgKGIAEMgoIAhAAGAQYChgeMgoIAxAAGIAEGKIEMgoIBBAAGIAEGKIEMgoIBRAAGIAEGKIE0gEKMTE1NzdqMGoxNagCALACAA&sourceid=chrome&ie=UTF-8)
 
-- [メトリクス監視](https://www.google.com/search?q=%E3%83%A1%E3%83%88%E3%83%AA%E3%83%83%E3%82%AF%E3%82%B9%E7%9B%A3%E8%A6%96%E3%81%A8%E3%81%AF&sca_esv=92608ac12c65487e&sca_upv=1&rlz=1C5CHFA_enJP1090JP1091&sxsrf=ADLYWIJKmCQ8Ktr8ueGJMwKDt0M0xSEBsg%3A1718488069084&ei=BQxuZsfvBLao2roP28CygAw&ved=0ahUKEwiHhqL3yt6GAxU2lFYBHVugDMAQ4dUDCBA&uact=5&oq=%E3%83%A1%E3%83%88%E3%83%AA%E3%83%83%E3%82%AF%E3%82%B9%E7%9B%A3%E8%A6%96%E3%81%A8%E3%81%AF&gs_lp=Egxnd3Mtd2l6LXNlcnAiHuODoeODiOODquODg-OCr-OCueebo-imluOBqOOBrzIHEAAYgAQYDTIIEAAYgAQYogQyCBAAGIAEGKIEMggQABiiBBiJBUjAFVDiB1jyEXACeAGQAQCYAXOgAeADqgEDNC4xuAEDyAEA-AEBmAIGoAKUA8ICChAAGLADGNYEGEfCAgsQABiABBgXGAoYKsICCRAAGIAEGBcYCsICChAAGAUYFxgKGB6YAwCIBgGQBgqSBwM1LjGgB58N&sclient=gws-wiz-serp#ip=1)
+## Kubernetesのリソースとオブジェクト
+- Kubernetes のオブジェクト https://kubernetes.io/docs/concepts/overview/working-with-objects/
+- Kubernetes APIのコンセプト https://kubernetes.io/docs/reference/using-api/api-concepts/
+- Kubernetes API https://kubernetes.io/docs/reference/kubernetes-api/
 
-- [ログ分析](https://www.google.com/search?q=%E3%83%AD%E3%82%B0%E5%88%86%E6%9E%90%E3%81%A8%E3%81%AF&sca_esv=92608ac12c65487e&sca_upv=1&rlz=1C5CHFA_enJP1090JP1091&sxsrf=ADLYWIKXwBzp6UEialwEhEWXxXpyNs_uuw%3A1718488189584&ei=fQxuZtykI8aB2roPwfud8A4&ved=0ahUKEwic19ywy96GAxXGgFYBHcF9B-4Q4dUDCBA&uact=5&oq=%E3%83%AD%E3%82%B0%E5%88%86%E6%9E%90%E3%81%A8%E3%81%AF&gs_lp=Egxnd3Mtd2l6LXNlcnAiEuODreOCsOWIhuaekOOBqOOBrzIFEAAYgAQyCBAAGIAEGKIEMggQABiiBBiJBTIIEAAYgAQYogRI4xFQ2QlYqg5wAXgBkAEAmAFkoAHwAqoBAzMuMbgBA8gBAPgBAZgCBaAChAPCAgoQABiwAxjWBBhHwgIHEAAYgAQYBMICBxAAGIAEGBfCAggQABgEGAUYHsICChAAGAQYBRgXGB6YAwCIBgGQBgqSBwM0LjGgB7wI&sclient=gws-wiz-serp)
 
-- [トレーシング](https://www.google.com/search?q=%E5%88%86%E6%95%A3%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%B3%E3%82%B0%E3%81%A8%E3%81%AF&sca_esv=92608ac12c65487e&sca_upv=1&rlz=1C5CHFA_enJP1090JP1091&sxsrf=ADLYWILSkvWhYiG9LYL6aXuAWYhAv4nQUw%3A1718488247843&ei=twxuZtGXM-Ld2roPgMO1yAM&oq=%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%B3%E3%82%B0%E3%81%A8%E3%81%AF&gs_lp=Egxnd3Mtd2l6LXNlcnAiGOODiOODrOODvOOCt-ODs-OCsOOBqOOBryoCCAQyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEdIjzlQkxhYhihwBXgBkAEAmAF5oAGpA6oBAzEuM7gBAcgBAPgBAZgCCaACvwPCAggQABiABBiiBMICCBAAGKIEGIkFmAMAiAYBkAYKkgcDNi4zoAeVCQ&sclient=gws-wiz-serp)
 
