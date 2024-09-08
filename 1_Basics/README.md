@@ -115,5 +115,6 @@
 - Kubernetes APIのコンセプト https://kubernetes.io/docs/reference/using-api/api-concepts/
 - Kubernetes API https://kubernetes.io/docs/reference/kubernetes-api/
 
-
-
+## kubectlコマンド　使用法
+- kubectlクイックリファレンス https://kubernetes.io/docs/reference/kubectl/quick-reference/
+- kubectlチートシート https://kubernetes.io/ja/docs/reference/kubectl/cheatsheet/
