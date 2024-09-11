@@ -154,9 +154,18 @@ Windows Webサーバー
 docker run -d --name web -v C:\Users\tkr99\docker_and_k8s\3-1_Run_and_stop\contents_root:/usr/share/nginx/html -p 8080:80 nginx
 ```
 
+$ docker run -d --name web -v $PWD/contents_root:/usr/share/nginx/html -p 8080:80 nginx
+
+
+
 Windows データベースサーバー
 ```
 docker run --name my-db -v C:\Users\tkr99\docker_and_k8s\3-1_Run_and_stop\data_vol:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secret -d mysql
+```
+
+macOS データベースサーバー
+```
+docker run --name my-db -v $PWD/data_vol:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secret -d mysql
 ```
 
 
