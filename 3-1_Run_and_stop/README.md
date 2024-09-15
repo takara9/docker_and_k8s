@@ -82,7 +82,7 @@ REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
 
 Ubuntuコンテナの起動
 ```
-PS > $path = (Get-Location).Path + "/home"
+PS > $path = (Get-Location).Path + "/my-home"
 PS > docker run -it --name my-linux -v ${path}:/home ubuntu bash
 root@a18f63c51bf7:/# df -h
 Filesystem      Size  Used Avail Use% Mounted on
@@ -90,7 +90,7 @@ overlay        1007G  3.7G  952G   1% /
 tmpfs            64M     0   64M   0% /dev
 tmpfs           3.9G     0  3.9G   0% /sys/fs/cgroup
 shm              64M     0   64M   0% /dev/shm
-C:\             477G   74G  403G  16% /home
+C:\             477G   74G  403G  16% /home/my-home
 /dev/sdd       1007G  3.7G  952G   1% /etc/hosts
 tmpfs           3.9G     0  3.9G   0% /proc/acpi
 tmpfs           3.9G     0  3.9G   0% /sys/firmware
@@ -102,16 +102,16 @@ root@a18f63c51bf7:/# apt update -y && apt install golang
 root@a18f63c51bf7:/# go version
 go version go1.22.2 linux/amd64
 
-root@a18f63c51bf7:/ cd /home
-root@a18f63c51bf7:/home# go mod init main
+root@a18f63c51bf7:/ cd /home/my-home
+root@a18f63c51bf7:/home/my-home# go mod init main
 go: creating new go.mod: module main
 go: to add module requirements and sums:
         go mod tidy
-root@a18f63c51bf7:/home# go mod tidy
-root@a18f63c51bf7:/home# go run main.go 
+root@a18f63c51bf7:/home/my-home# go mod tidy
+root@a18f63c51bf7:/home/my-home# go run main.go 
 Hello container world!
 
-root@a18f63c51bf7:/# exit
+root@a18f63c51bf7:/home/my-home# exit
 ```
 
 ```
