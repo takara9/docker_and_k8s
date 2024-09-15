@@ -3,7 +3,7 @@
 ## コンテナの実行と停止
 
 ```
-PS C:\Users\tkr\docker_and_k8s> docker run --name hw hello-world
+PS > docker run --name hw hello-world
 Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
 c1ec31eb5944: Pull complete
@@ -30,23 +30,22 @@ Share images, automate workflows, and more with a free Docker ID:
 
 For more examples and ideas, visit:
  https://docs.docker.com/get-started/
-
-PS C:\Users\tkr\docker_and_k8s> 
 ```
+
 
 起動後のコンテナの確認
 ```
-PS C:\Users\tkr\docker_and_k8s> docker ps
+PS > docker ps
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 
-PS C:\Users\tkr\docker_and_k8s> docker ps -a
+PS > docker ps -a
 CONTAINER ID   IMAGE         COMMAND    CREATED              STATUS                          PORTS     NAMES
 68859fe27ebb   hello-world   "/hello"   About a minute ago   Exited (0) About a minute ago             hw
 ```
 
 コンテナのログを確認
 ```
-PS C:\Users\tkr\docker_and_k8s> docker logs hw      
+PS > docker logs hw      
 
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
@@ -55,92 +54,162 @@ This message shows that your installation appears to be working correctly.
 
 コンテナの削除
 ```
-$ docker rm hw
+PS > docker rm hw
 hw
 
-$ docker ps   
+PS > docker ps   
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
-```
-
-イメージのリスト表示
-```
-$ docker images
-REPOSITORY                    TAG       IMAGE ID       CREATED         SIZE
-hello-world                   latest    d2c94e258dcb   16 months ago   13.3kB
 ```
 
 イメージの削除
 ```
-$ docker rmi hello-world
+PS > docker images
+REPOSITORY                    TAG       IMAGE ID       CREATED         SIZE
+hello-world                   latest    d2c94e258dcb   16 months ago   13.3kB
+
+PS > docker rmi hello-world
 Untagged: hello-world:latest
 Untagged: hello-world@sha256:53cc4d415d839c98be39331c948609b659ed725170ad2ca8eb36951288f81b75
 Deleted: sha256:d2c94e258dcb3c5ac2798d32e1249e42ef01cba4841c2234249495f87264ac5a
 Deleted: sha256:ac28800ec8bb38d5c35b49d45a6ac4777544941199075dff8c4eb63e093aa81e
 
-$ docker images
+PS > docker images
 REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
 ```
 
 
+## Linuxコンテナの実行
+
+Ubuntuコンテナの起動
+```
+PS > $path = (Get-Location).Path + "/home"
+PS > docker run -it --name my-linux -v ${path}:/home ubuntu bash
+root@a18f63c51bf7:/# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+overlay        1007G  3.7G  952G   1% /
+tmpfs            64M     0   64M   0% /dev
+tmpfs           3.9G     0  3.9G   0% /sys/fs/cgroup
+shm              64M     0   64M   0% /dev/shm
+C:\             477G   74G  403G  16% /home
+/dev/sdd       1007G  3.7G  952G   1% /etc/hosts
+tmpfs           3.9G     0  3.9G   0% /proc/acpi
+tmpfs           3.9G     0  3.9G   0% /sys/firmware
+```
 
 ```
-PS C:\Users\tkr99\docker_and_k8s> docker run -it --name my-ubuntu ubuntu bash 
-Unable to find image 'ubuntu:latest' locally
-latest: Pulling from library/ubuntu
-31e907dcc94a: Pull complete
-Digest: sha256:8a37d68f4f73ebf3d4efafbcf66379bf3728902a8038616808f04e34a9ab63ee
-Status: Downloaded newer image for ubuntu:latest
-root@2a391b3602db:/# pwd
+root@a18f63c51bf7:/# apt update -y && apt install golang
+＜中略＞
+root@a18f63c51bf7:/# go version
+go version go1.22.2 linux/amd64
+
+root@a18f63c51bf7:/ cd /home
+root@a18f63c51bf7:/home# go mod init main
+go: creating new go.mod: module main
+go: to add module requirements and sums:
+        go mod tidy
+root@a18f63c51bf7:/home# go mod tidy
+root@a18f63c51bf7:/home# go run main.go 
+Hello container world!
+
+root@a18f63c51bf7:/# exit
+```
+
+```
+PS > docker ps -a 
+CONTAINER ID   IMAGE     COMMAND   CREATED          STATUS                     PORTS     NAMES
+a18f63c51bf7   ubuntu    "bash"    18 seconds ago   Exited (0) 5 seconds ago             my-linux
+
+PS > docker rm my-linux
+my-linuix
+```
+
+
+
+コンテナの削除オプション「--rm」付きの Ubuntuコンテナの起動
+```
+PS > docker run -it --name my-ubuntu --rm ubuntu bash
+root@d3ee178e87fc:/# pwd
 /
-root@2a391b3602db:/# ks
-bash: ks: command not found
-root@2a391b3602db:/# ls
-bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@d3ee178e87fc:/# exit
+exit
+
+PS > docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+```
+
+Ubuntuのイメージの削除
+```
+PS > docker images      
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+ubuntu       latest    edbfe74c41f8   6 weeks ago   78.1MB
+
+PS > docker rmi ubuntu
+Untagged: ubuntu:latest
+Untagged: ubuntu@sha256:8a37d68f4f73ebf3d4efafbcf66379bf3728902a8038616808f04e34a9ab63ee
+Deleted: sha256:edbfe74c41f8a3501ce542e137cf28ea04dd03e6df8c9d66519b6ad761c2598a
+Deleted: sha256:f36fd4bb7334b7ae3321e3229d103c4a3e7c10a263379cc6a058b977edfb46de
 ```
 
 
 
-バックグランドでコンテナの起動
+## Webサーバーのコンテナ実行
+
+Windowsで DockerDesktopを使用するケース
 ```
-docker run -d --name web nginx
-docker ps
-docker stop web
-docker ps
-docker ps -a
-docker rm web
+PS > docker run -d --name web -p 8080:80 nginx
 ```
 
-
-
+macOS, Linuxで DockerDesktopを使用するケース
 ```
-PS C:\Users\tkr99\docker_and_k8s> docker run -d --name web -p 8080:80 nginx
-Unable to find image 'nginx:latest' locally
-latest: Pulling from library/nginx
-a2318d6c47ec: Pull complete
-095d327c79ae: Pull complete
-bbfaa25db775: Pull complete
-7bb6fb0cfb2b: Pull complete
-0723edc10c17: Pull complete
-24b3fdc4d1e3: Pull complete
-3122471704d5: Pull complete
-Digest: sha256:04ba374043ccd2fc5c593885c0eacddebabd5ca375f9323666f28dfd5a9710e3
-Status: Downloaded newer image for nginx:latest
-43cb34ac218d28afa072e8b9c3d4ec52fc47568fc19a5ce3aca871e4ee113572
-```
-
-```
-PS C:\Users\tkr99\docker_and_k8s> docker ps
-PS C:\Users\tkr99\docker_and_k8s> docker stop web
-PS C:\Users\tkr99\docker_and_k8s> docker ps
+$ docker run -d --name web -p 8080:80 nginx
 ```
 
 
+パソコンのフォルダをコンテンツを表示する
+
+Windowsで DockerDesktopを使用するケース 
+PowerShell のコマンドプロンプトを開いて以下を実行
+```
+PS > $path = (Get-Location).Path + "/contents_root"
+PS > docker run -d --name web -v ${path}:/usr/share/nginx/html -p 8080:80 nginx
+```
+
+macOS, Linuxで DockerDesktopを使用するケース
+ターミナルを開いて以下のコマンドを実行
+```
+$ docker run -d --name web -v $PWD/contents_root:/usr/share/nginx/html -p 8080:80 nginx
+```
+
+```
+PS > docker ps
+CONTAINER ID   IMAGE     COMMAND                   CREATED         STATUS         PORTS                  NAMES
+922ebdecaede   nginx     "/docker-entrypoint.…"   3 minutes ago   Up 3 minutes   0.0.0.0:8080->80/tcp   web
+
+PS > docker stop web 
+web
+
+PS > docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+```
+
+停止中コンテナの開始
+```
+PS > docker start web
+web
+
+PS > docker ps
+CONTAINER ID   IMAGE     COMMAND                   CREATED         STATUS         PORTS                  NAMES
+922ebdecaede   nginx     "/docker-entrypoint.…"   4 minutes ago   Up 5 seconds   0.0.0.0:8080->80/tcp   web
+```
+
+停止したコンテナの削除
 ```
 PS C:\Users\tkr99\docker_and_k8s> docker ps -a
 PS C:\Users\tkr99\docker_and_k8s> docker rm web
 PS C:\Users\tkr99\docker_and_k8s> docker ps -a
 ```
 
+イメージの削除
 ```
 PS C:\Users\tkr99\docker_and_k8s> docker images
 PS C:\Users\tkr99\docker_and_k8s> docker rmi nginx
@@ -149,67 +218,80 @@ PS C:\Users\tkr99\docker_and_k8s> docker images
 ```
 
 
-Windows Webサーバー
-```
-docker run -d --name web -v C:\Users\tkr99\docker_and_k8s\3-1_Run_and_stop\contents_root:/usr/share/nginx/html -p 8080:80 nginx
-```
 
-$ docker run -d --name web -v $PWD/contents_root:/usr/share/nginx/html -p 8080:80 nginx
-
+## データベースのコンテナ実行
 
 
 Windows データベースサーバー
+PowerShell のコマンドプロンプトを開いて以下を実行
 ```
-docker run --name my-db -v C:\Users\tkr99\docker_and_k8s\3-1_Run_and_stop\data_vol:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secret -d mysql
+PS > $path = (Get-Location).Path + "/data_vol"
+PS > docker run --name my-db -v ${path}:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secret -d mysql
 ```
 
 macOS データベースサーバー
+ターミナルを開いて以下のコマンドを実行
 ```
-docker run --name my-db -v $PWD/data_vol:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secret -d mysql
-```
-
-
-
-
-
-```
-docker stop my-db             
-docker start my-db
-docker exec -it my-db mysql -p
-Enter password: 
+$ docker run --name my-db -v $PWD/data_vol:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secret -d mysql
 ```
 
-
-docker run -d --name web -v $ $-p 8080:80 nginx
-
-イメージの削除
-
+コンテナ内のコマンド mysql を実行
 ```
-docker images
-docker rmi -f nginx
-docker images
+PS > docker exec -it my-db mysql -p
+Enter password: secret
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+＜中略＞
+mysql> create database mydb;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mydb               |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.01 sec)
+
+mysql> quit
+Bye
 ```
 
+
+データベースを一旦止めて、再スタート
 ```
-PS C:\Users\tkr99\docker_and_k8s> docker images
-REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
-nginx        latest    39286ab8a5e1   3 weeks ago   188MB
+PS > docker stop my-db
+my-db
+PS > docker ps -a      
+CONTAINER ID   IMAGE     COMMAND                   CREATED         STATUS                      PORTS     NAMES
+2a2856250523   mysql     "docker-entrypoint.s…"   2 minutes ago   Exited (0) 14 seconds ago             my-db
+```
 
-PS C:\Users\tkr99\docker_and_k8s> docker rmi -f nginx
-Untagged: nginx:latest
-Untagged: nginx@sha256:04ba374043ccd2fc5c593885c0eacddebabd5ca375f9323666f28dfd5a9710e3
-Deleted: sha256:39286ab8a5e14aeaf5fdd6e2fac76e0c8d31a0c07224f0ee5e6be502f12e93f3
-Deleted: sha256:d71f9b66dd3f9ef3164d7023cc99ce344d209decd5d6cd56166c0f7a2f812c06
-Deleted: sha256:634d30adf8a2232256b2871e268c8f0fdb2c348374cd8510920a76db56868e16
-Deleted: sha256:f230be3f4e104c7414b7ce9c8d301f37061b4e06afe010878ea55f858d89f7f3
-Deleted: sha256:c5210c8480131b7dbc5ad8adc425d68cd7a8848ee2e07de3c69cb88a4b8fd662
-Deleted: sha256:d4f588811a337e0b01da46772d02f7f82ee5f9baff6886365ffb912d455f4f53
-Deleted: sha256:d73e21a1e27b0184b36f6578c8d0722a44da253bc74cd72e9788763f4a4de08f
-Deleted: sha256:8e2ab394fabf557b00041a8f080b10b4e91c7027b7c174f095332c7ebb6501cb
+停止中のコンテナを実行開始
+```
+PS > docker start my-db
+my-db
 
-PS C:\Users\tkr99\docker_and_k8s> docker images
-REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
-PS C:\Users\tkr99\docker_and_k8s> 
+PS > docker exec -it my-db mysql -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+＜中略＞
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mydb               |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.02 sec)
+
+mysql>
 ```
 
 
@@ -235,22 +317,6 @@ $ podman run index.docker.io/hello-world
 ```
 
 
-## クリーンナップ
-docker rm hw
-docker rmi hello-world:latest
-
-
-## イメージの取得
-docker pull ghcr.io/takara9/my-ubuntu:0.2 <-- 不要ではないか
-
-## 対話型コンテナの実行
-docker run -it --name mu ghcr.io/takara9/my-ubuntu:0.2
-exit
-
-
-## クリーンナップ
-docker rm mu
-docker rmi ghcr.io/takara9/my-ubuntu:0.2
 
 
 ## 参考資料
