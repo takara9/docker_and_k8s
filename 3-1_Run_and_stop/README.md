@@ -320,6 +320,11 @@ $ podman run index.docker.io/hello-world
 
 
 ## 参考資料
+- 日本語 dockerコマンド https://docs.docker.jp/engine/reference/commandline/
+- dockerコマンドリファレンス https://docs.docker.com/reference/cli/docker/
+- hello-world https://hub.docker.com/_/hello-world
+- nginx https://hub.docker.com/_/nginx
+- mysql https://hub.docker.com/_/mysql
 - Docker Hub https://hub.docker.com/
       Docker Hubは、Dockerコンテナの存在や利便性を、広く知らしめたサービスです。改めて解説する必要は無いかもしれません。インターネットで公開することも、アクセス制限を設定して特定のグループで共有することもできます。レジストリの機能に加えて、ブラウザを使ってイメージを検索、起動の方法や使い方の説明なども見ることができます。
 - Distribution https://github.com/distribution/distribution
