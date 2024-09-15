@@ -302,10 +302,13 @@ mysql>
 $ export CR_PAT=YOUR_TOKEN
 $ export USERNAME=YOUR_USERID 
 $ echo $CR_PAT | docker login ghcr.io -u $USERNAME --password-stdin
-$ docker pull ghcr.io/takara9/my-ubuntu:0.3
-0.1: Pulling from takara9/my-ubuntu
+PS > docker pull ghcr.io/takara9/my-ubuntu:0.2
+0.2: Pulling from takara9/my-ubuntu
+7734efb8b826: Pull complete
+af04a071076c: Pull complete
 Digest: sha256:69761cfbffb581e1b53834f8d1ea52ca98ddd217efec857b906c12847112a405
-Status: Downloaded newer image for ghcr.io/takara9/my-ubuntu:0.3
+Status: Downloaded newer image for ghcr.io/takara9/my-ubuntu:0.2
+ghcr.io/takara9/my-ubuntu:0.2
 ```
 
 
@@ -322,6 +325,8 @@ $ podman run index.docker.io/hello-world
 ## 参考資料
 - 日本語 dockerコマンド https://docs.docker.jp/engine/reference/commandline/
 - dockerコマンドリファレンス https://docs.docker.com/reference/cli/docker/
+- GitHubプロファイル https://github.com/settings/profile
+- GHCRレジストリ https://github.com/takara9?tab=packages
 - hello-world https://hub.docker.com/_/hello-world
 - nginx https://hub.docker.com/_/nginx
 - mysql https://hub.docker.com/_/mysql
@@ -337,4 +342,6 @@ $ podman run index.docker.io/hello-world
       パブリッククラウドのAWS, Azure, Google Cloud, IBM Cloud などもレジストリ サービスを提供しています。自社のクラウドサービス利用者に有利なサービスを提供していますので、読者にとって最適なサービスを選択すると良いでしょう。リンクはAmazon ECRの解説ページです。
 - GitHub https://ghcr.io/
       ソースコードを管理するサービスを提供するGitHubもコンテナのレジストリ サービスを提供しています。同社の継続的インテグレーション(CI)サービスのGitHub Actionsと連携できる便利なサービスです。
+- podmanホームページ https://podman.io/
+- containerdホームページ https://containerd.io/
 
