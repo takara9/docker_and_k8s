@@ -299,16 +299,26 @@ mysql>
 ## イメージとレジストリ
 
 ```
+# GHCRへログインする
 $ export CR_PAT=YOUR_TOKEN
 $ export USERNAME=YOUR_USERID 
 $ echo $CR_PAT | docker login ghcr.io -u $USERNAME --password-stdin
-PS > docker pull ghcr.io/takara9/my-ubuntu:0.2
+
+# イメージをプルする
+$ docker pull ghcr.io/takara9/my-ubuntu:0.2
 0.2: Pulling from takara9/my-ubuntu
 7734efb8b826: Pull complete
 af04a071076c: Pull complete
 Digest: sha256:69761cfbffb581e1b53834f8d1ea52ca98ddd217efec857b906c12847112a405
 Status: Downloaded newer image for ghcr.io/takara9/my-ubuntu:0.2
 ghcr.io/takara9/my-ubuntu:0.2
+
+# イメージをプッシュする
+$ docker push ghcr.io/takara9/my-ubuntu:0.2
+The push refers to repository [ghcr.io/takara9/my-ubuntu]
+af04a071076c: Layer already exists 
+7734efb8b826: Layer already exists 
+0.2: digest: sha256:69761cfbffb581e1b53834f8d1ea52ca98ddd217efec857b906c12847112a405 size: 741
 ```
 
 
