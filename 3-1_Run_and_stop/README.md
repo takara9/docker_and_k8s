@@ -1,6 +1,7 @@
 # コンテナの起動と停止
 
 ## コンテナの実行と停止
+コマンドプロンプトは、PowerShellですが、bashとも共通です。
 
 ```
 PS > docker run --name hw hello-world
@@ -82,8 +83,7 @@ REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
 
 Ubuntuコンテナの起動
 ```
-PS > $path = (Get-Location).Path + "/my-home"
-PS > docker run -it --name my-linux -v ${path}:/home ubuntu bash
+PS > docker run -it --name my-linux -v ${PWD}/my-home:/home ubuntu bash
 root@a18f63c51bf7:/# df -h
 Filesystem      Size  Used Avail Use% Mounted on
 overlay        1007G  3.7G  952G   1% /
@@ -154,31 +154,16 @@ Deleted: sha256:f36fd4bb7334b7ae3321e3229d103c4a3e7c10a263379cc6a058b977edfb46de
 
 ## Webサーバーのコンテナ実行
 
-Windowsで DockerDesktopを使用するケース
 ```
 PS > docker run -d --name web -p 8080:80 nginx
 ```
 
-macOS, Linuxで DockerDesktopを使用するケース
+
+パソコンのフォルダのコンテンツを表示する
 ```
-$ docker run -d --name web -p 8080:80 nginx
+PS > docker run -d --name web -v ${PWD}/contents_root:/usr/share/nginx/html -p 8080:80 nginx
 ```
 
-
-パソコンのフォルダをコンテンツを表示する
-
-Windowsで DockerDesktopを使用するケース 
-PowerShell のコマンドプロンプトを開いて以下を実行
-```
-PS > $path = (Get-Location).Path + "/contents_root"
-PS > docker run -d --name web -v ${path}:/usr/share/nginx/html -p 8080:80 nginx
-```
-
-macOS, Linuxで DockerDesktopを使用するケース
-ターミナルを開いて以下のコマンドを実行
-```
-$ docker run -d --name web -v $PWD/contents_root:/usr/share/nginx/html -p 8080:80 nginx
-```
 
 ```
 PS > docker ps
@@ -221,19 +206,11 @@ PS C:\Users\tkr99\docker_and_k8s> docker images
 
 ## データベースのコンテナ実行
 
-
-Windows データベースサーバー
-PowerShell のコマンドプロンプトを開いて以下を実行
+PowerShell, bash 共通
 ```
-PS > $path = (Get-Location).Path + "/data_vol"
-PS > docker run --name my-db -v ${path}:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secret -d mysql
+PS > docker run --name my-db -v ${PWD}/data_vol:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secret -d mysql
 ```
 
-macOS データベースサーバー
-ターミナルを開いて以下のコマンドを実行
-```
-$ docker run --name my-db -v $PWD/data_vol:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secret -d mysql
-```
 
 コンテナ内のコマンド mysql を実行
 ```
