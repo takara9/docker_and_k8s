@@ -1,175 +1,174 @@
-# 3.3
+# 永続的データの読み書き
 
 
-## === フィボナッチの数列を表示 ===
+## バインドマウントの使用例 フィボナッチの数列を表示
 
-docker run -it -v ${PWD}/src:/mnt python:latest python3 /mnt/fibo.py
+バインドマウントでパソコンのフォルダーのプログラムを実行
+```
+$ docker run -it -v ${PWD}/src:/mnt python:latest python3 /mnt/fibo.py
+```
 
-docker container prune
 
+## 永続ボリュームの作成
 
-## === 永続ボリュームの作成 ===
+ボリュームを作成
+```
+$ docker volume ls
+$ docker volume create my-vol
+```
 
-docker volume ls
-docker volume create my-vol
-docker volume inspect my-vol
+作成したボリュームの情報表示
+```
+$ docker volume inspect my-vol
+```
 
 
 ## 永続ボリュームをマウントしたコンテナを起動
 
-docker run -it --name devtest --mount source=my-vol,target=/app ubuntu:latest
+永続ボリュームをマウントしたコンテナを起動
+```
+$ docker run -it --name voltest --mount source=my-vol,target=/app ubuntu
+# df
+```
+
+マウントしたコンテナへ何かデータを書き込み
+```
+# ps -ax > /app/data.txt
+# cat /app/data.txt
+```
+
+コンテナを止めて削除
+```
+$ docker kill voltest
+$ docker rm voltest
+```
+
+再び、新しいコンテナで、my-volをマウントして保存したデータを確認
+```
+$ docker run -it --name voltest2 --mount source=my-vol,target=/app ubuntu
+# df
+# cd /app/
+# ls -al
+# cat data.txt
+```
 
 
-### 以下は、上記で起動したコンテナ上で実行
+## tmpfsをマウントしたコンテナの起動
 
-df -h
-ps -ax
-ps -ax > /app/data.txt
-cat /app/data.txt 
-exit
+一時ボリュームをマウントしたコンテナを起動して書き込み、exitでコンテナを停止
+```
+$ docker run -it --name tmptest --tmpfs /app ubuntu
+# df -h
+# dd if=/dev/urandom of=/app/test.dat bs=80 count=10
+# df -h
+# ls -al /app
+# exit
+```
 
+コンテナを再びスタート
+```
+$ docker ps -a
+$ docker start tmptest
+```
 
-## 永続ボリュームをマウントしたコンテナの削除
-
-docker kill devtest <-- 不要
-docker rm devtest
-
-
-## 新しいコンテナを起動して、既存の永続ボリュームをマウントする。
-
-docker run -it --name devtest2 --mount source=my-vol,target=/app ubuntu:latest
-
-
-### 以下は、上記で起動したコンテナ上で実行
-
-cd /app/
-ls -al
-cat data.txt
-exit
-
-## クリーンナップ
-docker rm devtest2
-docker volume rm my-vol
+コンテナにデータが存在するか確認
+```
+$ docker exec -it tmptest bash
+# df -h
+# ls -al /app
+# exit
+```
 
 
 
-## === tmpfsをマウントする ===
- 
-docker run -it --name tmptest --tmpfs /app ubuntu:latest
+## Docker Desktopを使ったバックアップ
+
+ボリュームを作成して、データを書き込み
+```
+$ docker volume create my-vol
+$ docker run -it –rm --name voltest --mount source=my-vol,target=/app ubuntu:latest
+# ls -lR / > /app/ls-lR.txt
+# df -h
+# sha1sum /app/ls-lR.txt > /app/check.txt
+# exit
+```
+Docker Desktopからデータのバックアップファイルを作成
 
 
-### 以下は、上記で起動したコンテナ上で実行
+## Docker Desktopによるリストア
 
-df -h
-dd if=/dev/urandom of=/app/test.dat bs=80 count=10
-ls -al /app
-exit
-
-
-## コンテナの再スタート
-
-docker ps -a
-docker start tmptest
-docker exec -it tmptest bash
-ls -al /app
-exit
-
-## クリーンナップ
-
-docker kill tmptest
-docker rm tmptest
+リストアの確認のため、コンテナとボリュームを削除
+```
+$ docker ps -a
+$ docker rm コンテナID
+$ docker volume ls
+$ docker volume rm my-vol
+```
+Docker Desktopを使って、データをリストア
 
 
-## バックアップ
-
-docker run --rm \
-      --mount source=my-vol,target=/backup-volume \
-      -v "$(pwd)":/backup \
-      busybox \
-      tar -zcvf /backup/my-vol.tar.gz /backup-volume
+リストアしたデータをハッシュでチェック
+```
+$ docker run -it --name voltest --mount source=my-vol,target=/app ubuntu
+# sha1sum -c /app/check.txt
+```
 
 
-mini:~ takara$ cd backup-vol/
-mini:backup-vol takara$ docker run --rm \
->       --mount source=my-vol,target=/backup-volume \
->       -v "$(pwd)":/backup \
->       busybox \
->       tar -zcvf /backup/my-vol.tar.gz /backup-volume
-tar: removing leading '/' from member names
-backup-volume/
-backup-volume/check.txt
-backup-volume/ls-lR.txt
-mini:backup-vol takara$ 
+## Docker コマンドを利用したバックアップとリストア
+
+ボリュームのデータをパソコン上のtarファイルにバックアップ
+```
+$ docker run --rm --mount source=my-vol,target=/backup-volume \
+  -v $(PWD):/backup \
+  busybox tar -zcvf /backup/my-vol.tar.gz /backup-volume
+```
 
 
-## リストア
-docker volume rm my-vol
-docker volume create my-vol
-docker run --rm \
-      --mount source=my-vol,target=/backup-volume \
-      -v "$(pwd)":/backup \
-      busybox \
-      tar -zxvf /backup/my-vol.tar.gz --strip-components 1 -C /backup-volume
-docker run -it --rm --name voltest --mount source=my-vol,target=/app ubuntu:latest
-root@640715d2f3df:/# sha1sum -c /app/check.txt
-/app/ls-lR.txt: OK
-
-
+ボリュームを削除、再作成して、リストア、ハッシュでチェック
+```
 $ docker volume rm my-vol
 $ docker volume create my-vol
-my-vol
-$ docker run --rm \
->       --mount source=my-vol,target=/backup-volume \
->       -v "$(pwd)":/backup \
->       busybox \
->       tar -zxvf /backup/my-vol.tar.gz --strip-components 1 -C /backup-volume
-backup-volume/
-backup-volume/check.txt
-backup-volume/ls-lR.txt
-$ docker run -it --rm --name voltest --mount source=my-vol,target=/app ubuntu:latest
-root@640715d2f3df:/# sha1sum -c /app/check.txt
-/app/ls-lR.txt: OK
+$ docker run --rm --mount source=my-vol,target=/backup-volume \
+   -v "$(pwd)":/backup \
+   busybox tar -zxvf /backup/my-vol.tar.gz --strip-components 1 -C /backup-volume
+
+$ docker run -it --rm --name voltest --mount source=my-vol,target=/app ubuntu
+# sha1sum -c /app/check.txt
+```
 
 
 
-## コンテナの構造
+## コンテナにデータの保存はNG
 
-ベースイメージを「
+```
+$ docker run -it ubuntu
+# df -h
+```
 
-~~~
+
+
+## コマンドでコンテナの重ね合わせ構造を見る
+
+イメージのレイヤー履歴を確認
+```
 $ docker history ubuntu:latest
-IMAGE          CREATED       CREATED BY                                       SIZE      COMMENT
-e2e172ecd069   2 weeks ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]             0B        
-<missing>      2 weeks ago   /bin/sh -c #(nop) ADD file:5703a6689620ec495…   69.3MB    
-<missing>      2 weeks ago   /bin/sh -c #(nop)  LABEL org.opencontainers.…   0B        
-<missing>      2 weeks ago   /bin/sh -c #(nop)  LABEL org.opencontainers.…   0B        
-<missing>      2 weeks ago   /bin/sh -c #(nop)  ARG LAUNCHPAD_BUILD_ARCH      0B        
-<missing>      2 weeks ago   /bin/sh -c #(nop)  ARG RELEASE                   0B        
-~~~
+```
 
+起動したイメージにパッケージを追加
+```
+$ docker run -it --name ubuntu-add ubuntu:latest 
+# apt update -y
+# apt install iputils-ping -y
+# exit
+```
 
-~~~
-mini:~ takara$ docker run -it --name ubuntu-add ubuntu:latest 
-root@2c29d2fe2612:/# apt update -y
-<中略>
-root@2c29d2fe2612:/# apt install iputils-ping -y
-<中略>
-Setting up iputils-ping (3:20211215-1) ...
-root@2c29d2fe2612:/# exit
-exit
-~~~
-
-~~~
+レイヤーの追加を確認
+```
 $ docker commit ubuntu-add my-ubuntu:0.3
-sha256:d9184c797c857b33a7b6cb8724e87c2f15649cad66ac6ca5a87cbf877092e168
-
 $ docker history my-ubuntu:0.3
-IMAGE          CREATED          CREATED BY                                       SIZE      COMMENT
-d9184c797c85   15 seconds ago   /bin/bash                                        45.3MB    
-e2e172ecd069   2 weeks ago      /bin/sh -c #(nop)  CMD ["/bin/bash"]             0B        
-<missing>      2 weeks ago      /bin/sh -c #(nop) ADD file:5703a6689620ec495…   69.3MB    
-<missing>      2 weeks ago      /bin/s$h -c #(nop)  LABEL org.opencontainers.…   0B        
-<missing>      2 weeks ago      /bin/sh -c #(nop)  LABEL org.opencontainers.…   0B        
-<missing>      2 weeks ago      /bin/sh -c #(nop)  ARG LAUNCHPAD_BUILD_ARCH      0B        
-<missing>      2 weeks ago      /bin/sh -c #(nop)  ARG RELEASE                   0B    
-~~~
+```
+
+
+## 参考リンク
+- 日本語 dockerコマンド https://docs.docker.jp/engine/reference/commandline/#id6
+- dockerコマンドリファレンス https://docs.docker.com/reference/cli/docker/volume/

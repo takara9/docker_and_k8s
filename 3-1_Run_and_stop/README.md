@@ -308,8 +308,7 @@ $ podman run index.docker.io/hello-world
 
 
 
-
-## 参考資料
+## 参考リンク
 - 日本語 dockerコマンド https://docs.docker.jp/engine/reference/commandline/
 - dockerコマンドリファレンス https://docs.docker.com/reference/cli/docker/
 - GitHubプロファイル https://github.com/settings/profile
