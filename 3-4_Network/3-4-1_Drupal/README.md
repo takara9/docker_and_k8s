@@ -36,8 +36,3 @@ docker volume rm my-drupal-web
 ### ネットワークの削除
 docker network rm my-net
 
-
-
-
-
-
