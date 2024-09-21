@@ -204,9 +204,9 @@ $ docker compose down
 
 
 ## 参考リンク
-- 日本語 dockerコマンド https://docs.docker.jp/engine/reference/commandline/#id6
-- dockerコマンドリファレンス https://docs.docker.com/reference/cli/docker/volume/
-
-
-
-
+- Networking overview https://docs.docker.com/engine/network/
+- 日本語 docker network https://docs.docker.jp/engine/reference/commandline/network_toc.html
+- dockerコマンドリファレンス https://docs.docker.com/reference/cli/docker/network/
+- 日本語 Docker Compose コマンドリファレンス https://docs.docker.jp/engine/reference/commandline/compose_toc.html
+- jq ホームページ https://jqlang.github.io/jq/
+- httpbin ホームページ https://httpbin.org/
