@@ -80,7 +80,6 @@ $ docker exec -it tmptest bash
 ```
 
 
-
 ## Docker Desktopを使ったバックアップ
 
 ボリュームを作成して、データを書き込み
@@ -137,14 +136,12 @@ $ docker run -it --rm --name voltest --mount source=my-vol,target=/app ubuntu
 ```
 
 
-
 ## コンテナにデータの保存はNG
 
 ```
 $ docker run -it ubuntu
 # df -h
 ```
-
 
 
 ## コマンドでコンテナの重ね合わせ構造を見る
