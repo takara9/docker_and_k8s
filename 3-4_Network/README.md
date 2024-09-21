@@ -155,13 +155,12 @@ $ docker volume rm my-wordpress-web
 $ docker network rm my-word-net
 ```
 
-Docker Composeによる起動
+## Docker Compose による WordPress 起動
 ```
 $ cd wp
 $ ls
 compose.yml
 $ docker compose up -d
-maho-2:wp maho$ docker compose up -d
 [+] Building 0.0s (0/0)                   docker:desktop-linux
 [+] Running 3/3
  ✔ Network wp_my-word-net       Created                   0.0s 
