@@ -9,14 +9,10 @@
 ```
 
 
-
-
 ## コンテナが起動できない時のトラブルシューティング
 
 docker ps -a して、名前が同じコンテナが存在しないか、確認してください。
 コンテナが存在したら、docker rm [コンテナ名 または　コンテナID] で削除してください。
-
-
 
 
 ## その他のメモ
@@ -51,4 +47,3 @@ git clone https://github.com/takara9/docker_and_k8s.git
 git submodule update --init --recursive
 git submodule update --remote --merge
 ```
-
