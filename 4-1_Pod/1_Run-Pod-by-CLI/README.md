@@ -17,10 +17,8 @@ minikube   Ready    control-plane   22s   v1.30.0
 Webサービスのコンテナを内包したポッドの起動
 ```
 $ kubectl run my-web --image=ghcr.io/takara9/ex3:1.0
-```
+pod/my-web created
 
-ポッド起動の確認
-```
 $ kubectl get pod
 NAME     READY   STATUS    RESTARTS   AGE
 my-web   1/1     Running   0          9s
@@ -28,6 +26,13 @@ my-web   1/1     Running   0          9s
 $ kubectl get pod -o wide
 NAME     READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
 my-web   1/1     Running   0          19s   10.244.0.3   minikube   <none>           <none>
+
+$ kubectl exec -it my-web -- sh
+/app $ ps
+PID   USER     TIME  COMMAND
+    1 node      0:00 node app.js
+   20 node      0:00 sh
+   30 node      0:00 ps
 ```
 
 
