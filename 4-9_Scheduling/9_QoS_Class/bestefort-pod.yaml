@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bestefort-pod
+spec:
+  containers:
+  - name: bestefort-container
+    image: ghcr.io/takara9/ex3:1.0

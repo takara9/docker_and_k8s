@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: guaranteed-pod-new
+spec:
+  nodeName: minikube-m03  # ノードネーム
+  containers:
+    - name: ubuntu
+      image: ghcr.io/takara9/stress-ng:1.0
+      command: ["/usr/bin/stress-ng", "--cpu", "4", "--malloc-bytes", "2000M", "--malloc-zerofree"] 
