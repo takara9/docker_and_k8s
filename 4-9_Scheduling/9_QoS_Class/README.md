@@ -4,28 +4,10 @@
 
 ## 準備
 ```
-$ minikube start -n 3
-$ kubectl taint nodes minikube-m02 workload:NoSchedule
-$ kubectl taint nodes minikube-m03 workload:NoSchedule
+$ minikube start -n 2
 $ minikube addons enable metrics-server
 $ kubectl taint nodes minikube workload:NoSchedule
-$ kubectl taint nodes minikube-m03 workload:NoSchedule-
 $ kubectl get no
-$ kubectl get po -A -o wide
-NAMESPACE     NAME                               READY   STATUS    RESTARTS       AGE     IP             NODE
-kube-system   coredns-7db6d8ff4d-zwmfn           1/1     Running   0              2m32s   10.244.0.2     minikube
-kube-system   etcd-minikube                      1/1     Running   0              2m45s   192.168.49.2   minikube
-kube-system   kindnet-5fpbb                      1/1     Running   0              100s    192.168.49.4   minikube-m03
-kube-system   kindnet-krw79                      1/1     Running   0              2m10s   192.168.49.3   minikube-m02
-kube-system   kindnet-nfbcg                      1/1     Running   0              2m33s   192.168.49.2   minikube
-kube-system   kube-apiserver-minikube            1/1     Running   0              2m45s   192.168.49.2   minikube
-kube-system   kube-controller-manager-minikube   1/1     Running   0              2m45s   192.168.49.2   minikube
-kube-system   kube-proxy-8qbcc                   1/1     Running   0              2m10s   192.168.49.3   minikube-m02
-kube-system   kube-proxy-llqtg                   1/1     Running   0              100s    192.168.49.4   minikube-m03
-kube-system   kube-proxy-xlh2m                   1/1     Running   0              2m33s   192.168.49.2   minikube
-kube-system   kube-scheduler-minikube            1/1     Running   0              2m45s   192.168.49.2   minikube
-kube-system   metrics-server-c59844bb4-xtcdp     1/1     Running   0              39s     10.244.0.3     minikube
-kube-system   storage-provisioner                1/1     Running   1 (2m8s ago)   2m44s   192.168.49.2   minikube
 ```
 
 
@@ -128,15 +110,19 @@ QoS Class:                   BestEffort     <---- ここに注目
 <以下省略>
 ```
 
+ポッド名とQoSクラスをリストする
+
 ```
-$ kubectl get po -o wide
-NAME                          READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
-bestefort-pod                 1/1     Running   0          9s    10.244.2.5   minikube-m03   <none>           <none>
-burstable-pod                 1/1     Running   0          22s   10.244.2.4   minikube-m03   <none>           <none>
-guaranteed-pod                1/1     Running   0          43s   10.244.2.2   minikube-m03   <none>           <none>
-guaranteed-pod-with-sidecar   2/2     Running   0          32s   10.244.2.3   minikube-m03   <none>           <none>
+$ kubectl get pod guaranteed-pod-new -o jsonpath='{.metadata.name} {.status.qosClass}'
 ```
 
-$ kubectl get pod -o jsonpath='{.status.qosClass}' |jq
+## クリーンナップ
+```
+minikube delete
+```
 
-kubectl get pod guaranteed-pod-new -o jsonpath='{.metadata.name} {.status.qosClass}'
+
+## 参照資料
+- Pod Quality of Service Classes https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/
+- Configure Quality of Service for Pods https://kubernetes.io/docs/tasks/configure-pod-container/quality-service-pod/
+
