@@ -6,8 +6,10 @@
 ## 準備
 ```
 $ minikube start -n 2
+$ kubectl taint nodes minikube-m02 workload:NoSchedule
 $ minikube addons enable metrics-server
 $ kubectl taint nodes minikube workload:NoSchedule
+$ kubectl taint nodes minikube-m02 workload:NoSchedule-
 $ kubectl get no
 ```
 
@@ -39,11 +41,61 @@ pod-memory-constraints   953m         24Mi
 
 ## メモリの最大を超過した時挙動
 
+```
+$ kubectl apply -f pod-memory-limits-exceed.yaml 
+pod/pod-memory-limits-exceed created
+$ kubectl get pod 
+NAME                       READY   STATUS      RESTARTS   AGE
+pod-memory-limits-exceed   0/1     OOMKilled   0          4s
+```
+
 
 ## CPUの要求と最大を設定する
 
-## CPUの最大を超過した時の挙動
+```
+$ kubectl apply -f pod-cpu-requests-limits.yaml 
+pod/pod-cpu-constraints created
 
+$ kubectl get pod
+NAME                  READY   STATUS    RESTARTS   AGE
+pod-cpu-constraints   1/1     Running   0          5s
+
+$ kubectl get pod pod-cpu-constraints -o=jsonpath='{.spec.containers[0].resources}' |jq
+{
+  "limits": {
+    "cpu": "500m"
+  },
+  "requests": {
+    "cpu": "100m"
+  }
+}
+
+$ kubectl top pod
+NAME                  CPU(cores)   MEMORY(bytes)   
+pod-cpu-constraints   489m         2Mi    
+```
+
+
+```
+$ kubectl apply -f pod-cpu-requests.yaml 
+pod/pod-cpu-no-limits created
+
+$ kubectl top pod
+NAME                  CPU(cores)   MEMORY(bytes)   
+pod-cpu-constraints   501m         2Mi             
+pod-cpu-no-limits     1463m        3Mi     
+
+$ kubectl delete pod pod-cpu-constraints 
+pod "pod-cpu-constraints" deleted
+
+$ kubectl top pod
+NAME                CPU(cores)   MEMORY(bytes)   
+pod-cpu-no-limits   1988m        3Mi       
+
+$ kubectl top node minikube-m02
+NAME           CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
+minikube-m02   1999m        24%    314Mi           4%    
+```
 
 
 

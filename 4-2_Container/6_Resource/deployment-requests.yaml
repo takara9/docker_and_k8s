@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pods-request
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: my-pod
+  template: 
+    metadata:     
+      labels:
+        app: my-pod
+    spec:
+      containers:
+      - name: memory-constraints
+        image: polinux/stress
+        resources:
+          requests:
+            cpu: "2"
+            memory: "100Mi"
+          limits:
+            cpu: "2"
+            memory: "100Mi"
+        command: ["stress"]
+        args: ["-c", "2"]

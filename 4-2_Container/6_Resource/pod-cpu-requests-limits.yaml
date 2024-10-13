@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-memory-constraints
+  name: pod-cpu-constraints
 spec:
   containers:
   - name: memory-constraints
     image: polinux/stress
     resources:
       requests:
-        memory: "50Mi"
+        cpu: "100m"
       limits:
-        memory: "200Mi"
+        cpu: "500m"
     command: ["stress"]
-    args: ["-m", "1", "--vm-bytes", "150M"]
+    args: ["-c", "1"]
 
 
