@@ -13,6 +13,58 @@ $ kubectl taint nodes minikube-m02 workload:NoSchedule-
 $ kubectl get no
 ```
 
+### 演習するにあたって、ノードの割り当て可能なCPUコア数を確認
+
+ノードの割り当て可能なCPUコア数を確認しておきます。Minikubeの実行環境によって、
+割り当て可能なCPU数が異なりますので、環境に対応して調整しなければなりません。
+
+macOS 
+```
+$ minikube version　コンテナノードで、ホストのCPUコア数が表示されている
+minikube version: v1.33.1
+commit: 5883c09216182566a63dff4c326a6fc9ed2982ff
+
+$ kubectl get no -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.allocatable.cpu}{"\n"}{end}'
+minikube        8
+minikube-m02    8
+```
+
+Windows PC (NUC)　コンテナノードで、ホストのCPUコア数が表示されている
+```
+PS C:\Users\tkr99\docker_and_k8s> minikube version
+W1014 17:34:15.000292    3328 main.go:291] Unable to resolve the current Docker CLI context "default": context "default": context not found: open C:\Users\tkr99\.docker\contexts\meta\37a8eec1ce19687d132fe29051dca629d164e2c4958ba141d5f4133a33f0688f\meta.json: The system cannot find the path specified.
+minikube version: v1.33.1
+commit: 5883c09216182566a63dff4c326a6fc9ed2982ff
+PS C:\Users\tkr99\docker_and_k8s> kubectl get no -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.allocatable.cpu}{"\n"}{end}'
+minikube        4
+minikube-m02    4
+```
+
+Linux ノードをコンテナでシミュレートしたケース
+```
+$ minikube start -n 2
+$ minikube version
+minikube version: v1.34.0
+commit: 210b148df93a80eb872ecbeb7e35281b3c582c61
+
+$ kubectl get no -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.allocatable.cpu}{"\n"}{end}'
+minikube        12
+minikube-m02    12
+```
+
+Linux ノードをVMで起動したケースは、CPUコア数は、VMに割り当てられたCPUコア数と同じとなる。
+```
+$ minikube start -n 2 --vm-driver=kvm2
+$ minikube version
+minikube version: v1.34.0
+commit: 210b148df93a80eb872ecbeb7e35281b3c582c61
+
+$ kubectl get no -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.allocatable.cpu}{"\n"}{end}'
+minikube        2
+minikube-m02    2
+```
+
+
 
 ## メモリの要求と最大を設定する
 
@@ -100,10 +152,10 @@ minikube-m02   1999m        24%    314Mi           4%
 
 ## スケジューリング
 
+Linux上の仮想マシンベースのMinikubeクラスタで、演習を実施する
 ```
 $ minikube start -n 2 --driver "kvm2"
 ```
-
 
 deployment-requests.yaml 
 ```
@@ -120,7 +172,7 @@ spec:
         image: polinux/stress
         resources:
           requests:
-            cpu: "0.6"
+            cpu: "0.6"     # 割り当て可能なCPUコア数を元に調整しなければならない
             memory: "100Mi"
         command: ["stress"]
         args: ["-c", "2"]
@@ -138,9 +190,6 @@ pods-request-5f6b4fd46b-pjc5f   0/1     Pending   0          33m   <none>       
 pods-request-5f6b4fd46b-t6x6m   1/1     Running   0          33m   10.244.1.4   minikube-m02   <none>           <none>
 pods-request-5f6b4fd46b-z6hjb   1/1     Running   0          33m   10.244.1.6   minikube-m02   <none>           <none>
 ```
-
-
-
 
 
 

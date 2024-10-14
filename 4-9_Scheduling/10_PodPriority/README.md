@@ -13,11 +13,12 @@ $ kubectl get no
 $ kubectl taint nodes minikube workload:NoSchedule
 ```
 
-ノードの割り当て可能なCPUコア数を確認しておく。　
+ノードの割り当て可能なCPUコア数を確認しておきます。Minikubeの実行環境によって、
+割り当て可能なCPU数が異なりますので、環境に対応して調整しなければなりません。
 
 macOS 
 ```
-$ minikube version
+$ minikube version　コンテナノードで、ホストのCPUコア数が表示されている
 minikube version: v1.33.1
 commit: 5883c09216182566a63dff4c326a6fc9ed2982ff
 
@@ -26,6 +27,40 @@ minikube        8
 minikube-m02    8
 ```
 
+Windows PC (NUC)　コンテナノードで、ホストのCPUコア数が表示されている
+```
+PS C:\Users\tkr99\docker_and_k8s> minikube version
+W1014 17:34:15.000292    3328 main.go:291] Unable to resolve the current Docker CLI context "default": context "default": context not found: open C:\Users\tkr99\.docker\contexts\meta\37a8eec1ce19687d132fe29051dca629d164e2c4958ba141d5f4133a33f0688f\meta.json: The system cannot find the path specified.
+minikube version: v1.33.1
+commit: 5883c09216182566a63dff4c326a6fc9ed2982ff
+PS C:\Users\tkr99\docker_and_k8s> kubectl get no -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.allocatable.cpu}{"\n"}{end}'
+minikube        4
+minikube-m02    4
+```
+
+Linux ノードをコンテナでシミュレートしたケース
+```
+$ minikube start -n 2
+$ minikube version
+minikube version: v1.34.0
+commit: 210b148df93a80eb872ecbeb7e35281b3c582c61
+
+$ kubectl get no -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.allocatable.cpu}{"\n"}{end}'
+minikube        12
+minikube-m02    12
+```
+
+Linux ノードをVMで起動したケース
+```
+$ minikube start -n 2 --vm-driver=kvm2
+$ minikube version
+minikube version: v1.34.0
+commit: 210b148df93a80eb872ecbeb7e35281b3c582c61
+
+$ kubectl get no -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.allocatable.cpu}{"\n"}{end}'
+minikube        2
+minikube-m02    2
+```
 
 
 
@@ -38,7 +73,9 @@ high-priority   1000000   false            14s
 ```
 
 ## プライオリティクラスなしのデプロイメントの適用
+割り当て可能なCPU数で、動作が異なりますから、
 minikubeのリソース一杯のCPU要求数でデプロイする。これ以上レプリカ数を増やしても、リソースが確保されず Pending となる。
+
 ```
 $ kubectl apply -f deployment-normal.yaml
 $ kubectl get po -o wide

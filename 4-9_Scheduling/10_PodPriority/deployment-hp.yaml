@@ -20,7 +20,7 @@ spec:
           resources:
             requests:
               memory: "320M"
-              cpu: 2
+              cpu: 2  # ホストのコア数で調整
             limits:
               memory: "320M"
-              cpu: 2
+              cpu: 2  # 同上

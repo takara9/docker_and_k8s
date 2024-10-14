@@ -19,8 +19,8 @@ spec:
           resources:
             requests:
               memory: "320M"
-              cpu: 2
+              cpu: 2          # 環境に合わせて調整
             limits:
               memory: "320M"
-              cpu: 2
+              cpu: 2          # 同上
   
