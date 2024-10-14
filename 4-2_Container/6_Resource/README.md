@@ -75,6 +75,7 @@ NAME                  CPU(cores)   MEMORY(bytes)
 pod-cpu-constraints   489m         2Mi    
 ```
 
+requestだけを設定した場合、CPUを割り当てられたポッドが削除されると、ノードの残るのCPUを使用する。
 
 ```
 $ kubectl apply -f pod-cpu-requests.yaml 
@@ -96,6 +97,49 @@ $ kubectl top node minikube-m02
 NAME           CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
 minikube-m02   1999m        24%    314Mi           4%    
 ```
+
+## スケジューリング
+
+```
+$ minikube start -n 2 --driver "kvm2"
+```
+
+
+deployment-requests.yaml 
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pods-request
+spec:
+  replicas: 5
+<中略>
+    spec:
+      containers:
+      - name: memory-constraints
+        image: polinux/stress
+        resources:
+          requests:
+            cpu: "0.6"
+            memory: "100Mi"
+        command: ["stress"]
+        args: ["-c", "2"]
+```
+
+```
+$ kubectl apply -f deployment-requests.yaml 
+deployment.apps/pods-request created
+
+$ kubectl get pod -o wide
+NAME                            READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
+pods-request-5f6b4fd46b-l7ztl   1/1     Running   0          33m   10.244.1.5   minikube-m02   <none>           <none>
+pods-request-5f6b4fd46b-nw2tg   0/1     Pending   0          33m   <none>       <none>         <none>           <none>
+pods-request-5f6b4fd46b-pjc5f   0/1     Pending   0          33m   <none>       <none>         <none>           <none>
+pods-request-5f6b4fd46b-t6x6m   1/1     Running   0          33m   10.244.1.4   minikube-m02   <none>           <none>
+pods-request-5f6b4fd46b-z6hjb   1/1     Running   0          33m   10.244.1.6   minikube-m02   <none>           <none>
+```
+
+
 
 
 

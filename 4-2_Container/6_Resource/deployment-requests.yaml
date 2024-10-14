@@ -17,10 +17,10 @@ spec:
         image: polinux/stress
         resources:
           requests:
-            cpu: "2"
+            cpu: "0.6"
             memory: "100Mi"
-          limits:
-            cpu: "2"
-            memory: "100Mi"
+          #limits:
+          #  cpu: "1"
+          #  memory: "100Mi"
         command: ["stress"]
         args: ["-c", "2"]
