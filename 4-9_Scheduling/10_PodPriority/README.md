@@ -13,6 +13,22 @@ $ kubectl get no
 $ kubectl taint nodes minikube workload:NoSchedule
 ```
 
+ノードの割り当て可能なCPUコア数を確認しておく。　
+
+macOS 
+```
+$ minikube version
+minikube version: v1.33.1
+commit: 5883c09216182566a63dff4c326a6fc9ed2982ff
+
+$ kubectl get no -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.allocatable.cpu}{"\n"}{end}'
+minikube        8
+minikube-m02    8
+```
+
+
+
+
 ## プライオリティクラスの設定
 ```
 $ kubectl apply -f priority-class.yaml 
