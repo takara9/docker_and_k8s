@@ -15,6 +15,11 @@ $ kubectl get node minikube -o jsonpath='{.spec.taints}' |jq
 ]
 ```
 
+複数のノードのテイントを確認したい時は、jqコマンドを併用して、全ノードのテイントを表示できます。
+```
+$ kubectl get node -o json |jq -r ".items[]| .metadata.name, .spec.taints"
+```
+
 ## テイント
 コントロールプレーンにポッドが配置されない様にテイントを付与する。デプロイメントを適用して、結果を確認する。
 ```
