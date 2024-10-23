@@ -2,7 +2,8 @@
 テイントは、特定ノードへポッドを配置禁止にする。
 トーラレーションは、許可されたポッドだけが、ノードへ配置される。
 
-##　　準備
+## 準備
+
 ```
 $ minikube start -n 3
 $ kubectl taint nodes minikube workload:NoSchedule
@@ -13,11 +14,6 @@ $ kubectl get node minikube -o jsonpath='{.spec.taints}' |jq
     "key": "workload"
   }
 ]
-```
-
-複数のノードのテイントを確認したい時は、jqコマンドを併用して、全ノードのテイントを表示できます。
-```
-$ kubectl get node -o json |jq -r ".items[]| .metadata.name, .spec.taints"
 ```
 
 ## テイント
@@ -44,6 +40,11 @@ $ kubectl get po -o wide
 NAME                       READY   STATUS    RESTARTS   AGE   IP           NODE
 my-pods-66dbbd8bd4-4bcz2   1/1     Running   0          78s   10.244.2.2   minikube-m03
 my-pods-66dbbd8bd4-hr69v   1/1     Running   0          18s   10.244.2.3   minikube-m03
+```
+
+複数のノードのテイントを確認したい時は、jqコマンドを併用して、全ノードのテイントを表示できます。
+```
+$ kubectl get node -o json |jq -r ".items[]| .metadata.name, .spec.taints"
 ```
 
 
